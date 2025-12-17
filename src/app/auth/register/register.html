@@ -16,7 +16,7 @@
                                class="w-full border-none outline-none bg-transparent" placeholder="First Name">
                     </label>
                 </div>
-                @if(firstName?.invalid && (firstName?.touched || firstName?.dirty)) {
+                @if(firstName?.invalid && (firstName?.touched)) {
                     <div class="text-red-600 text-sm mt-1 ml-10">
                         @if(firstName?.hasError('required')) {
                             <p>First name is required</p>
@@ -41,7 +41,7 @@
                                class="w-full border-none outline-none bg-transparent" placeholder="Last Name">
                     </label>
                 </div>
-                @if(lastName?.invalid && (lastName?.touched || lastName?.dirty)) {
+                @if(lastName?.invalid && (lastName?.touched)) {
                     <div class="text-red-600 text-sm mt-1 ml-10">
                         @if(lastName?.hasError('required')) {
                             <p>Last name is required</p>
@@ -67,7 +67,7 @@
                            class="w-full border-none outline-none bg-transparent" placeholder="Username">
                 </label>
             </div>
-            @if(userName?.invalid && (userName?.touched || userName?.dirty)) {
+            @if(userName?.invalid && (userName?.touched)) {
                 <div class="text-red-600 text-sm mt-1 ml-10">
                     @if(userName?.hasError('required')) {
                         <p>Username is required</p>
@@ -92,7 +92,7 @@
                            class="w-full border-none outline-none bg-transparent" placeholder="Email">
                 </label>
             </div>
-            @if(email?.invalid && (email?.touched || email?.dirty)) {
+            @if(email?.invalid && (email?.touched)) {
                 <div class="text-red-600 text-sm mt-1 ml-10">
                     @if(email?.hasError('required')) {
                         <p>Email is required</p>
@@ -115,7 +115,7 @@
                                class="w-full border-none outline-none bg-transparent" placeholder="Password">
                     </label>
                 </div>
-                @if(password?.invalid && (password?.touched || password?.dirty)) {
+                @if(password?.invalid && (password?.touched)) {
                     <div class="text-red-600 text-sm mt-1 ml-10">
                         @if(password?.hasError('required')) {
                             <p>Password is required</p>
