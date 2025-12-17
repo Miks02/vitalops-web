@@ -3,7 +3,8 @@ import {NgIcon, provideIcons} from '@ng-icons/core';
 import {faSolidLock, faSolidCheck, faSolidEnvelope} from '@ng-icons/font-awesome/solid';
 import {Router, RouterLink} from '@angular/router';
 import {ReactiveFormsModule, FormBuilder, Validators, FormsModule} from '@angular/forms';
-import {HttpClient} from '@angular/common/http';
+import { AuthService } from '../../core/services/auth-service';
+import { LoginRequest } from '../../core/models/LoginRequest';
 
 @Component({
   selector: 'app-login',
@@ -20,11 +21,13 @@ import {HttpClient} from '@angular/common/http';
 export class Login {
     errorMessage = signal('')
 
-    private fb = inject(FormBuilder);
+    private readonly fb = inject(FormBuilder);
+    private readonly authService = inject(AuthService)
 
     form = this.fb.group({
         email: ['', Validators.required],
-        password: ['', Validators.required]
+        password: ['', Validators.required],
+        rememberMe: [false]
     });
 
     get email() {return this.form.get('email')}
@@ -36,6 +39,16 @@ export class Login {
             this.form.markAllAsTouched();
             return;
         }
+
+        this.authService.login(this.form.value as LoginRequest).subscribe({
+            next: res => {
+                console.log("Login successful")
+                console.log()
+            },
+            error: err => {
+                console.log("Error happened during the login process\n" + err.message)
+            }
+        })
     }
 
 }
