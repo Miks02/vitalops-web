@@ -7,3 +7,7 @@ body {
 body {
   margin: 0;
 }
+
+.shadow-top {
+  box-shadow: 0 -5px 5px -5px #333;
+}
