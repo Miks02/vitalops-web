@@ -1,13 +1,13 @@
-<aside class="flex flex-col w-70 bg-linear-to-b from-yellow-500 to-yellow-600 shadow-2xl rounded-tr-2xl rounded-2xl">
+<aside class="hidden md:flex flex-col w-70 bg-linear-to-b from-yellow-500 to-yellow-600 shadow-2xl rounded-tr-2xl rounded-2xl">
     <div class="flex flex-col shadow-lg rounded-b-3xl rounded-2xl bg-linear-to-b from-yellow-500 to-yellow-600">
         <img
         src="logo.png"
         class="w-50 h-50 mx-auto rounded-full"
         alt="LOGO"
         />
-
+        
     </div>
-
+    
     <div class="flex flex-col p-4 h-full text-lg text-gray-800 font-semibold">
         <ul class="flex flex-col py-2 gap-2 w-full">
             <li class="w-full hover:border-l-6 hover:border-yellow-600 hover:bg-yellow-500 transition-all">
@@ -16,64 +16,151 @@
                     <span>Dashboard</span>
                 </a>
             </li>
-
+            
             <li class="w-full hover:border-l-6 hover:border-yellow-600 hover:bg-yellow-500 transition-all">
                 <a class="flex items-center transition-all hover:ml-2 gap-4 w-full py-2">
                     <ng-icon name="faSolidDumbbell" class="text-gray-700 shrink-0"></ng-icon>
                     <span>Workouts</span>
                 </a>
             </li>
-
+            
             <li class="w-full hover:border-l-6 hover:border-yellow-600 hover:bg-yellow-500 transition-all">
                 <a class="flex items-center transition-all hover:ml-2 gap-4 w-full py-2">
                     <ng-icon name="faSolidBowlRice" class="text-gray-700 shrink-0"></ng-icon>
                     <span>Nutrition</span>
                 </a>
             </li>
-
+            
             <li class="w-full hover:border-l-6 hover:border-yellow-600 hover:bg-yellow-500 transition-all">
                 <a class="flex items-center transition-all hover:ml-2 gap-4 w-full py-2">
                     <ng-icon name="faSolidMoon" class="text-gray-700 shrink-0"></ng-icon>
                     <span>Sleep logging</span>
                 </a>
             </li>
-
+            
             <li class="w-full hover:border-l-6 hover:border-yellow-600 hover:bg-yellow-500 transition-all">
                 <a class="flex items-center transition-all hover:ml-2 gap-4 w-full py-2">
                     <ng-icon name="faSolidBookOpen" class="text-gray-700 shrink-0"></ng-icon>
                     <span>Exercise library</span>
                 </a>
             </li>
-
+            
             <li class="w-full hover:border-l-6 hover:border-yellow-600 hover:bg-yellow-500 transition-all">
                 <a class="flex items-center transition-all hover:ml-2 gap-4 w-full py-2">
                     <ng-icon name="faSolidArrowUpRightDots" class="text-gray-700 shrink-0"></ng-icon>
                     <span>Goals and progress</span>
                 </a>
             </li>
-
+            
             <li class="w-full hover:border-l-6 hover:border-yellow-600 hover:bg-yellow-500 transition-all">
                 <a class="flex items-center transition-all hover:ml-2 gap-4 w-full py-2">
                     <ng-icon name="faSolidUser" class="text-gray-700 shrink-0"></ng-icon>
                     <span>Profile</span>
                 </a>
             </li>
-
+            
             <li class="w-full hover:border-l-6 hover:border-yellow-600 hover:bg-yellow-500 transition-all">
                 <a class="flex items-center transition-all hover:ml-2 gap-4 w-full py-2">
                     <ng-icon name="faSolidGear" class="text-gray-700 shrink-0"></ng-icon>
                     <span>Settings</span>
                 </a>
             </li>
-
-
+            
+            
         </ul>
         <div class="w-full mt-auto hover:border-l-6 hover:border-red-900 hover:bg-yellow-500 transition-all">
             <a class="flex items-center transition-all hover:ml-2 gap-4 w-full py-2">
-                <ng-icon name="faSolidGear" class="text-red-700! shrink-0"></ng-icon>
+                <ng-icon name="faSolidRightToBracket" class="text-red-700! shrink-0"></ng-icon>
                 <span class="text-red-700">Logout</span>
             </a>
         </div>
     </div>
+    
+</aside>
 
+
+<aside class="fixed z-50 flex flex-col md:hidden w-full h-full bg-linear-to-b from-yellow-500 to-yellow-600 shadow-2xl rounded-b-2xl">
+    <div class="flex flex-row items-center justify-between shadow-lg rounded-b-3xl rounded-2xl bg-linear-to-b from-yellow-500 to-yellow-600">
+        <img
+        src="logo.png"
+        class="w-35 h-35 rounded-full"
+        alt="LOGO"
+        />
+        
+        <button class="cursor-pointer transition-all  hover:text-slate-500 active:text-slate-500 active:opacity-50 mr-5 text-slate-800 text-4xl">
+            <ng-icon  name="faSolidCircleChevronLeft"></ng-icon>
+            
+        </button>
+        
+        
+    </div>
+    
+    <div class="flex flex-col p-4 h-full text-2xl text-gray-800 font-semibold">
+        <ul class="flex flex-col py-2 gap-2 w-full">
+            <li class="w-full hover:border-l-6 hover:border-yellow-600 hover:bg-yellow-500 transition-all">
+                <a class="flex items-center transition-all hover:ml-2 gap-4 w-full py-2">
+                    <ng-icon name="faSolidChartLine" class="text-gray-700 shrink-0"></ng-icon>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            
+            <li class="w-full hover:border-l-6 hover:border-yellow-600 hover:bg-yellow-500 transition-all">
+                <a class="flex items-center transition-all hover:ml-2 gap-4 w-full py-2">
+                    <ng-icon name="faSolidDumbbell" class="text-gray-700 shrink-0"></ng-icon>
+                    <span>Workouts</span>
+                </a>
+            </li>
+            
+            <li class="w-full hover:border-l-6 hover:border-yellow-600 hover:bg-yellow-500 transition-all">
+                <a class="flex items-center transition-all hover:ml-2 gap-4 w-full py-2">
+                    <ng-icon name="faSolidBowlRice" class="text-gray-700 shrink-0"></ng-icon>
+                    <span>Nutrition</span>
+                </a>
+            </li>
+            
+            <li class="w-full hover:border-l-6 hover:border-yellow-600 hover:bg-yellow-500 transition-all">
+                <a class="flex items-center transition-all hover:ml-2 gap-4 w-full py-2">
+                    <ng-icon name="faSolidMoon" class="text-gray-700 shrink-0"></ng-icon>
+                    <span>Sleep logging</span>
+                </a>
+            </li>
+            
+            <li class="w-full hover:border-l-6 hover:border-yellow-600 hover:bg-yellow-500 transition-all">
+                <a class="flex items-center transition-all hover:ml-2 gap-4 w-full py-2">
+                    <ng-icon name="faSolidBookOpen" class="text-gray-700 shrink-0"></ng-icon>
+                    <span>Exercise library</span>
+                </a>
+            </li>
+            
+            <li class="w-full hover:border-l-6 hover:border-yellow-600 hover:bg-yellow-500 transition-all">
+                <a class="flex items-center transition-all hover:ml-2 gap-4 w-full py-2">
+                    <ng-icon name="faSolidArrowUpRightDots" class="text-gray-700 shrink-0"></ng-icon>
+                    <span>Goals and progress</span>
+                </a>
+            </li>
+            
+            <li class="w-full hover:border-l-6 hover:border-yellow-600 hover:bg-yellow-500 transition-all">
+                <a class="flex items-center transition-all hover:ml-2 gap-4 w-full py-2">
+                    <ng-icon name="faSolidUser" class="text-gray-700 shrink-0"></ng-icon>
+                    <span>Profile</span>
+                </a>
+            </li>
+            
+            <li class="w-full hover:border-l-6 hover:border-yellow-600 hover:bg-yellow-500 transition-all">
+                <a class="flex items-center transition-all hover:ml-2 gap-4 w-full py-2">
+                    <ng-icon name="faSolidGear" class="text-gray-700 shrink-0"></ng-icon>
+                    <span>Settings</span>
+                </a>
+            </li>
+            
+            
+        </ul>
+        <div class="w-full mt-auto hover:border-l-6 hover:border-red-900 hover:bg-yellow-500 transition-all">
+            <a class="flex items-center transition-all hover:ml-2 gap-4 w-full py-2">
+                <ng-icon name="faSolidRightToBracket" class="text-red-700! shrink-0"></ng-icon>
+                <span class="text-red-700">Logout</span>
+            </a>
+        </div>
+    </div>
+    
 </aside>
