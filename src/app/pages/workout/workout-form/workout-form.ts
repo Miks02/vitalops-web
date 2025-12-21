@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { NgIcon, provideIcons } from "@ng-icons/core";
-import { faSolidCalendarDay, faSolidTag } from '@ng-icons/font-awesome/solid';
+import { faSolidCalendarDay, faSolidTag, faSolidDumbbell, faSolidFireFlameCurved, faSolidBookOpen, faSolidBars, faSolidPencil, faSolidNoteSticky } from '@ng-icons/font-awesome/solid';
 import { LayoutState } from '../../../layout/services/layout-state';
 
 @Component({
@@ -8,7 +8,7 @@ import { LayoutState } from '../../../layout/services/layout-state';
   imports: [NgIcon],
   templateUrl: './workout-form.html',
   styleUrl: './workout-form.css',
-  providers: [provideIcons({faSolidTag, faSolidCalendarDay})]
+  providers: [provideIcons({faSolidTag, faSolidCalendarDay, faSolidDumbbell, faSolidFireFlameCurved, faSolidBookOpen, faSolidBars, faSolidPencil, faSolidNoteSticky})]
 })
 export class WorkoutForm {
 

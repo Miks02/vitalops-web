@@ -1,71 +1,145 @@
-<div class="flex flex-col rounded-2xl max-w-150  bg-slate-200 shadow-xl">
-    <div class="flex bg-linear-to-br from-yellow-500 to-yellow-400 w-full rounded-t-2xl px-4 py-2">
-        <h1 class="font-bold text-xl text-slate-800">Add workout</h1>
+<div class="flex flex-col lg:flex-row flex-wrap gap-10 justify-center lg:justify-between p-2">
+
+    <div class="flex flex-col rounded-2xl max-w-150 bg-slate-200 shadow-xl flex-1">
+        <div class="flex bg-linear-to-br from-yellow-500 to-yellow-400 w-full rounded-t-2xl px-4 py-2">
+            <h1 class="font-bold text-xl text-slate-800">Add workout</h1>
+        </div>
+
+        <div class="flex flex-col py-4 px-8 gap-4">
+
+            <div class="flex justify-evenly w-full flex-wrap">
+                <div class="flex flex-col gap-2 min-w-60">
+                    <div class="flex items-center gap-1">
+                        <span class="leading-none mt-2 font-semibold text-lg text-red-600">*</span>
+                        <label for="name" class="font-semibold">Workout name</label>
+                    </div>
+                    <div class="flex bg-slate-300 rounded shadow-lg ">
+                        <div class="p-2 flex items-center bg-slate-400 rounded-l">
+                            <ng-icon class="self-center text-slate-800! text-xl" name="faSolidPencil"></ng-icon>
+                        </div>
+                        <input class="px-1 outline-none border-none" type="text" id="name"
+                            placeholder="Enter workout name..">
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-2 min-w-60">
+                    <div class="flex items-center gap-1">
+                        <span class="leading-none mt-2 font-semibold text-lg text-red-600">*</span>
+                        <label for="date" class="font-semibold">Date</label>
+                    </div>
+                    <div class="flex bg-slate-300 rounded shadow-lg ">
+                        <div class="p-2 flex items-center bg-slate-400 rounded-l">
+                            <ng-icon class="self-center text-slate-800! text-xl" name="faSolidCalendarDay"></ng-icon>
+                        </div>
+                        <input class="px-1 text-center w-full outline-none border-none" type="date"
+                            id="date" placeholder="Enter workout name..">
+                    </div>
+                </div>
+
+
+
+            </div>
+            <div class="mx-auto">
+                <a
+                    class="transition-all flex justify-center items-center duration-200 cursor-pointer bg-yellow-500 hover:opacity-70  text-gray-700 shadow-lg font-bold py-1 px-4 rounded text-lg">
+                    <p class="font-semibold self-center">Add Exercise</p>
+                </a>
+            </div>
+
+            <div class="border-b-2 border-slate-800"></div>
+
+            <div
+                class="relative flex flex-col gap-2 w-full bg-slate-300 rounded shadow-lg h-60 sm:h-75 overflow-y-auto">
+                <div
+                    class="absolute top-[50%] w-full left-[50%] text-center transform -translate-x-1/2 -translate-y-1/2 border-red-400 rounded p-4">
+                    <span class="text-2xl font-semibold text-indigo-900">No Exercises Selected</span>
+                </div>
+            </div>
+
+            <div class="border-b-2 border-slate-800"></div>
+            <div class="flex flex-col gap-2 min-w-60">
+                <label for="name" class="font-semibold">Notes (optional)</label>
+                <div class="flex bg-slate-300 rounded shadow-lg ">
+                    <div class="px-3 py-2 flex items-center bg-slate-400 rounded-l">
+                        <ng-icon class="self-center text-slate-800! text-xl" name="faSolidNoteSticky"></ng-icon>
+                    </div>
+                    <textarea name="notes" id="notes" class="px-1 pt-1 outline-none border-none w-full resize-none"
+                        placeholder="Write your custom notes..."></textarea>
+                </div>
+            </div>
+
+            <div class="mx-auto">
+                <a
+                    class="transition-all flex justify-center items-center duration-200 cursor-pointer bg-emerald-500 hover:opacity-70  text-yellow-100 shadow-lg font-bold py-2 px-4 rounded text-lg">
+                    <p class="font-semibold self-center">Save Workout</p>
+                </a>
+            </div>
+
+        </div>
+
     </div>
 
-    <div class="flex flex-col py-4 px-8 gap-4">
+    <div class="flex flex-col w-full gap-6 flex-1">
+        <div class="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div class="hidden md:flex flex-col pl-5 justify-between bg-linear-to-br from-slate-700 to-slate-500 rounded-2xl h-45 px-2 py-4 text-gray-100 font-semibold shadow-2xl xs:col-span-2 lg:col-span-3">
+            <div class="flex items-center gap-5">
+              <ng-icon name="faSolidBookOpen" class="text-5xl"></ng-icon>
+              <h5 class="text-2xl">Motivational Quote</h5>
+            </div>
+            <p class="text-xl sm:text-2xl text-left italic">"The only bad workout is the one that didn't happen."</p>
+          </div>
 
-        <div class="flex justify-evenly w-full flex-wrap">
-            <div class="flex flex-col gap-2 min-w-60">
-                <div class="flex items-center gap-1">
-                    <span class="leading-none mt-2 font-semibold text-lg text-red-600">*</span>
-                    <label for="name" class="font-semibold">Workout name</label>
+          <div class="flex flex-col pl-5 justify-between bg-linear-to-br from-cyan-700/80 to-cyan-400/60 rounded-2xl h-45 px-2 py-4 text-gray-100 font-semibold shadow-2xl xs:col-span-2 lg:col-span-1">
+                <div class="flex items-center gap-5">
+                    <ng-icon name="faSolidDumbbell" class="text-5xl"></ng-icon>
+                    <h5 class="text-2xl">Total Exercises</h5>
                 </div>
-                <div class="flex bg-slate-300 rounded shadow-lg ">
-                    <div class="p-2 flex items-center bg-slate-400 rounded-l">
-                        <ng-icon class="self-center text-slate-800! text-xl" name="faSolidTag"></ng-icon>
-                    </div>
-                    <input class="px-1 outline-none border-none" type="text" id="name" placeholder="Enter workout name..">
-                </div>
+                <p class="text-2xl text-left">0</p>
             </div>
 
-            <div class="flex flex-col gap-2 min-w-60">
-                <div class="flex items-center gap-1">
-                    <span class="leading-none mt-2 font-semibold text-lg text-red-600">*</span>
-                    <label for="date" class="font-semibold">Date</label>
+            <div class="flex flex-col pl-5 justify-between bg-linear-to-br from-emerald-700 to-emerald-500 rounded-2xl h-45 px-2 py-4 text-gray-100 font-semibold shadow-2xl">
+                <div class="flex items-center gap-5">
+                    <ng-icon name="faSolidFireFlameCurved" class="text-5xl"></ng-icon>
+                    <h5 class="text-2xl">Total Sets</h5>
                 </div>
-                <div class="flex bg-slate-300 rounded shadow-lg ">
-                    <div class="p-2 flex items-center bg-slate-400 rounded-l">
-                        <ng-icon class="self-center text-slate-800! text-xl" name="faSolidCalendarDay"></ng-icon>
-                    </div>
-                    <input class="px-1 text-center w-full text-center outline-none border-none" type="date" id="date" placeholder="Enter workout name..">
+                <p class="text-2xl text-left">0</p>
+            </div>
+
+            <div class="flex flex-col pl-5 justify-between bg-linear-to-br from-orange-700/80 to-orange-500/70 rounded-2xl h-45 px-2 py-4 text-gray-100 font-semibold shadow-2xl">
+                <div class="flex items-center gap-5">
+                    <ng-icon name="faSolidTag" class="text-5xl"></ng-icon>
+                    <h5 class="text-2xl">Workout Type</h5>
                 </div>
+                <p class="text-2xl text-left">N/A</p>
             </div>
 
 
 
-        </div>
-        <div class="mx-auto">
-            <a class="transition-all flex justify-center items-center duration-200 cursor-pointer bg-yellow-500 hover:opacity-70  text-gray-700 shadow-lg font-bold py-1 px-4 rounded text-lg">
-                <p class="font-semibold self-center">Add Exercise</p>
-            </a>
-        </div>
-
-        <div class="border-b-2 border-slate-800"></div>
-
-        <div class="relative flex flex-col gap-2 w-full bg-slate-300 rounded shadow-lg h-60 sm:h-75 overflow-y-auto">
-            <div class="absolute top-[50%] w-full left-[50%] text-center transform -translate-x-1/2 -translate-y-1/2 border-red-400 rounded p-4">
-                <span class="text-2xl font-semibold text-indigo-900">No Exercises Selected</span>
-            </div>
-        </div>
-
-        <div class="border-b-2 border-slate-800"></div>
-        <div class="flex flex-col gap-2 min-w-60">
-            <label for="name" class="font-semibold">Notes (optional)</label>
-            <div class="flex bg-slate-300 rounded shadow-lg ">
-                <div class="px-3 py-2 flex items-center bg-slate-400 rounded-l">
-                    <ng-icon class="self-center text-slate-800! text-xl" name="faSolidTag"></ng-icon>
+            <div class="flex flex-col pl-5 justify-between bg-linear-to-br from-yellow-700 to-yellow-500 rounded-2xl h-45 px-2 py-4 text-gray-100 font-semibold shadow-2xl cursor-pointer hover:opacity-90 transition-opacity">
+                <div class="flex items-center gap-5">
+                    <ng-icon name="faSolidBars" class="text-5xl"></ng-icon>
+                    <h5 class="text-2xl">Exercise Library</h5>
                 </div>
-                <textarea  name="notes" id="notes" class="px-1 outline-none border-none w-full resize-none" placeholder="Write your custom notes..."></textarea>
+                <p class="text-2xl text-left">Browse Exercises</p>
             </div>
-        </div>
 
-        <div class="mx-auto">
-            <a class="transition-all flex justify-center items-center duration-200 cursor-pointer bg-emerald-500 hover:opacity-70  text-yellow-100 shadow-lg font-bold py-1 px-4 rounded text-lg">
-                <p class="font-semibold self-center">Save Workout</p>
-            </a>
-        </div>
+            <div class="flex flex-col pl-5 justify-between bg-linear-to-br from-indigo-700/70 to-indigo-500/50 rounded-2xl h-45 px-2 py-4 text-gray-100 font-semibold shadow-2xl xs:col-span-2 lg:col-span-2">
+                <div class="flex items-center gap-5">
+                    <ng-icon name="faSolidCalendarDay" class="text-5xl"></ng-icon>
+                    <h5 class="text-2xl">Workout Streak</h5>
+                </div>
+                <p class="text-2xl text-left">N/A</p>
+            </div>
 
+            <div class="md:hidden flex flex-col pl-5 justify-between bg-linear-to-br from-slate-700 to-slate-500 rounded-2xl h-45 px-2 py-4 text-gray-100 font-semibold shadow-2xl xs:col-span-2 lg:col-span-3">
+            <div class="flex items-center gap-5">
+              <ng-icon name="faSolidBookOpen" class="text-5xl"></ng-icon>
+              <h5 class="text-2xl">Motivational Quote</h5>
+            </div>
+            <p class="text-xl sm:text-2xl text-center italic">"The only bad workout is the one that didn't happen."</p>
+          </div>
+
+        </div>
     </div>
 
 </div>
