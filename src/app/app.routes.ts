@@ -7,6 +7,7 @@ import { AppLayout } from './layout/app-layout/app-layout';
 import { WorkoutList } from './pages/workout/workout-list/workout-list';
 import { authGuard } from './core/guards/auth-guard';
 import { guestGuard } from './core/guards/guest-guard';
+import { WorkoutForm } from './pages/workout/workout-form/workout-form';
 
 export const routes: Routes = [
     {
@@ -26,6 +27,10 @@ export const routes: Routes = [
             {
                 path: "workouts",
                 component: WorkoutList
+            },
+            {
+                path: "workout-form",
+                component: WorkoutForm
             }
         ]
     },
