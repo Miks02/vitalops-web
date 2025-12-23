@@ -1,0 +1,408 @@
+<div (click)="onClose()" class="absolute w-screen h-screen bg-slate-700/40 backdrop-blur-2xl top-0 left-0 z-100"></div>
+
+<div class="absolute  text-center z-150 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-slate-200 min-w-150 rounded-2xl shadow-2xl min-h-100">
+
+    <div class="flex flex-col">
+        <div class="flex justify-between items-center px-4 py-2 bg-linear-to-br from-yellow-500 to-yellow-400 rounded-t-2xl leading-none">
+            <h1 class="text-lg font-bold text-slate-800 ">Add Exercise</h1>
+
+            <button (click)="onClose()" class="cursor-pointer hover:text-red-600 active:opacity-70 active:text-red-600 text-red-800">
+                <ng-icon name="faSolidXmark" class="text-2xl"></ng-icon>
+            </button>
+        </div>
+
+        <form (ngSubmit)="onSubmit()" [formGroup]="form" class="flex flex-col p-4 gap-4">
+            <div class="flex justify-evenly w-full flex-wrap">
+                <div class="flex flex-col gap-2 min-w-60">
+                    <div class="flex items-center gap-1">
+                        <span class="leading-none mt-2 font-semibold text-lg text-red-600">*</span>
+                        <label for="name" class="font-semibold">Exercise name</label>
+                    </div>
+                    <div class="flex bg-slate-300 rounded shadow-lg ">
+                        <div class="p-2 flex items-center bg-slate-400 rounded-l">
+                            <ng-icon class="self-center text-slate-800! text-xl" name="faSolidPencil"></ng-icon>
+                        </div>
+                        <input formControlName="exerciseName" class="px-1 outline-none border-none font-semibold" type="text" id="name"
+                        placeholder="Enter an exercise name...">
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-2 min-w-60">
+                    <div class="flex items-center gap-1">
+                        <span class="leading-none mt-2 font-semibold text-lg text-red-600">*</span>
+                        <label for="type" class="font-semibold">Exercise type</label>
+                    </div>
+
+                    <div class="flex bg-slate-300 rounded shadow-lg overflow-hidden">
+                        <div class="p-2 flex items-center bg-slate-400">
+                            <ng-icon class="self-center text-slate-800! text-xl" name="faSolidCalendarDay"></ng-icon>
+                        </div>
+                        <select
+                        name="type"
+                        id="type"
+                        class="flex-1 appearance-none px-3 py-2 bg-slate-300 outline-none font-semibold text-slate-800"
+                        formControlName="exerciseType"
+                        >
+                        <option [ngValue]="1">Weights</option>
+                        <option [ngValue]="2">Bodyweight</option>
+                        <option [ngValue]="3">Cardio</option>
+                    </select>
+                </div>
+            </div>
+
+        </div>
+
+        @switch (form.get('exerciseType')?.value) {
+            @case (1) {
+                <div class="flex justify-evenly w-full flex-wrap">
+                    <div class="flex flex-col gap-2 min-w-60">
+                        <div class="flex items-center gap-1">
+                            <span  class="leading-none mt-2 font-semibold text-lg text-red-600">*</span>
+                            <label for="name" class="font-semibold">
+                                Weight (KG)
+                            </label>
+                        </div>
+                        <div class="flex bg-slate-300 rounded shadow-lg ">
+                            <div class="p-2 flex items-center bg-slate-400 rounded-l">
+                                <ng-icon class="self-center text-slate-800! text-xl" name="faSolidPencil"></ng-icon>
+                            </div>
+                            <input class="px-1 outline-none border-none font-semibold" type="text" id="name"
+                            placeholder="Enter weight...">
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col gap-2 min-w-60">
+                        <div class="flex items-center gap-1">
+                            <span class="leading-none mt-2 font-semibold text-lg text-red-600">*</span>
+                            <label for="name" class="font-semibold">Reps </label>
+                        </div>
+                        <div class="flex bg-slate-300 rounded shadow-lg ">
+                            <div class="p-2 flex items-center bg-slate-400 rounded-l">
+                                <ng-icon class="self-center text-slate-800! text-xl" name="faSolidPencil"></ng-icon>
+                            </div>
+                            <input class="px-1 outline-none border-none font-semibold" type="text" id="name"
+                            placeholder="Enter the amount of reps...">
+                        </div>
+                    </div>
+
+                </div>
+                <div class="mx-auto">
+                    <button
+                    type="button"
+                    class="transition-all flex justify-center items-center duration-200 cursor-pointer bg-yellow-500 hover:opacity-70  text-gray-700 shadow-lg font-bold py-1 px-4 rounded text-lg">
+                    <p class="font-semibold self-center">Add Set</p>
+                </button>
+
+
+            </div>
+            <div class="border-b-2 border-slate-800"></div>
+
+            <div
+            class="relative flex flex-col gap-2 w-full bg-slate-300 rounded shadow-lg h-40 sm:h-45 overflow-y-auto">
+            <div
+            class="absolute top-[50%] w-full left-[50%] text-center transform -translate-x-1/2 -translate-y-1/2 border-red-400 rounded p-4">
+            <span class="text-2xl font-semibold text-indigo-900">No Sets Added</span>
+        </div>
+    </div>
+    <div class="border-b-2 border-slate-800"></div>
+
+
+}
+@case (2) {
+    <div class="flex justify-evenly w-full flex-wrap">
+        <div class="flex flex-col gap-2 min-w-60">
+            <div class="flex items-center gap-1">
+                <span  class="leading-none mt-2 font-semibold text-lg text-red-600 opacity-0">*</span>
+                <label for="name" class="font-semibold">
+                    Added weight (KG)
+                </label>
+            </div>
+            <div class="flex bg-slate-300 rounded shadow-lg ">
+                <div class="p-2 flex items-center bg-slate-400 rounded-l">
+                    <ng-icon class="self-center text-slate-800! text-xl" name="faSolidPencil"></ng-icon>
+                </div>
+                <input class="px-1 outline-none border-none font-semibold" type="text" id="name"
+                placeholder="Enter weight...">
+            </div>
+        </div>
+
+        <div class="flex flex-col gap-2 min-w-60">
+            <div class="flex items-center gap-1">
+                <span class="leading-none mt-2 font-semibold text-lg text-red-600">*</span>
+                <label for="name" class="font-semibold">Reps </label>
+            </div>
+            <div class="flex bg-slate-300 rounded shadow-lg ">
+                <div class="p-2 flex items-center bg-slate-400 rounded-l">
+                    <ng-icon class="self-center text-slate-800! text-xl" name="faSolidPencil"></ng-icon>
+                </div>
+                <input class="px-1 outline-none border-none font-semibold" type="text" id="name"
+                placeholder="Enter the amount of reps...">
+            </div>
+        </div>
+
+    </div>
+    <div class="mx-auto">
+        <button
+
+        class="transition-all flex justify-center items-center duration-200 cursor-pointer bg-yellow-500 hover:opacity-70  text-gray-700 shadow-lg font-bold py-1 px-4 rounded text-lg">
+        <p class="font-semibold self-center">Add Set</p>
+    </button>
+
+
+</div>
+<div class="border-b-2 border-slate-800"></div>
+
+<div
+class="relative flex flex-col gap-2 w-full bg-slate-300 rounded shadow-lg h-40 sm:h-45 overflow-y-auto">
+<div
+class="absolute top-[50%] w-full left-[50%] text-center transform -translate-x-1/2 -translate-y-1/2 border-red-400 rounded p-4">
+<span class="text-2xl font-semibold text-indigo-900">No Sets Added</span>
+</div>
+</div>
+<div class="border-b-2 border-slate-800"></div>
+
+}
+@case(3) {
+    <div class="flex justify-evenly w-full flex-wrap">
+
+        <div class="flex flex-col gap-2 min-w-60">
+            <div class="flex items-center gap-1">
+                <span class="leading-none mt-2 font-semibold text-lg text-red-600">*</span>
+                <label for="type" class="font-semibold">Cardio type</label>
+            </div>
+
+            <div class="flex bg-slate-300 rounded shadow-lg overflow-hidden">
+                <div class="p-2 flex items-center bg-slate-400">
+                    <ng-icon class="self-center text-slate-800! text-xl" name="faSolidCalendarDay"></ng-icon>
+                </div>
+                <select
+                name="type"
+                id="type"
+                class="flex-1 appearance-none px-3 py-2 bg-slate-300 outline-none font-semibold text-slate-800"
+                formControlName="cardioType"
+                >
+                <option [ngValue]="1">Steady State</option>
+                <option [ngValue]="2">High Intensity Intervals</option>
+            </select>
+        </div>
+    </div>
+
+</div>
+
+@if(this.form.get('cardioType')?.value == 1) {
+    <div class="flex justify-evenly w-full flex-wrap">
+        <div class="flex flex-col gap-2 min-w-60">
+            <div class="flex items-center gap-1">
+                <span  class="leading-none mt-2 font-semibold text-lg text-red-600">*</span>
+                <label for="name" class="font-semibold">
+                    Duration (Minutes)
+                </label>
+            </div>
+            <div class="flex bg-slate-300 rounded shadow-lg ">
+                <div class="p-2 flex items-center bg-slate-400 rounded-l">
+                    <ng-icon class="self-center text-slate-800! text-xl" name="faSolidPencil"></ng-icon>
+                </div>
+                <input class="px-1 outline-none border-none font-semibold" type="number" id="name"
+                placeholder="Enter minutes...">
+            </div>
+        </div>
+
+        <div class="flex flex-col gap-2 min-w-60">
+            <div class="flex items-center gap-1">
+                <span class="leading-none mt-2 font-semibold text-lg text-red-600">*</span>
+                <label for="name" class="font-semibold">Duration (Seconds)</label>
+            </div>
+            <div class="flex bg-slate-300 rounded shadow-lg ">
+                <div class="p-2 flex items-center bg-slate-400 rounded-l">
+                    <ng-icon class="self-center text-slate-800! text-xl" name="faSolidPencil"></ng-icon>
+                </div>
+                <input class="px-1 outline-none border-none font-semibold" type="number" id="name"
+                placeholder="Enter seconds...">
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="flex justify-evenly w-full flex-wrap">
+        <div class="flex flex-col gap-2 min-w-60">
+            <div class="flex items-center gap-1">
+                <span  class="leading-none mt-2 font-semibold text-lg text-red-600">*</span>
+                <label for="name" class="font-semibold">
+                    Pace (min/km)
+                </label>
+            </div>
+            <div class="flex bg-slate-300 rounded shadow-lg ">
+                <div class="p-2 flex items-center bg-slate-400 rounded-l">
+                    <ng-icon class="self-center text-slate-800! text-xl" name="faSolidPencil"></ng-icon>
+                </div>
+                <input class="px-1 outline-none border-none font-semibold" type="number" id="name"
+                placeholder="Enter minutes...">
+            </div>
+        </div>
+
+        <div class="flex flex-col gap-2 min-w-60">
+            <div class="flex items-center gap-1">
+                <span class="leading-none mt-2 font-semibold text-lg text-red-600">*</span>
+                <label for="name" class="font-semibold">Distance (km)</label>
+            </div>
+            <div class="flex bg-slate-300 rounded shadow-lg ">
+                <div class="p-2 flex items-center bg-slate-400 rounded-l">
+                    <ng-icon class="self-center text-slate-800! text-xl" name="faSolidPencil"></ng-icon>
+                </div>
+                <input class="px-1 outline-none border-none font-semibold" type="number" id="name"
+                placeholder="Enter seconds...">
+            </div>
+        </div>
+
+    </div>
+
+
+      <div class="flex justify-evenly w-full flex-wrap">
+        <div class="flex flex-col gap-2 min-w-60">
+            <div class="flex items-center gap-1">
+                <span  class="leading-none mt-2 font-semibold text-lg text-red-600 opacity-0">*</span>
+                <label for="name" class="font-semibold">
+                    Average heart rate
+                </label>
+            </div>
+            <div class="flex bg-slate-300 rounded shadow-lg ">
+                <div class="p-2 flex items-center bg-slate-400 rounded-l">
+                    <ng-icon class="self-center text-slate-800! text-xl" name="faSolidPencil"></ng-icon>
+                </div>
+                <input class="px-1 outline-none border-none font-semibold" type="number" id="name"
+                placeholder="Enter minutes...">
+            </div>
+        </div>
+
+        <div class="flex flex-col gap-2 min-w-60">
+            <div class="flex items-center gap-1">
+                <span class="leading-none mt-2 font-semibold text-lg text-red-600 opacity-0">*</span>
+                <label for="name" class="font-semibold">Calories burned</label>
+            </div>
+            <div class="flex bg-slate-300 rounded shadow-lg ">
+                <div class="p-2 flex items-center bg-slate-400 rounded-l">
+                    <ng-icon class="self-center text-slate-800! text-xl" name="faSolidPencil"></ng-icon>
+                </div>
+                <input class="px-1 outline-none border-none font-semibold" type="number" id="name"
+                placeholder="Enter seconds...">
+            </div>
+        </div>
+
+    </div>
+}
+@if(this.form.get('cardioType')?.value == 2) {
+    <div class="flex justify-evenly w-full flex-wrap">
+        <div class="flex flex-col gap-2 min-w-60">
+            <div class="flex items-center gap-1">
+                <span  class="leading-none mt-2 font-semibold text-lg text-red-600">*</span>
+                <label for="name" class="font-semibold">
+                    Work Interval Duration (Seconds)
+                </label>
+            </div>
+            <div class="flex bg-slate-300 rounded shadow-lg ">
+                <div class="p-2 flex items-center bg-slate-400 rounded-l">
+                    <ng-icon class="self-center text-slate-800! text-xl" name="faSolidPencil"></ng-icon>
+                </div>
+                <input class="px-1 outline-none border-none font-semibold" type="number" id="name"
+                placeholder="Enter seconds...">
+            </div>
+        </div>
+
+        <div class="flex flex-col gap-2 min-w-60">
+            <div class="flex items-center gap-1">
+                <span class="leading-none mt-2 font-semibold text-lg text-red-600">*</span>
+                <label for="name" class="font-semibold">Rest Interval Duration (Seconds)</label>
+            </div>
+            <div class="flex bg-slate-300 rounded shadow-lg ">
+                <div class="p-2 flex items-center bg-slate-400 rounded-l">
+                    <ng-icon class="self-center text-slate-800! text-xl" name="faSolidPencil"></ng-icon>
+                </div>
+                <input class="px-1 outline-none border-none font-semibold" type="number" id="name"
+                placeholder="Enter seconds...">
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="flex justify-evenly w-full flex-wrap">
+        <div class="flex flex-col gap-2 min-w-60">
+            <div class="flex items-center gap-1">
+                <span  class="leading-none mt-2 font-semibold text-lg text-red-600">*</span>
+                <label for="name" class="font-semibold">
+                    Intervals Count
+                </label>
+            </div>
+            <div class="flex bg-slate-300 rounded shadow-lg ">
+                <div class="p-2 flex items-center bg-slate-400 rounded-l">
+                    <ng-icon class="self-center text-slate-800! text-xl" name="faSolidPencil"></ng-icon>
+                </div>
+                <input class="px-1 outline-none border-none font-semibold" type="number" id="name"
+                placeholder="Enter seconds...">
+            </div>
+        </div>
+
+        <div class="flex flex-col gap-2 min-w-60">
+            <div class="flex items-center gap-1">
+                <span class="leading-none mt-2 font-semibold text-lg text-red-600 opacity-0">*</span>
+                <label for="name" class="font-semibold">Calories Burned</label>
+            </div>
+            <div class="flex bg-slate-300 rounded shadow-lg ">
+                <div class="p-2 flex items-center bg-slate-400 rounded-l">
+                    <ng-icon class="self-center text-slate-800! text-xl" name="faSolidPencil"></ng-icon>
+                </div>
+                <input class="px-1 outline-none border-none font-semibold" type="number" id="name"
+                placeholder="Enter seconds...">
+            </div>
+        </div>
+
+    </div>
+
+    <div class="flex justify-evenly w-full flex-wrap">
+        <div class="flex flex-col gap-2 min-w-60">
+            <div class="flex items-center gap-1">
+                <span  class="leading-none mt-2 font-semibold text-lg text-red-600">*</span>
+                <label for="name" class="font-semibold">
+                    Average Heart Rate
+                </label>
+            </div>
+            <div class="flex bg-slate-300 rounded shadow-lg ">
+                <div class="p-2 flex items-center bg-slate-400 rounded-l">
+                    <ng-icon class="self-center text-slate-800! text-xl" name="faSolidPencil"></ng-icon>
+                </div>
+                <input class="px-1 outline-none border-none font-semibold" type="number" id="name"
+                placeholder="Beats per minute...">
+            </div>
+        </div>
+
+        <div class="flex flex-col gap-2 min-w-60">
+            <div class="flex items-center gap-1">
+                <span class="leading-none mt-2 font-semibold text-lg text-red-600 opacity-0">*</span>
+                <label for="name" class="font-semibold">Max Heart Rate</label>
+            </div>
+            <div class="flex bg-slate-300 rounded shadow-lg ">
+                <div class="p-2 flex items-center bg-slate-400 rounded-l">
+                    <ng-icon class="self-center text-slate-800! text-xl" name="faSolidPencil"></ng-icon>
+                </div>
+                <input class="px-1 outline-none border-none font-semibold" type="number" id="name"
+                placeholder="Beats per minute...">
+            </div>
+        </div>
+
+    </div>
+}
+
+}
+}
+<div class="mx-auto">
+    <button
+    class="transition-all flex justify-center items-center duration-200 cursor-pointer bg-emerald-500 hover:opacity-70  text-yellow-100 shadow-lg font-bold py-2 px-4 rounded text-lg">
+    <p class="font-semibold self-center">Save Exercise</p>
+</button>
+</div>
+</form>
+
+</div>
+
+</div>
