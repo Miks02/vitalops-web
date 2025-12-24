@@ -9,22 +9,23 @@ import {
   faSolidBars,
   faSolidPencil,
   faSolidNoteSticky,
-  faSolidXmark
+  faSolidXmark,
+  faSolidCircle
 } from "@ng-icons/font-awesome/solid";
 import { LayoutState } from '../../../layout/services/layout-state';
-import { FormBuilder, FormsModule, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormsModule, Validators, ReactiveFormsModule, FormArray, AbstractControl,} from '@angular/forms';
 import { ExerciseForm } from "../exercise-form/exercise-form";
+import { minArrayLength } from '../../../core/helpers/Validators';
 
 @Component({
   selector: 'app-workout-form',
   imports: [NgIcon, FormsModule, ExerciseForm, ReactiveFormsModule],
   templateUrl: './workout-form.html',
   styleUrl: './workout-form.css',
-  providers: [provideIcons({faSolidTag, faSolidCalendarDay, faSolidDumbbell, faSolidFireFlameCurved, faSolidBookOpen, faSolidBars, faSolidPencil, faSolidNoteSticky, faSolidXmark})]
+  providers: [provideIcons({faSolidTag, faSolidCalendarDay, faSolidDumbbell, faSolidFireFlameCurved, faSolidBookOpen, faSolidBars, faSolidPencil, faSolidNoteSticky, faSolidXmark, faSolidCircle})]
 })
 export class WorkoutForm {
     isModalFormOpen: boolean = false;
-    exerciseType: number = 1;
 
     layoutState = inject(LayoutState)
     fb = inject(FormBuilder)
@@ -32,22 +33,35 @@ export class WorkoutForm {
     form = this.fb.group({
         workoutName: ['', Validators.required],
         date: ['', Validators.required],
-        exercises: [[]],
-        notes: []
+        exercises: this.fb.array([], [minArrayLength(1)]),
+        notes: ['']
     })
+
+    get exercises(): FormArray {
+        return this.form.get('exercises') as FormArray
+    }
+
+    getExerciseSets(exercise: AbstractControl): number {
+        console.log(typeof(exercise.get('sets')))
+        return (exercise.get('sets') as Object as []).length;
+    }
+
+    removeExercise(index: number) {
+        return this.exercises.removeAt(index);
+    }
 
     ngOnInit() {
         this.layoutState.setTitle("Workout Form")
     }
 
-    closeModalForm(event: void) {
+    closeModalForm() {
         this.isModalFormOpen = false;
+        console.log("Exercise count" + this.exercises.length)
     }
 
     onSubmit() {
         console.log(this.form.value)
         if(this.form.invalid) {
-            this.form.markAllAsTouched();
             console.log("Invalid form");
             return;
         }

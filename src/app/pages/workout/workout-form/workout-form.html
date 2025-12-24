@@ -51,11 +51,57 @@
         <div class="border-b-2 border-slate-800"></div>
 
         <div
-        class="relative flex flex-col gap-2 w-full bg-slate-300 rounded shadow-lg h-60 sm:h-75 overflow-y-auto">
-        <div
-        class="absolute top-[50%] w-full left-[50%] text-center transform -translate-x-1/2 -translate-y-1/2 border-red-400 rounded p-4">
-        <span class="text-2xl font-semibold text-indigo-900">No Exercises Selected</span>
+        class="relative flex flex-col gap-2 w-full bg-slate-300 rounded shadow-lg h-40 sm:h-70 overflow-y-auto">
+        <div class="flex flex-col gap-2 p-2 w-full">
+
+            @if(exercises.length === 0) {
+                <div
+                class="absolute top-[50%] w-full left-[50%] text-center transform -translate-x-1/2 -translate-y-1/2 border-red-400 rounded p-4">
+                <span class="text-2xl font-semibold text-indigo-900">No Exercises Added</span>
+            </div>
+        }
+
+        @for(exercise of exercises.controls; track $index) {
+            <div (click)="removeExercise($index)" class="group cursor-pointer flex flex-col gap-2 relative bg-linear-to-br from-slate-700 via-slate-600 to-slate-700 rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden">
+
+                <div class="absolute inset-0 bg-indigo-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+                <div class="relative flex justify-between items-center px-5 py-3">
+                    <div class="flex items-center gap-3">
+                        <div class="bg-indigo-500/20 p-3 rounded-lg group-hover:bg-indigo-500/30 transition-colors">
+                            <ng-icon name="faSolidDumbbell" class="text-indigo-300! text-2xl"></ng-icon>
+                        </div>
+                        <div>
+                            <p class="text-indigo-200 text-xs font-medium uppercase tracking-wider">Exercise</p>
+                            <h1 class="text-indigo-100 text-3xl font-bold">{{$index + 1}}</h1>
+                        </div>
+                    </div>
+
+                    <div class="h-16 w-px bg-slate-400/50"></div>
+
+                    <div class="flex  gap-2">
+                        <div class="flex items-center gap-2 bg-slate-800/50 px-3 py-2 rounded-lg">
+                            <ng-icon name="faSolidCircle" class="text-indigo-400!"></ng-icon>
+                            <div>
+                                <p class="text-indigo-300 text-xs">Exercise name</p>
+                                <p class="text-white text-lg font-bold">{{exercise.get('exerciseName')?.value}}</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-2 bg-slate-800/50 px-3 py-2 rounded-lg">
+                            <ng-icon name="faSolidCircle" class="text-orange-500!"></ng-icon>
+                            <div>
+                                <p class="text-orange-300 text-xs">Total sets</p>
+                                <p class="text-white text-lg font-bold">{{ getExerciseSets(exercise) }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        }
     </div>
+
 </div>
 
 <div class="border-b-2 border-slate-800"></div>
@@ -73,7 +119,8 @@
 <div class="mx-auto">
     <button
     type="submit"
-    class="transition-all flex justify-center items-center duration-200 cursor-pointer bg-emerald-500 hover:opacity-70  text-yellow-100 shadow-lg font-bold py-2 px-4 rounded text-lg">
+    [disabled]="form.invalid"
+    class="transition-all flex justify-center items-center duration-200 cursor-pointer bg-emerald-500 hover:opacity-70  text-yellow-100 shadow-lg font-bold py-2 px-4 rounded text-lg disabled:opacity-70 disabled:pointer-events-none">
     <p class="font-semibold self-center">Save Workout</p>
 </button>
 </div>
@@ -149,5 +196,5 @@
 
 @if(isModalFormOpen)
 {
-    <app-exercise-form (close)="closeModalForm($event)"></app-exercise-form>
+    <app-exercise-form [exercises]="exercises" (close)="closeModalForm()"></app-exercise-form>
 }
