@@ -69,7 +69,14 @@
                 <div class="relative flex justify-between items-center px-5 py-3">
                     <div class="flex items-center gap-3">
                         <div class="bg-indigo-500/20 p-3 rounded-lg group-hover:bg-indigo-500/30 transition-colors">
-                            <ng-icon name="faSolidDumbbell" class="text-indigo-300! text-2xl"></ng-icon>
+                            @if(isExerciseTypeCardio(exercise)) {
+                                <ng-icon name="faSolidPersonRunning" class="text-indigo-300! text-2xl"></ng-icon>
+
+                            }
+                            @else {
+                                <ng-icon name="faSolidDumbbell" class="text-indigo-300! text-2xl"></ng-icon>
+
+                            }
                         </div>
                         <div>
                             <p class="text-indigo-200 text-xs font-medium uppercase tracking-wider">Exercise</p>
@@ -91,8 +98,22 @@
                         <div class="flex items-center gap-2 bg-slate-800/50 px-3 py-2 rounded-lg">
                             <ng-icon name="faSolidCircle" class="text-orange-500!"></ng-icon>
                             <div>
-                                <p class="text-orange-300 text-xs">Total sets</p>
-                                <p class="text-white text-lg font-bold">{{ getExerciseSets(exercise) }}</p>
+                                @if(isExerciseTypeCardio(exercise)) {
+                                    @if(isCardioTypeSteadyState(exercise)) {
+                                        <p class="text-orange-300 text-xs">Duration</p>
+                                        <p class="text-white text-lg font-bold">{{ exercise.get('durationMinutes')?.value }} : {{exercise.get('durationSeconds')?.value}}</p>
+                                    }
+                                    @else {
+                                        <p class="text-orange-300 text-xs">Total intervals</p>
+                                        <p class="text-white text-lg font-bold">{{exercise.get('intervalsCount')?.value}}</p>
+                                    }
+
+                                }
+                                @else {
+                                    <p class="text-orange-300 text-xs">Total sets</p>
+                                    <p class="text-white text-lg font-bold">{{ getExerciseSets(exercise) }}</p>
+                                }
+
                             </div>
                         </div>
                     </div>
@@ -144,7 +165,7 @@
                 <ng-icon name="faSolidDumbbell" class="text-5xl"></ng-icon>
                 <h5 class="text-2xl">Total Exercises</h5>
             </div>
-            <p class="text-2xl text-left">0</p>
+            <p class="text-2xl text-left">{{exercises.length}}</p>
         </div>
 
         <div class="flex flex-col pl-5 justify-between bg-linear-to-br from-emerald-700 to-emerald-500 rounded-2xl h-45 px-2 py-4 text-gray-100 font-semibold shadow-2xl">

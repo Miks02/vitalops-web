@@ -65,8 +65,11 @@ export class ExerciseForm {
             if(type === ExerciseType.Cardio) {
                 this.form.get('cardioType')?.addValidators(Validators.required)
                 this.form.get('cardioType')?.patchValue(CardioType.SteadyState)
-                this.tempWeight?.removeValidators([Validators.required, Validators.min(1)]);
-                this.tempReps?.removeValidators([Validators.required, Validators.min(1)]);
+                this.tempWeight?.clearValidators();
+                this.tempReps?.clearValidators();
+                this.sets.clearValidators();
+                this.sets.updateValueAndValidity();
+
                 this.tempWeight?.patchValue(null);
                 this.tempReps?.patchValue(null);
 
@@ -93,6 +96,10 @@ export class ExerciseForm {
 
             }
             if(type === CardioType.Hiit) {
+                this.form.get('durationMinutes')?.clearValidators();
+                this.form.get('durationSeconds')?.clearValidators();
+                this.form.get('durationMinutes')?.updateValueAndValidity();
+                this.form.get('durationSeconds')?.updateValueAndValidity();
                 this.form.get('workInterval')!.addValidators([Validators.required, Validators.min(0)])
                 this.form.get('restInterval')!.addValidators([Validators.required, Validators.min(0)])
                 this.form.get('intervalsCount')!.addValidators([Validators.required, Validators.min(0)])
@@ -105,7 +112,7 @@ export class ExerciseForm {
 
         this.sets.valueChanges.subscribe(value => {
             if(value.length > 0)
-            {
+                {
 
                 this.tempWeight?.clearValidators()
                 this.tempReps?.clearValidators()

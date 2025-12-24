@@ -10,19 +10,22 @@ import {
   faSolidPencil,
   faSolidNoteSticky,
   faSolidXmark,
-  faSolidCircle
+  faSolidCircle,
+  faSolidPersonRunning
 } from "@ng-icons/font-awesome/solid";
 import { LayoutState } from '../../../layout/services/layout-state';
 import { FormBuilder, FormsModule, Validators, ReactiveFormsModule, FormArray, AbstractControl,} from '@angular/forms';
 import { ExerciseForm } from "../exercise-form/exercise-form";
 import { minArrayLength } from '../../../core/helpers/Validators';
+import { ExerciseType } from '../models/ExerciseType';
+import { CardioType } from '../models/CardioType';
 
 @Component({
   selector: 'app-workout-form',
   imports: [NgIcon, FormsModule, ExerciseForm, ReactiveFormsModule],
   templateUrl: './workout-form.html',
   styleUrl: './workout-form.css',
-  providers: [provideIcons({faSolidTag, faSolidCalendarDay, faSolidDumbbell, faSolidFireFlameCurved, faSolidBookOpen, faSolidBars, faSolidPencil, faSolidNoteSticky, faSolidXmark, faSolidCircle})]
+  providers: [provideIcons({faSolidTag, faSolidCalendarDay, faSolidDumbbell, faSolidFireFlameCurved, faSolidBookOpen, faSolidBars, faSolidPencil, faSolidNoteSticky, faSolidXmark, faSolidCircle, faSolidPersonRunning})]
 })
 export class WorkoutForm {
     isModalFormOpen: boolean = false;
@@ -42,8 +45,16 @@ export class WorkoutForm {
     }
 
     getExerciseSets(exercise: AbstractControl): number {
-        console.log(typeof(exercise.get('sets')))
+        console.log(this.exercises)
         return (exercise.get('sets') as Object as []).length;
+    }
+
+    isExerciseTypeCardio(exercise: AbstractControl): boolean {
+        return exercise.get('exerciseType')?.value === ExerciseType.Cardio
+    }
+
+    isCardioTypeSteadyState(exercise: AbstractControl): boolean {
+        return exercise.get('cardioType')?.value === CardioType.SteadyState
     }
 
     removeExercise(index: number) {
@@ -56,7 +67,7 @@ export class WorkoutForm {
 
     closeModalForm() {
         this.isModalFormOpen = false;
-        console.log("Exercise count" + this.exercises.length)
+        console.log(this.exercises.value)
     }
 
     onSubmit() {
