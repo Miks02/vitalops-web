@@ -15,7 +15,10 @@ import {
 import { FormBuilder, FormsModule, Validators, ReactiveFormsModule, FormArray, FormGroup } from "@angular/forms";
 import { ExerciseType } from '../models/ExerciseType';
 import { CardioType } from '../models/CardioType';
-import { onlyNumbersCheck, minArrayLength } from '../../../core/helpers/Validators';
+import { clearValidators, onlyNumbersCheck, minArrayLength } from '../../../core/helpers/Validators';
+import { createExerciseForm } from '../../../core/helpers/Factories';
+import { Subject, takeUntil } from 'rxjs';
+
 
 @Component({
     selector: 'app-exercise-form',
@@ -32,110 +35,28 @@ export class ExerciseForm {
 
     private fb = inject(FormBuilder)
 
-    form = this.fb.group({
-        exerciseName: ['', Validators.required],
-        exerciseType: [ExerciseType.Weights, Validators.required],
-        cardioType: [CardioType.SteadyState as null | CardioType],
-        durationMinutes: [null as number | null],
-        durationSeconds: [null as number | null],
-        distance: [null as number | null],
-        avgHeartRate: [null as number | null],
-        maxHeartRate: [null as number | null],
-        caloriesBurned: [null as number | null],
-        pace: [null as number | null],
-        workInterval: [null as number | null],
-        restInterval: [null as number | null],
-        intervalsCount: [null as number | null],
-        tempWeight: null as number | null,
-        tempReps: null as number | null,
-        sets: this.fb.array([], [minArrayLength(1)])
-    })
+    private destroy$ = new Subject<void>();
 
+    form = createExerciseForm(this.fb)
 
+    get sets() { return this.form.get('sets') as FormArray }
+    get tempReps() { return this.form.get('tempReps') }
+    get tempWeight() { return this.form.get('tempWeight') }
 
     ngOnInit() {
-        this.form.reset();
-        this.form.get('exerciseType')?.patchValue(ExerciseType.Weights)
-        if(this.form.get('exerciseType')?.value === ExerciseType.Weights || this.form.get('exerciseType')?.value === ExerciseType.Bodyweight) {
-            this.form.get('tempWeight')?.addValidators([Validators.required, Validators.min(1), onlyNumbersCheck()])
-            this.form.get('tempReps')?.addValidators([Validators.required, Validators.min(1), onlyNumbersCheck()])
-        }
-        this.form.get('exerciseType')!.valueChanges.subscribe(type => {
+        this.initializeForm();
+        this.handleExerciseTypeChange();
+        this.handleCardioTypeChange();
+        this.handleSetsChange();
+    }
 
-            if(type === ExerciseType.Cardio) {
-                this.form.get('cardioType')?.addValidators(Validators.required)
-                this.form.get('cardioType')?.patchValue(CardioType.SteadyState)
-                this.tempWeight?.clearValidators();
-                this.tempReps?.clearValidators();
-                this.sets.clearValidators();
-                this.sets.updateValueAndValidity();
-
-                this.tempWeight?.patchValue(null);
-                this.tempReps?.patchValue(null);
-
-            }
-            if(type === ExerciseType.Weights || type === ExerciseType.Bodyweight) {
-                this.form.get('tempWeight')?.addValidators([Validators.required, onlyNumbersCheck()])
-                this.form.get('tempReps')?.addValidators([Validators.required, onlyNumbersCheck()])
-            }
-
-
-        })
-
-        this.form.get('cardioType')!.valueChanges.subscribe(type => {
-
-
-            if(type === CardioType.SteadyState)
-                {
-                this.form.get('durationMinutes')!.addValidators([Validators.required, Validators.min(0)])
-                this.form.get('durationSeconds')!.addValidators([Validators.required, Validators.min(0)])
-                this.form.get('pace')!.addValidators([Validators.min(0)])
-                this.form.get('distance')!.addValidators([Validators.min(0)])
-                this.form.get('avgHeartRate')!.addValidators([Validators.min(0)])
-                this.form.get('caloriesBurned')!.addValidators([Validators.min(0)])
-
-            }
-            if(type === CardioType.Hiit) {
-                this.form.get('durationMinutes')?.clearValidators();
-                this.form.get('durationSeconds')?.clearValidators();
-                this.form.get('durationMinutes')?.updateValueAndValidity();
-                this.form.get('durationSeconds')?.updateValueAndValidity();
-                this.form.get('workInterval')!.addValidators([Validators.required, Validators.min(0)])
-                this.form.get('restInterval')!.addValidators([Validators.required, Validators.min(0)])
-                this.form.get('intervalsCount')!.addValidators([Validators.required, Validators.min(0)])
-                this.form.get('maxHeartRate')!.addValidators([Validators.min(0)])
-                this.form.get('avgHeartRate')!.addValidators([Validators.min(0)])
-                this.form.get('caloriesBurned')!.addValidators([Validators.min(0)])
-            }
-
-        })
-
-        this.sets.valueChanges.subscribe(value => {
-            if(value.length > 0)
-                {
-
-                this.tempWeight?.clearValidators()
-                this.tempReps?.clearValidators()
-                this.tempWeight?.patchValue(null);
-                this.tempReps?.patchValue(null);
-
-            }
-        })
+    ngOnDestroy() {
+        this.destroy$.next();
+        this.destroy$.complete();
     }
 
     onClose() {
         this.close.emit();
-    }
-
-    get sets() {
-        return this.form.get('sets') as FormArray
-    }
-    get tempReps() {
-        return this.form.get('tempReps')
-    }
-
-    get tempWeight() {
-        return this.form.get('tempWeight')
     }
 
     isControlInvalid(control: string): boolean | undefined {
@@ -146,7 +67,7 @@ export class ExerciseForm {
     createSetGroup(reps: number, weight: number): FormGroup {
         return this.fb.group({
             reps: [reps, [Validators.required, Validators.min(1)]],
-            weight: [weight, [Validators.required]]
+            weight: [weight, [Validators.required, Validators.min(1)]]
         })
     }
 
@@ -154,37 +75,113 @@ export class ExerciseForm {
         const reps = this.form.get('tempReps')?.value;
         const weight = this.form.get('tempWeight')?.value
 
-        if(reps && weight) {
-            this.sets.push(this.createSetGroup(reps, weight))
-            this.form.get('tempWeight')?.reset()
-            this.form.get('tempReps')?.reset()
+        if(this.tempWeight?.invalid || this.tempReps?.invalid) {
+            this.tempWeight?.markAsTouched();
+            this.tempReps?.markAsTouched();
             return;
         }
-        this.form.invalid;
-
-        console.log(this.sets.value)
-
+        this.sets.push(this.createSetGroup(reps, weight))
     }
 
     removeSet(index: number) {
         return this.sets.removeAt(index);
     }
 
-    createExerciseForm(): FormGroup {
+    onSubmit() {
+        console.log(this.form.value)
+        if(this.form.invalid) {
+            console.log("Exercise form is not valid")
+            return;
+        }
+        const exerciseGroup = this.createExerciseGroup();
+        this.exercises.push(exerciseGroup)
+        this.close.emit();
+    }
+
+
+    private initializeForm() {
+        if(this.form.get('exerciseType')?.value === ExerciseType.Weights || this.form.get('exerciseType')?.value === ExerciseType.Bodyweight) {
+            this.tempWeight?.addValidators([Validators.required, Validators.min(1), onlyNumbersCheck()])
+            this.tempReps?.addValidators([Validators.required, Validators.min(1), onlyNumbersCheck()])
+        }
+    }
+
+    private clearCardioValidators() {
+        const cardioFields: string[] =
+        ['cardioType', 'durationMinutes', 'durationSeconds', 'pace', 'distance', 'avgHeartRate', 'caloriesBurned', 'workInterval', 'restInterval', 'maxHeartRate', 'intervalsCount']
+
+        clearValidators(cardioFields, this.form);
+    }
+
+    private handleExerciseTypeChange() {
+        this.form.get('exerciseType')!.valueChanges
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(type => {
+            if(type === ExerciseType.Cardio) {
+                this.sets.clear();
+                this.form.get('cardioType')?.addValidators(Validators.required)
+                this.form.get('cardioType')?.patchValue(CardioType.SteadyState)
+                clearValidators(['tempWeight', 'tempReps', 'sets'], this.form)
+                return;
+            }
+            if(type === ExerciseType.Weights || type === ExerciseType.Bodyweight) {
+                this.form.get('tempWeight')?.addValidators([Validators.required, onlyNumbersCheck()])
+                this.form.get('tempReps')?.addValidators([Validators.required, onlyNumbersCheck()])
+                this.tempWeight?.updateValueAndValidity();
+                this.tempReps?.updateValueAndValidity();
+                this.clearCardioValidators();
+                return;
+            }
+        })
+    }
+
+    private handleCardioTypeChange() {
+        this.form.get('cardioType')!.valueChanges
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(type => {
+
+            this.clearCardioValidators();
+            if(type === CardioType.SteadyState) {
+                this.form.get('durationMinutes')!.addValidators([Validators.required, Validators.min(0)])
+                this.form.get('durationSeconds')!.addValidators([Validators.required, Validators.min(0)])
+                this.form.get('pace')!.addValidators([Validators.min(0)])
+                this.form.get('distance')!.addValidators([Validators.min(0)])
+                this.form.get('avgHeartRate')!.addValidators([Validators.min(0)])
+                this.form.get('caloriesBurned')!.addValidators([Validators.min(0)])
+                return;
+            }
+            if(type === CardioType.Hiit) {
+                this.form.get('workInterval')!.addValidators([Validators.required, Validators.min(0)])
+                this.form.get('restInterval')!.addValidators([Validators.required, Validators.min(0)])
+                this.form.get('intervalsCount')!.addValidators([Validators.required, Validators.min(0)])
+                this.form.get('maxHeartRate')!.addValidators([Validators.min(0)])
+                this.form.get('avgHeartRate')!.addValidators([Validators.min(0)])
+                this.form.get('caloriesBurned')!.addValidators([Validators.min(0)])
+                return;
+            }
+
+        })
+    }
+
+    private handleSetsChange() {
+        this.sets.valueChanges
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(value => {
+            if(value.length > 0) {
+                this.tempReps?.reset();
+                this.tempWeight?.reset();
+                clearValidators(['tempWeight', 'tempReps'], this.form);
+            }
+        })
+    }
+    private createExerciseGroup(): FormGroup {
+
+        const formValue = {...this.form.value}
+        delete formValue.tempWeight
+        delete formValue.tempReps
+
         return this.fb.group({
-            exerciseName: this.form.get('exerciseName')?.value,
-            exerciseType: this.form.get('exerciseType')?.value,
-            cardioType: this.form.get('cardioType')?.value,
-            durationMinutes: this.form.get('durationMinutes')?.value,
-            durationSeconds: this.form.get('durationSeconds')?.value,
-            distance: this.form.get('distance')?.value,
-            avgHeartRate: this.form.get('avgHeartRate')?.value,
-            maxHeartRate: this.form.get('maxHeartRate')?.value,
-            caloriesBurned: this.form.get('caloriesBurned')?.value,
-            pace: this.form.get('pace')?.value,
-            workInterval: this.form.get('workInterval')?.value,
-            restInterval: this.form.get('restInterval')?.value,
-            intervalsCount: this.form.get('intervalsCount')?.value,
+            ...formValue,
             sets: this.fb.array(
                 this.sets.controls.map(set =>
                     this.fb.group({
@@ -195,16 +192,4 @@ export class ExerciseForm {
             )
         })
     }
-
-    onSubmit() {
-        console.log(this.form.value)
-        if(this.form.invalid) {
-            console.log("Exercise form is not valid")
-            return;
-        }
-        const exerciseGroup = this.createExerciseForm();
-        this.exercises.push(exerciseGroup)
-        this.close.emit();
-    }
-
 }
