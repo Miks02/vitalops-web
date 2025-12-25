@@ -1,5 +1,14 @@
-import { AbstractControl, FormArray, FormControl, ValidatorFn } from "@angular/forms";
+import { AbstractControl, FormArray, FormControl, FormGroup, ValidatorFn } from "@angular/forms";
 
+
+export function clearValidators(keys: string[], form: FormGroup) {
+    keys.forEach(key => {
+        const c = form.get(key);
+        c?.clearValidators();
+        c?.updateValueAndValidity({emitEvent: false, onlySelf: true})
+    })
+    form.updateValueAndValidity();
+}
 
 export function minArrayLength(min: number): ValidatorFn {
     return (control: AbstractControl) => {
