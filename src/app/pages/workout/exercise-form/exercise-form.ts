@@ -15,7 +15,7 @@ import {
 import { FormBuilder, FormsModule, Validators, ReactiveFormsModule, FormArray, FormGroup, RequiredValidator } from "@angular/forms";
 import { ExerciseType } from '../models/ExerciseType';
 import { CardioType } from '../models/CardioType';
-import { clearValidators, onlyNumbersCheck, minArrayLength, clearFormInputs, addValidators } from '../../../core/helpers/Validators';
+import { clearValidators, onlyNumbersCheck, minArrayLength, clearFormInputs, addValidators } from '../../../core/helpers/FormHelpers';
 import { createExerciseForm } from '../../../core/helpers/Factories';
 import { Subject, takeUntil } from 'rxjs';
 

@@ -16,7 +16,7 @@ import {
 import { LayoutState } from '../../../layout/services/layout-state';
 import { FormBuilder, FormsModule, Validators, ReactiveFormsModule, FormArray, AbstractControl,} from '@angular/forms';
 import { ExerciseForm } from "../exercise-form/exercise-form";
-import { minArrayLength } from '../../../core/helpers/Validators';
+import { minArrayLength } from '../../../core/helpers/FormHelpers';
 import { ExerciseType } from '../models/ExerciseType';
 import { CardioType } from '../models/CardioType';
 

@@ -1,7 +1,7 @@
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { CardioType } from "../../pages/workout/models/CardioType";
 import { ExerciseType } from "../../pages/workout/models/ExerciseType";
-import { minArrayLength } from "./Validators";
+import { minArrayLength } from "./FormHelpers";
 
 
 export function createExerciseForm(fb: FormBuilder): FormGroup {
