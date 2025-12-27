@@ -1,5 +1,25 @@
 import { AbstractControl, FormArray, FormControl, FormGroup, ValidatorFn } from "@angular/forms";
 
+export function addValidators(keys: string[], form: FormGroup, validators: ValidatorFn | ValidatorFn[]) {
+    const validatorArray = Array.isArray(validators)
+    ? validators
+    : [validators]
+
+    keys.forEach(key => {
+        const c = form.get(key)
+        if(!c)
+            return;
+
+        const existing: ValidatorFn[] = c?.validator
+        ? [c.validator]
+        : []
+        c.setValidators([...existing, ...validatorArray])
+        c.updateValueAndValidity({emitEvent: false});
+
+    })
+    form.updateValueAndValidity({emitEvent: false});
+
+}
 
 export function clearValidators(keys: string[], form: FormGroup) {
     keys.forEach(key => {
@@ -8,6 +28,18 @@ export function clearValidators(keys: string[], form: FormGroup) {
         c?.updateValueAndValidity({emitEvent: false, onlySelf: true})
     })
     form.updateValueAndValidity();
+}
+
+export function clearFormInputs(keys: string[], form: FormGroup) {
+    keys.forEach(key => {
+        const c = form.get(key);
+
+        c?.reset();
+        c?.updateValueAndValidity({emitEvent: false, onlySelf: true})
+
+    })
+form.updateValueAndValidity();
+
 }
 
 export function minArrayLength(min: number): ValidatorFn {
