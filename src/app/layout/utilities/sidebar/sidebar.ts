@@ -27,9 +27,15 @@ export class Sidebar {
 
     @Output()
     close = new EventEmitter<void>();
+    @Output()
+    logout = new EventEmitter<void>();
 
     onSidebarClose() {
         this.close.emit();
+    }
+
+    onLogout() {
+        this.logout.emit();
     }
 
 }

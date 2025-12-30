@@ -69,10 +69,10 @@
 
         </ul>
         <div class="w-full mt-auto hover:border-l-6 hover:border-red-900 hover:bg-yellow-500 transition-all">
-            <a class="flex items-center transition-all hover:ml-2 gap-4 w-full py-2">
+            <button (click)="onLogout()" class="cursor-pointer flex items-center transition-all hover:ml-2 gap-4 w-full py-2">
                 <ng-icon name="faSolidRightToBracket" class="text-red-700! shrink-0"></ng-icon>
                 <span class="text-red-700">Logout</span>
-            </a>
+            </button>
         </div>
     </div>
 
@@ -156,10 +156,10 @@
 
         </ul>
         <div class="w-full mt-auto hover:border-l-6 hover:border-red-900 hover:bg-yellow-500 transition-all active:border-l-6 active:border-yellow-600 active:bg-yellow-500">
-            <a  class="flex items-center transition-all hover:ml-2 active:ml-2 gap-4 w-full py-2">
+            <button (click)="onLogout()"  class="flex items-center transition-all hover:ml-2 active:ml-2 gap-4 w-full py-2">
                 <ng-icon name="faSolidRightToBracket" class="text-red-700! shrink-0"></ng-icon>
                 <span class="text-red-700">Logout</span>
-            </a>
+            </button>
         </div>
     </div>
 

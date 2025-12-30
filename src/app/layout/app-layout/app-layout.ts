@@ -1,8 +1,9 @@
-import { Component, Output } from '@angular/core';
+import { Component, inject, Output } from '@angular/core';
 import { Sidebar } from '../utilities/sidebar/sidebar';
 import { Header } from '../utilities/header/header';
-import { RouterOutlet } from "@angular/router";
+import { Router, RouterOutlet } from "@angular/router";
 import { BottomNav } from "../utilities/bottom-nav/bottom-nav";
+import { AuthService } from '../../core/services/auth-service';
 
 @Component({
     selector: 'app-app-layout',
@@ -13,6 +14,10 @@ import { BottomNav } from "../utilities/bottom-nav/bottom-nav";
 
 })
 export class AppLayout {
+
+    authService = inject(AuthService)
+    router = inject(Router)
+
     isSidebarOpen: boolean = false;
 
     closeSidebar() {
@@ -22,4 +27,17 @@ export class AppLayout {
     openSidebar() {
         this.isSidebarOpen = true;
     }
+
+    logout() {
+        this.authService.logout().subscribe({
+            next: (res) => {
+                this.router.navigate(['/login'])
+                console.log(res)
+            },
+            error: (err) => {
+                console.log(err);
+            }
+        });
+    }
+
 }
