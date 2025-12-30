@@ -27,7 +27,7 @@ export class WorkoutList {
     }
 
     getWorkoutCardClass() {
-        if(this.workoutList.length < 6) {
+        if(this.workoutList.length < 2) {
             return 'w-full'
         }
 
