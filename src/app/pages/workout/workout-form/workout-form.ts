@@ -78,7 +78,7 @@ export class WorkoutForm {
 
         this.workoutService.addWorkout(workout).subscribe({
             next: res => {
-                console.log("Workout created!\n " + res.name + '\n' + res.workoutDate + '\n' , res.ExerciseEntries)
+                console.log("Workout created!\n " + res.name + '\n' + res.workoutDate + '\n' , res.exerciseEntries)
             },
             error: err => {
                 console.log("Error occured while creating the workout\n" + err)

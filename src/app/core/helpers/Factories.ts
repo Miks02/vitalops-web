@@ -41,7 +41,7 @@ export function  createWorkoutObject(form: FormGroup): CreateWorkoutDto {
             name: form.get('workoutName')?.value,
             workoutDate: form.get('date')?.value,
             notes: form.get('notes')?.value,
-            ExerciseEntries: (form.get('exercises')?.value as ExerciseEntryFormValue[]).map(exercise => ({
+            exerciseEntries: (form.get('exercises')?.value as ExerciseEntryFormValue[]).map(exercise => ({
                 name: exercise.exerciseName,
                 exerciseType: exercise.exerciseType,
                 cardioType: exercise.cardioType,
