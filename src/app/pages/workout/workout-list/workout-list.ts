@@ -34,7 +34,7 @@ export class WorkoutList {
         return 'w-full md:w-[calc(50%-0.375rem)]'
     }
 
-    getSetsBadgeClass(sets: number): string {
+    getsetBadgeClass(sets: number): string {
         if (sets >= 28) return 'bg-yellow-400';
         if (sets >= 24) return 'bg-yellow-400';
         if (sets >= 20) return 'bg-blue-400';
@@ -46,58 +46,58 @@ export class WorkoutList {
         {
             id: 1,
             name: "Chest/Biceps",
-            exercisesCount: 6,
+            exerciseCount: 6,
             workoutDate: "30.12.2025",
-            setsCount: 24
+            setCount: 24
         },
         {
             id: 2,
             name: "Back/triceps",
-            exercisesCount: 6,
+            exerciseCount: 6,
             workoutDate: "30.12.2025",
-            setsCount: 28
+            setCount: 28
         },
         {
             id: 3,
             name: "Shoulders",
-            exercisesCount: 6,
+            exerciseCount: 6,
             workoutDate: "30.12.2025",
-            setsCount: 20
+            setCount: 20
         },
         {
             id: 4,
             name: "Legs/Abs",
-            exercisesCount: 7,
+            exerciseCount: 7,
             workoutDate: "30.12.2025",
-            setsCount: 30
+            setCount: 30
         },
         {
             id: 5,
             name: "Chest/Biceps",
-            exercisesCount: 6,
+            exerciseCount: 6,
             workoutDate: "30.12.2025",
-            setsCount: 24
+            setCount: 24
         },
         {
             id:6,
             name: "Back/triceps",
-            exercisesCount: 6,
+            exerciseCount: 6,
             workoutDate: "30.12.2025",
-            setsCount: 28
+            setCount: 28
         },
         {
             id: 7,
             name: "Shoulders",
-            exercisesCount: 6,
+            exerciseCount: 6,
             workoutDate: "30.12.2025",
-            setsCount: 20
+            setCount: 20
         },
         {
             id: 8,
             name: "Legs/Abs",
-            exercisesCount: 7,
+            exerciseCount: 7,
             workoutDate: "30.12.2025",
-            setsCount: 30
+            setCount: 30
         },
     ]
     }
