@@ -8,6 +8,8 @@ import { Observable, map, tap } from 'rxjs';
 import { ApiResponse } from '../models/ApiResponse';
 import { UserDto } from '../models/UserDto';
 import { LoginRequest } from '../models/LoginRequest';
+import { Header } from '../../layout/utilities/header/header';
+import { Router } from '@angular/router';
 
 @Injectable({
     providedIn: 'root',
@@ -18,6 +20,7 @@ export class AuthService {
     public accessToken$ = this.accessTokenSubject.asObservable();
 
     private readonly http = inject(HttpClient)
+    private router = inject(Router);
 
     get accessToken(): string | null {return this.accessTokenSubject.value}
     set accessToken(accessToken: string | null) {this.accessTokenSubject.next(accessToken)}
@@ -43,8 +46,17 @@ export class AuthService {
 
         return this.http.post<ApiResponse<void>>(`${this.api}/auth/logout`, {})
         .pipe(
-            tap(() => this.accessToken = null)
+            tap(() => {
+                this.accessToken = null
+                this.router.navigate(['/login']);
+            })
         )
+    }
+
+    rotateAuthTokens(): Observable<ApiResponse<string>> {
+        return this.http.post<ApiResponse<string>>(`${this.api}/auth/refresh-token`, {}, {
+            withCredentials: true
+        });
     }
 
     test(): Observable<void> {
@@ -53,12 +65,9 @@ export class AuthService {
         );
     }
 
-
     isAuthenticated() {
         if(this.accessToken) return true
         return false;
     }
-
-
 
 }
