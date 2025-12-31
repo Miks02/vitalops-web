@@ -34,7 +34,8 @@ export class AuthService {
         return this.http.post<ApiResponse<AuthResponse>>(`${this.api}/auth/login`, model)
         .pipe(
             tap(res => this.accessToken = res.data.accessToken),
-            map(res => res.data.user)
+            map(res => res.data.user),
+            tap(res => console.log(res))
         )
     }
 
@@ -45,6 +46,13 @@ export class AuthService {
             tap(() => this.accessToken = null)
         )
     }
+
+    test(): Observable<void> {
+        return this.http.get<void>(`${this.api}/auth/test`).pipe(
+            tap(res => console.log(res))
+        );
+    }
+
 
     isAuthenticated() {
         if(this.accessToken) return true
