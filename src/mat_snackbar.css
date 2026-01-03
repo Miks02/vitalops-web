@@ -1,13 +1,3 @@
-.mat-mdc-snack-bar-container {
-  min-width: 350px !important;
-}
-
-.mdc-snackbar__surface {
-  min-width: inherit !important;
-  max-width: inherit !important;
-  width: 100% !important;
-}
-
 .success-snackbar,
 .error-snackbar,
 .warning-snackbar,
@@ -19,6 +9,15 @@
   flex-direction: row !important;
   box-sizing: border-box !important;
   position: relative !important;
+  animation: slideInFromRight 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards !important;
+  transition: none !important;
+}
+
+.success-snackbar.mat-mdc-snack-bar-container-exiting,
+.error-snackbar.mat-mdc-snack-bar-container-exiting,
+.warning-snackbar.mat-mdc-snack-bar-container-exiting,
+.info-snackbar.mat-mdc-snack-bar-container-exiting {
+  animation: slideOutToRight 0.3s ease-in forwards !important;
 }
 
 .success-snackbar {
@@ -35,6 +34,8 @@
   padding: 1.5rem 4rem 1.5rem 1.5rem !important;
   box-shadow: none !important;
   min-height: auto !important;
+  width: 100% !important;
+  transition: none !important;
 }
 
 .success-snackbar .mat-mdc-snack-bar-label {
@@ -95,7 +96,7 @@
   background-color: transparent !important;
   color: white !important;
   font-weight: 700;
-  font-size: 1.125rem;
+  font-size: 0.875rem;
 }
 
 .success-snackbar .mat-mdc-button.mat-mdc-snack-bar-action:hover {
@@ -125,6 +126,8 @@
   padding: 1.5rem 4rem 1.5rem 1.5rem !important;
   box-shadow: none !important;
   min-height: auto !important;
+  width: 100% !important;
+  transition: none !important;
 }
 
 .error-snackbar .mat-mdc-snack-bar-label {
@@ -185,7 +188,7 @@
   background-color: transparent !important;
   color: white !important;
   font-weight: 700;
-  font-size: 1.125rem;
+  font-size: 0.875rem;
 }
 
 .error-snackbar .mat-mdc-button.mat-mdc-snack-bar-action:hover {
@@ -215,6 +218,8 @@
   padding: 1.5rem 4rem 1.5rem 1.5rem !important;
   box-shadow: none !important;
   min-height: auto !important;
+  width: 100% !important;
+  transition: none !important;
 }
 
 .warning-snackbar .mat-mdc-snack-bar-label {
@@ -275,7 +280,7 @@
   background-color: transparent !important;
   color: white !important;
   font-weight: 700;
-  font-size: 1.125rem;
+  font-size: 0.875rem;
 }
 
 .warning-snackbar .mat-mdc-button.mat-mdc-snack-bar-action:hover {
@@ -305,6 +310,8 @@
   padding: 1.5rem 4rem 1.5rem 1.5rem !important;
   box-shadow: none !important;
   min-height: auto !important;
+  width: 100% !important;
+  transition: none !important;
 }
 
 .info-snackbar .mat-mdc-snack-bar-label {
@@ -365,7 +372,7 @@
   background-color: transparent !important;
   color: white !important;
   font-weight: 700;
-  font-size: 1.125rem;
+  font-size: 0.875rem;
 }
 
 .info-snackbar .mat-mdc-button.mat-mdc-snack-bar-action:hover {
@@ -388,6 +395,28 @@
   margin-top: auto;
   margin-bottom: auto;
   margin-top: 2px;
+}
+
+@keyframes slideInFromRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutToRight {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
 }
 
 @media (max-width: 600px) {
