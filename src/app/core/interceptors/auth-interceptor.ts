@@ -26,6 +26,9 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         catchError((error: HttpErrorResponse) => {
             console.log("Error happened ", error.status)
             if(error.status == 401) {
+                if(!token) {
+                    return throwError(() => error)
+                }
                 if(req.url.includes('refresh-token')) {
                     authService.logout();
                     return throwError(() => error)
