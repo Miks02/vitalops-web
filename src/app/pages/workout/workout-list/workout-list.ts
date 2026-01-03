@@ -34,7 +34,7 @@ export class WorkoutList {
         return 'w-full md:w-[calc(50%-0.375rem)]'
     }
 
-    getsetBadgeClass(sets: number): string {
+    getSetsBadgeClass(sets: number): string {
         if (sets >= 28) return 'bg-yellow-400';
         if (sets >= 24) return 'bg-yellow-400';
         if (sets >= 20) return 'bg-blue-400';

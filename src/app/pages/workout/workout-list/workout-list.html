@@ -50,15 +50,15 @@
                             {{ workout.name }}
                         </p>
                         <p class="text-sm text-slate-700">
-                            {{ workout.exercisesCount }} exercises
+                            {{ workout.exerciseCount }} exercises
                         </p>
                     </div>
 
                     <div class="flex items-center gap-4 text-sm font-semibold">
                         <span
-                        [class]="getSetsBadgeClass(workout.setsCount)"
+                        [class]="getSetsBadgeClass(workout.setCount)"
                         class="px-2 py-0.5 rounded-full text-slate-900">
-                        {{ workout.setsCount }} sets
+                        {{ workout.setCount }} sets
                     </span>
                     <span class="text-emerald-700">
                         {{ workout.workoutDate }}
