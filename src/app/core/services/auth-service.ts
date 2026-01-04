@@ -1,6 +1,6 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, catchError, throwError } from 'rxjs';
 import { inject } from '@angular/core';
 import { RegisterRequest } from '../models/RegisterRequest';
 import { AuthResponse } from '../models/AuthResponse';
@@ -8,7 +8,6 @@ import { Observable, map, tap } from 'rxjs';
 import { ApiResponse } from '../models/ApiResponse';
 import { UserDto } from '../models/UserDto';
 import { LoginRequest } from '../models/LoginRequest';
-import { Header } from '../../layout/utilities/header/header';
 import { Router } from '@angular/router';
 
 @Injectable({
@@ -45,9 +44,9 @@ export class AuthService {
             tap(res => {
                 this.accessTokenSubject.next(res.data.accessToken);
                 this.userSubject.next(res.data.user);
+                this.router.navigate(['/dashboard']);
             }),
             map(res => res.data.user),
-            tap(res => console.log(res))
         )
     }
 

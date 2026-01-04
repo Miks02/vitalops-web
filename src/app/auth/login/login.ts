@@ -5,25 +5,25 @@ import {Router, RouterLink} from '@angular/router';
 import {ReactiveFormsModule, FormBuilder, Validators, FormsModule} from '@angular/forms';
 import { AuthService } from '../../core/services/auth-service';
 import { LoginRequest } from '../../core/models/LoginRequest';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
-  selector: 'app-login',
-  imports: [
-    NgIcon,
-    RouterLink,
-    ReactiveFormsModule,
-    FormsModule
-  ],
-  templateUrl: './login.html',
-  styleUrl: './login.css',
-  providers: [provideIcons({faSolidEnvelope, faSolidLock, faSolidCheck})]
+    selector: 'app-login',
+    imports: [
+        NgIcon,
+        RouterLink,
+        ReactiveFormsModule,
+        FormsModule
+    ],
+    templateUrl: './login.html',
+    styleUrl: './login.css',
+    providers: [provideIcons({faSolidEnvelope, faSolidLock, faSolidCheck})]
 })
 export class Login {
-    errorMessage = signal('')
+    private destroy$ = new Subject<void>
 
     private readonly fb = inject(FormBuilder);
     private readonly authService = inject(AuthService)
-    private router = inject(Router)
 
     form = this.fb.group({
         email: ['', Validators.required],
@@ -36,20 +36,14 @@ export class Login {
 
     onSubmit() {
         if(this.form.invalid)
-        {
+            {
             this.form.markAllAsTouched();
             return;
         }
 
-        this.authService.login(this.form.value as LoginRequest).subscribe({
-            next: res => {
-                console.log("Login successful")
-                this.router.navigate(['/dashboard']);
-            },
-            error: err => {
-                console.log("Error happened during the login process\n" + err.message)
-            }
-        })
+        this.authService.login(this.form.value as LoginRequest)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe()
     }
 
 }
