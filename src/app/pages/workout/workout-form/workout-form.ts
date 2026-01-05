@@ -23,6 +23,7 @@ import { WorkoutService } from '../services/workout-service';
 import { CreateWorkoutDto } from '../models/CreateWorkoutDto';
 import { ExerciseEntryFormValue } from '../models/ExerciseEntryFormValue';
 import { Router } from '@angular/router';
+import { NotificationService } from '../../../core/services/notification-service';
 
 @Component({
     selector: 'app-workout-form',
@@ -38,6 +39,7 @@ export class WorkoutForm {
     fb = inject(FormBuilder)
     workoutService = inject(WorkoutService)
     router = inject(Router)
+    notificationService = inject(NotificationService);
 
     form = createWorkoutForm(this.fb);
 
@@ -67,6 +69,10 @@ export class WorkoutForm {
 
     closeModalForm() {
         this.isModalFormOpen = false;
+
+        if(this.exercises.length === 0) {
+            this.notificationService.showWarning("Add at least 1 exercise entry");
+        }
     }
 
     onSubmit() {
@@ -75,18 +81,14 @@ export class WorkoutForm {
             console.log("Invalid form");
             return;
         }
-
         this.workoutService.addWorkout(workout).subscribe({
-            next: res => {
-                console.log("Workout created!\n " + res.name + '\n' + res.workoutDate + '\n' , res.exerciseEntries)
+            next: () => {
+                this.notificationService.showSuccess("Workout logged successfully!")
+                this.router.navigate(['/workouts'])
             },
             error: err => {
-                console.log("Error occured while creating the workout\n" + err)
+                console.log("Error occured while creating the workout\n", err)
             }
         })
-
-        console.log("Form sent successfully")
-        this.router.navigate(['/workouts'])
     }
-
 }
