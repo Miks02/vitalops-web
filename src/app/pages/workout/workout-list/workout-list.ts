@@ -2,20 +2,19 @@ import { Component, inject, signal, WritableSignal } from '@angular/core';
 import { LayoutState } from '../../../layout/services/layout-state';
 import { RouterLink } from "@angular/router";
 import { WorkoutService } from '../services/workout-service';
-import { WorkoutDetailsDto } from '../models/WorkoutDetailsDto';
 import { WorkoutListItemDto } from '../models/WorkoutListItemDto';
-import { BehaviorSubject, map, Subject, takeUntil, tap } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map, Subject, take, takeUntil, tap } from 'rxjs';
 import {toSignal} from '@angular/core/rxjs-interop'
-import { PagedResult } from '../../../core/models/PagedResult';
 import { DatePipe } from "@angular/common";
 import { Modal } from "../../../layout/utilities/modal/modal";
 import { ModalData } from '../../../core/models/ModalData';
 import { ModalType } from '../../../core/models/ModalType';
 import { NotificationService } from '../../../core/services/notification-service';
+import { FormsModule } from "@angular/forms";
 
 @Component({
     selector: 'app-workout-list',
-    imports: [RouterLink, DatePipe, Modal],
+    imports: [RouterLink, DatePipe, Modal, FormsModule],
     templateUrl: './workout-list.html',
     styleUrl: './workout-list.css',
 })
@@ -25,27 +24,38 @@ export class WorkoutList {
     notificationService = inject(NotificationService)
 
     isModalOpen: WritableSignal<boolean> = signal(false);
-    private destroy$ = new Subject<void>()
+    private destroy$ = new Subject<void>();
+    private search$ = new Subject<string>();
 
     workouts = toSignal(this.workoutService.pagedWorkouts$
     .pipe(
         tap(res => {
-            this.workoutCount = res.totalCount
-            console.log(res)
+            this.page = res.page;
         }),
         map(res => res.items)
     ), {initialValue: [] as WorkoutListItemDto[]})
 
     workoutSummary = toSignal(this.workoutService.workoutSummary$)
 
-    page: number = 1;
-    pageSize: number = 12;
-    workoutCount: number = 0;
+    page: number = this.workoutService.getQueryParams().page;
+    search: string = this.workoutService.getQueryParams().search;
+    sort: string = this.workoutService.getQueryParams().sort || "Newest";
+    date: string = this.workoutService.getQueryParams().date;
     selectedWorkout: WorkoutListItemDto | null = null;
 
     ngOnInit() {
         this.layoutState.setTitle("Workouts")
         this.loadWorkouts();
+
+        this.search$.pipe(
+            debounceTime(300),
+            distinctUntilChanged(),
+            takeUntil(this.destroy$)
+        ).subscribe(search => {
+            this.search = search;
+            this.page = 1;
+            this.loadWorkoutsByQuery();
+        })
     }
 
     ngOnDestroy() {
@@ -54,14 +64,31 @@ export class WorkoutList {
     }
 
     loadWorkouts() {
-        this.workoutService.getUserWorkouts()
-        .pipe(takeUntil(this.destroy$))
+        this.workoutService.getUserWorkoutsPage()
+        .pipe(take(1))
         .subscribe();
+    }
+
+    loadWorkoutsByQuery() {
+        this.workoutService.setQueryParams({
+            sort: this.sort,
+            search: this.search,
+            date: this.date,
+            page: this.page,
+        });
+
+        this.workoutService.getUserWorkoutsByQuery()
+        .pipe(take(1))
+        .subscribe();
+    }
+
+    onSearchChange(value: string) {
+        this.search$.next(value);
     }
 
     deleteWorkout(id: number) {
         this.workoutService.deleteWorkout(id).pipe(
-            takeUntil(this.destroy$)
+            take(1)
         )
         .subscribe({
             next: () => {

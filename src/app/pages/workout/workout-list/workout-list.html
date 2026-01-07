@@ -11,6 +11,8 @@
 
                     <div>
                         <input
+                        [(ngModel)]="search"
+                        (input)="onSearchChange($event.target.value)"
                         type="text"
                         placeholder="Enter workout name..."
                         class="rounded-lg px-3 py-1.5 bg-slate-300 text-sm font-semibold focus:outline-none"
@@ -18,13 +20,18 @@
                     </div>
 
                     <select
+                    (change)="loadWorkoutsByQuery()"
+                    [(ngModel)]="sort"
                     class="rounded-lg px-3 py-1.5 bg-slate-300 text-sm font-semibold focus:outline-none"
                     >
-                    <option>Newest</option>
-                    <option>Oldest</option>
+                    <option selected disabled hidden>{{workoutService.getQueryParams().sort}}</option>
+                    <option value="Newest">Newest</option>
+                    <option value="Oldest">Oldest</option>
                 </select>
 
                 <input
+                [(ngModel)]="date"
+                (input)="loadWorkoutsByQuery()"
                 type="date"
                 class="rounded-lg px-3 py-1.5 bg-slate-300 text-sm font-semibold focus:outline-none"
                 />
@@ -116,7 +123,7 @@
                         workouts
                     </p>
                     <p class="text-2xl font-bold text-slate-900">
-                        {{workoutCount}}
+                        {{workouts().length}}
                     </p>
                 </div>
 
@@ -125,7 +132,7 @@
                         exercises
                     </p>
                     <p class="text-2xl font-bold text-slate-900">
-                        {{workoutSummary()?.exerciseCount}}
+                        {{workoutSummary()?.exerciseCount ?? 0}}
                     </p>
                 </div>
 
