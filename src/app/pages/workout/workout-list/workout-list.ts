@@ -1,61 +1,93 @@
-import { Component, inject, signal, WritableSignal } from '@angular/core';
+import { Component, computed, inject, signal, WritableSignal } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { DatePipe } from '@angular/common';
+import { debounceTime, distinctUntilChanged, map, Subject, take, takeUntil, tap } from 'rxjs';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import {
+    faSolidChevronLeft,
+    faSolidChevronRight,
+    faSolidDumbbell
+} from '@ng-icons/font-awesome/solid';
+
 import { LayoutState } from '../../../layout/services/layout-state';
-import { RouterLink } from "@angular/router";
 import { WorkoutService } from '../services/workout-service';
 import { WorkoutListItemDto } from '../models/WorkoutListItemDto';
-import { debounceTime, distinctUntilChanged, map, Subject, take, takeUntil, tap } from 'rxjs';
-import {toSignal} from '@angular/core/rxjs-interop'
-import { DatePipe } from "@angular/common";
-import { Modal } from "../../../layout/utilities/modal/modal";
+import { Modal } from '../../../layout/utilities/modal/modal';
 import { ModalData } from '../../../core/models/ModalData';
 import { ModalType } from '../../../core/models/ModalType';
 import { NotificationService } from '../../../core/services/notification-service';
-import { FormsModule } from "@angular/forms";
 
 @Component({
     selector: 'app-workout-list',
-    imports: [RouterLink, DatePipe, Modal, FormsModule],
+    imports: [RouterLink, DatePipe, Modal, FormsModule, NgIcon],
     templateUrl: './workout-list.html',
     styleUrl: './workout-list.css',
+    providers: [
+        provideIcons({
+            faSolidChevronRight,
+            faSolidChevronLeft,
+            faSolidDumbbell
+        })
+    ]
 })
 export class WorkoutList {
-    layoutState = inject(LayoutState)
-    workoutService = inject(WorkoutService)
-    notificationService = inject(NotificationService)
+    layoutState = inject(LayoutState);
+    workoutService = inject(WorkoutService);
+    notificationService = inject(NotificationService);
 
     isModalOpen: WritableSignal<boolean> = signal(false);
+
     private destroy$ = new Subject<void>();
     private search$ = new Subject<string>();
 
-    workouts = toSignal(this.workoutService.pagedWorkouts$
-    .pipe(
-        tap(res => {
-            this.page = res.page;
-        }),
-        map(res => res.items)
-    ), {initialValue: [] as WorkoutListItemDto[]})
-
-    workoutSummary = toSignal(this.workoutService.workoutSummary$)
+    totalCount = signal(0);
+    pageSize = signal(0);
 
     page: number = this.workoutService.getQueryParams().page;
     search: string = this.workoutService.getQueryParams().search;
-    sort: string = this.workoutService.getQueryParams().sort || "Newest";
+    sort: string = this.workoutService.getQueryParams().sort || 'Newest';
     date: string = this.workoutService.getQueryParams().date;
+
     selectedWorkout: WorkoutListItemDto | null = null;
 
+    workouts = toSignal(
+        this.workoutService.pagedWorkouts$.pipe(
+            tap(res => {
+                this.page = res.page;
+                this.pageSize.set(res.pageSize);
+                this.totalCount.set(res.totalCount);
+            }),
+            map(res => res.items)
+        ),
+        { initialValue: [] as WorkoutListItemDto[] }
+    );
+
+    workoutSummary = toSignal(this.workoutService.workoutSummary$);
+
+    totalPages = computed(() => {
+        if (!this.totalCount() || !this.pageSize())
+            return 0;
+        
+        return Math.ceil(this.totalCount() / this.pageSize());
+    });
+
     ngOnInit() {
-        this.layoutState.setTitle("Workouts")
+        this.layoutState.setTitle('Workouts');
         this.loadWorkouts();
 
-        this.search$.pipe(
-            debounceTime(300),
-            distinctUntilChanged(),
-            takeUntil(this.destroy$)
-        ).subscribe(search => {
-            this.search = search;
-            this.page = 1;
-            this.loadWorkoutsByQuery();
-        })
+        this.search$
+            .pipe(
+                debounceTime(300),
+                distinctUntilChanged(),
+                takeUntil(this.destroy$)
+            )
+            .subscribe(search => {
+                this.search = search;
+                this.page = 1;
+                this.loadWorkoutsByQuery();
+            });
     }
 
     ngOnDestroy() {
@@ -64,75 +96,86 @@ export class WorkoutList {
     }
 
     loadWorkouts() {
-        this.workoutService.getUserWorkoutsPage()
-        .pipe(take(1))
-        .subscribe();
+        this.workoutService
+            .getUserWorkoutsPage()
+            .pipe(take(1))
+            .subscribe();
     }
 
-    loadWorkoutsByQuery() {
+    loadWorkoutsByQuery(resetPage: boolean = false) {
+        if (resetPage) {
+            this.page = 1;
+        }
+
         this.workoutService.setQueryParams({
             sort: this.sort,
             search: this.search,
             date: this.date,
-            page: this.page,
+            page: this.page
         });
 
-        this.workoutService.getUserWorkoutsByQuery()
-        .pipe(take(1))
-        .subscribe();
+        this.workoutService
+            .getUserWorkoutsByQuery()
+            .pipe(take(1))
+            .subscribe();
     }
 
     onSearchChange(value: string) {
         this.search$.next(value);
     }
 
+    getPreviousPage() {
+        this.page--;
+        this.loadWorkoutsByQuery();
+    }
+
+    getNextPage() {
+        this.page++;
+        this.loadWorkoutsByQuery();
+    }
+
     deleteWorkout(id: number) {
-        this.workoutService.deleteWorkout(id).pipe(
-            take(1)
-        )
-        .subscribe({
-            next: () => {
-                this.notificationService.showSuccess("Workout has been deleted successfully.")
+        this.workoutService
+            .deleteWorkout(id)
+            .pipe(take(1))
+            .subscribe(() => {
+                this.notificationService.showSuccess(
+                    'Workout has been deleted successfully.'
+                );
                 this.closeModal();
                 this.loadWorkouts();
-            }
-        });
+            });
     }
 
-    editWorkout(id: number) {
-
-    }
+    editWorkout(id: number) {}
 
     closeModal() {
         this.isModalOpen.set(false);
     }
 
     buildModal(): ModalData {
-        const workoutDate: Date = new Date(this.selectedWorkout?.workoutDate as string)
-        const userlocale = navigator.language;
-        const formattedDate = new Intl.DateTimeFormat(userlocale, {
+        const workoutDate = new Date(this.selectedWorkout?.workoutDate as string);
+        const formattedDate = new Intl.DateTimeFormat(navigator.language, {
             year: 'numeric',
-            month: "long",
-            day: "numeric"
-        }).format(workoutDate)
+            month: 'long',
+            day: 'numeric'
+        }).format(workoutDate);
 
         return {
             title: `${this.selectedWorkout?.name} | ${formattedDate}`,
-            subtitle: "Do you want to edit or delete this entry",
+            subtitle: 'Do you want to edit or delete this entry',
             type: ModalType.Question,
-            primaryActionLabel: "Edit",
-            secondaryActionLabel: "Delete",
+            primaryActionLabel: 'Edit',
+            secondaryActionLabel: 'Delete',
             primaryAction: () => this.editWorkout(this.selectedWorkout!.id),
             secondaryAction: () => this.deleteWorkout(this.selectedWorkout!.id)
-        }
+        };
     }
 
     getWorkoutCardClass() {
-        if(this.workouts().length < 2) {
-            return 'w-full'
-        }
-
-        return 'w-full md:w-[calc(50%-0.375rem)]'
+        return this.workouts().length < 2
+            ? 'w-full'
+            : 'w-full md:w-[calc(50%-0.375rem)]';
     }
 
     getSetsBadgeClass(sets: number): string {
@@ -141,6 +184,4 @@ export class WorkoutList {
         if (sets >= 20) return 'bg-blue-400';
         return 'bg-emerald-400';
     }
-
-
 }
