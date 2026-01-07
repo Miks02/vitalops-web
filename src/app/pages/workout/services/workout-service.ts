@@ -16,7 +16,7 @@ import { QueryParams } from '../../../core/models/QueryParams';
 export class WorkoutService {
     private readonly api: string = "https://localhost:7263/api";
     private pagedWorkoutsSubject = new BehaviorSubject<PagedResult<WorkoutListItemDto>>(
-        {items: [], totalCount: 0, page: 1, pageSize: 12}
+        {items: [], totalCount: 0, page: 1, pageSize: 12, totalCountPaginated: 0}
     );
     private workoutSummarySubject = new BehaviorSubject<WorkoutSummaryDto | undefined>(undefined)
     private queryParams = new BehaviorSubject<QueryParams>(
