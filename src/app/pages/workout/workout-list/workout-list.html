@@ -66,14 +66,57 @@
                     </div>
 
                     <div class="flex items-center gap-4 text-sm font-semibold">
-                        <span
-                        [class]="getSetsBadgeClass(workout.setCount)"
-                        class="px-2 py-0.5 rounded-full text-slate-900">
-                        {{ workout.setCount }} sets
-                    </span>
-                    <span class="text-emerald-700">
-                        {{workout.workoutDate | date}}
-                    </span>
+                        <div class="hidden lg:flex gap-2 ">
+                            @if(workout.hasCardio) {
+                                <div class="px-2 py-1 bg-red-600/60 rounded-lg text-gray-800 shadow-all text-lg">
+                                    <ng-icon name="faSolidPersonRunning"></ng-icon>
+                                </div>
+
+                            }
+                            @if(workout.hasWeights) {
+                                <div class="px-2 py-1 bg-yellow-500 rounded-lg text-gray-800 shadow-all text-lg">
+                                    <ng-icon name="faSolidDumbbell"></ng-icon>
+                                </div>
+                            }
+
+                            @if(workout.hasBodyWeight) {
+                                <div class="px-2 py-1 bg-blue-500/50 rounded-lg text-gray-800 shadow-all text-lg">
+                                    <ng-icon name="faSolidChildReaching"></ng-icon>
+                                </div>
+                            }
+
+                        </div>
+                   
+                    <div class="min-w-20 flex flex-col gap-2 items-center">
+
+                        <span class="text-emerald-700 self-end">
+                            {{workout.workoutDate | date}}
+                        </span>
+
+
+                        <div class="flex gap-2 lg:hidden">
+
+                            @if(workout.hasCardio) {
+                                <div class="p-1 px-2 bg-red-600/60 rounded-lg text-gray-800 shadow-all ">
+                                    <ng-icon name="faSolidPersonRunning"></ng-icon>
+                                </div>
+
+                            }
+                            @if(workout.hasWeights) {
+                                <div class="p-1 px-2 bg-yellow-500 rounded-lg text-gray-800 shadow-all ">
+                                    <ng-icon name="faSolidDumbbell"></ng-icon>
+                                </div>
+                            }
+
+                            @if(workout.hasBodyWeight) {
+                                <div class="p-1 px-2 bg-yellow-500 rounded-lg text-gray-800 shadow-all ">
+                                    <ng-icon name="faSolidChildReaching"></ng-icon>
+                                </div>
+                            }
+
+                        </div>
+                    </div>
+
                 </div>
             </div>
         }
@@ -89,37 +132,37 @@
             <div class="hidden md:flex items-center">
                 <span class="font-semibold text-slate-800 bg-yellow-500 px-3 py-1.5 rounded-lg shadow-sm
                 transition-colors">
-                    Page {{page}} of {{totalPages()}}
-                </span>
-            </div>
-
-            <div class="flex flex-row gap-3 items-center order-first sm:order-0">
-                <button
-                [disabled]="page == 1"
-                (click)="getPreviousPage()"
-                class="transition-all flex justify-center items-center duration-200 cursor-pointer bg-yellow-500 hover:opacity-70 hover:scale-105 text-gray-700 shadow-lg font-bold py-2 px-4 rounded-lg disabled:opacity-50 disabled:pointer-events-none">
-                <div class="flex items-center">
-                    <ng-icon name="faSolidChevronLeft" class="text-xl"></ng-icon>
-                </div>
-                </button>
-
-                <button
-                [disabled]="page == totalPages()"
-                (click)="getNextPage()"
-                class="transition-all flex justify-center items-center duration-200 cursor-pointer bg-yellow-500 hover:opacity-70 hover:scale-105 text-gray-700 shadow-lg font-bold py-2 px-4 rounded-lg disabled:opacity-50 disabled:pointer-events-none">
-                <div class="flex items-center justify-center content-center">
-                    <ng-icon name="faSolidChevronRight" class="text-xl"></ng-icon>
-                </div>
-                </button>
-            </div>
-
-            <div class="hidden md:flex items-center">
-                <span class="font-semibold text-slate-800 bg-yellow-500 px-3 py-1.5 rounded-lg shadow-sm transition-colors">
-                    Workouts: {{workouts().length}}
-                </span>
-            </div>
+                Page {{page}} of {{totalPages()}}
+            </span>
         </div>
-    </div>
+
+        <div class="flex flex-row gap-3 items-center order-first sm:order-0">
+            <button
+            [disabled]="page == 1"
+            (click)="getPreviousPage()"
+            class="transition-all flex justify-center items-center duration-200 cursor-pointer bg-yellow-500 hover:opacity-70 hover:scale-105 text-gray-700 shadow-lg font-bold py-2 px-4 rounded-lg disabled:opacity-50 disabled:pointer-events-none">
+            <div class="flex items-center">
+                <ng-icon name="faSolidChevronLeft" class="text-xl"></ng-icon>
+            </div>
+        </button>
+
+        <button
+        [disabled]="page == totalPages()"
+        (click)="getNextPage()"
+        class="transition-all flex justify-center items-center duration-200 cursor-pointer bg-yellow-500 hover:opacity-70 hover:scale-105 text-gray-700 shadow-lg font-bold py-2 px-4 rounded-lg disabled:opacity-50 disabled:pointer-events-none">
+        <div class="flex items-center justify-center content-center">
+            <ng-icon name="faSolidChevronRight" class="text-xl"></ng-icon>
+        </div>
+    </button>
+</div>
+
+<div class="hidden md:flex items-center">
+    <span class="font-semibold text-slate-800 bg-yellow-500 px-3 py-1.5 rounded-lg shadow-sm transition-colors">
+        Workouts: {{workouts().length}}
+    </span>
+</div>
+</div>
+</div>
 }
 </div>
 </div>

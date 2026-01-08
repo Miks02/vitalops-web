@@ -8,7 +8,9 @@ import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
     faSolidChevronLeft,
     faSolidChevronRight,
-    faSolidDumbbell
+    faSolidChildReaching,
+    faSolidDumbbell,
+    faSolidPersonRunning
 } from '@ng-icons/font-awesome/solid';
 
 import { LayoutState } from '../../../layout/services/layout-state';
@@ -28,7 +30,9 @@ import { NotificationService } from '../../../core/services/notification-service
         provideIcons({
             faSolidChevronRight,
             faSolidChevronLeft,
-            faSolidDumbbell
+            faSolidDumbbell,
+            faSolidPersonRunning,
+            faSolidChildReaching
         })
     ]
 })
@@ -69,7 +73,6 @@ export class WorkoutList {
     totalPages = computed(() => {
         if (!this.totalCount() || !this.pageSize())
             return 0;
-        
         return Math.ceil(this.totalCount() / this.pageSize());
     });
 
@@ -177,11 +180,5 @@ export class WorkoutList {
             ? 'w-full'
             : 'w-full md:w-[calc(50%-0.375rem)]';
     }
-
-    getSetsBadgeClass(sets: number): string {
-        if (sets >= 28) return 'bg-yellow-400';
-        if (sets >= 24) return 'bg-yellow-400';
-        if (sets >= 20) return 'bg-blue-400';
-        return 'bg-emerald-400';
-    }
+    
 }
