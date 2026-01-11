@@ -18,7 +18,8 @@ import {
   faSolidScaleUnbalanced,
   faSolidShieldHalved,
   faSolidAddressCard,
-  faSolidCalculator
+  faSolidCalculator,
+  faSolidFireFlameCurved
 } from "@ng-icons/font-awesome/solid";
 import {
     faSolidLock,
@@ -62,7 +63,8 @@ interface UserData {
     faSolidCalculator,
     faSolidShieldHalved,
     faSolidKey,
-    faSolidAddressCard
+    faSolidAddressCard,
+    faSolidFireFlameCurved
   })]
 })
 export class ProfilePage {
