@@ -20,10 +20,9 @@ import { ExerciseType } from '../models/ExerciseType';
 import { CardioType } from '../models/CardioType';
 import { createWorkoutForm, createWorkoutObject } from '../../../core/helpers/Factories';
 import { WorkoutService } from '../services/workout-service';
-import { CreateWorkoutDto } from '../models/CreateWorkoutDto';
-import { ExerciseEntryFormValue } from '../models/ExerciseEntryFormValue';
 import { Router } from '@angular/router';
 import { NotificationService } from '../../../core/services/notification-service';
+import { handleValidationErrors } from '../../../core/helpers/FormHelpers';
 
 @Component({
     selector: 'app-workout-form',
@@ -75,6 +74,11 @@ export class WorkoutForm {
         }
     }
 
+     isControlInvalid(control: string): boolean | undefined {
+        const c = this.form.get(control);
+        return c?.invalid && (c?.touched || c.dirty)
+    }
+
     onSubmit() {
         const workout = createWorkoutObject(this.form);
         if(this.form.invalid) {
@@ -86,8 +90,8 @@ export class WorkoutForm {
                 this.notificationService.showSuccess("Workout logged successfully!")
                 this.router.navigate(['/workouts'])
             },
-            error: err => {
-                console.log("Error occured while creating the workout\n", err)
+            error: err  => {
+                handleValidationErrors(err, this.form);
             }
         })
     }

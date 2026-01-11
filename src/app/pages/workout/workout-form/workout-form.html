@@ -13,126 +13,167 @@
                         <span class="leading-none mt-2 font-semibold text-lg text-red-600">*</span>
                         <label for="name" class="font-semibold">Workout name</label>
                     </div>
-                    <div class="flex bg-slate-300 rounded shadow-lg ">
-                        <div class="p-2 flex items-center bg-slate-400 rounded-l">
-                            <ng-icon class="self-center text-slate-800! text-xl" name="faSolidPencil"></ng-icon>
-                        </div>
-                        <input formControlName="workoutName" class="px-1 outline-none border-none" type="text" id="name"
-                        placeholder="Enter workout name..">
+                    <div
+                    [class.border-red-500]="isControlInvalid('name')"
+                    [class.border-transparent]="!isControlInvalid('name')"
+                    class="flex bg-slate-300 rounded shadow-lg border-2 border-transparent transition-all duration-200">
+                    <div class="p-2 flex items-center bg-slate-400 rounded-l">
+                        <ng-icon class="self-center text-slate-800! text-xl" name="faSolidPencil"></ng-icon>
                     </div>
+                    <input formControlName="name" class="px-1 outline-none border-none" type="text" id="name"
+                    placeholder="Enter workout name..">
                 </div>
-
-                <div class="flex flex-col gap-2 min-w-60">
-                    <div class="flex items-center gap-1">
-                        <span class="leading-none mt-2 font-semibold text-lg text-red-600">*</span>
-                        <label for="date" class="font-semibold">Date</label>
+                @if(isControlInvalid('name')) {
+                    <div class="text-red-600 text-sm  mx-auto font-semibold">
+                        @if(form.get('name')?.errors?.['required']) {
+                            <span>Workout name is required</span>
+                        }
+                        @if(form.get('name')?.errors?.['validationError']) {
+                            <span>{{ form.get('name')?.errors?.['validationError'] }}</span>
+                        }
                     </div>
-                    <div class="flex bg-slate-300 rounded shadow-lg ">
-                        <div class="p-2 flex items-center bg-slate-400 rounded-l">
-                            <ng-icon class="self-center text-slate-800! text-xl" name="faSolidCalendarDay"></ng-icon>
-                        </div>
-                        <input formControlName="date" class="px-1 text-center w-full outline-none border-none" type="date"
-                        id="date">
-                    </div>
-                </div>
-
-
-
+                }
             </div>
-            <div class="mx-auto">
-                <button
-                type="button"
-                (click)="isModalFormOpen = true"
-                class="transition-all flex justify-center items-center duration-200 cursor-pointer bg-yellow-500 hover:opacity-70 active:opacity-70 text-gray-700 shadow-lg font-bold py-1 px-4 rounded text-lg">
-                <p class="font-semibold self-center">Add Exercise</p>
-            </button>
-        </div>
 
-        <div class="border-b-2 border-slate-800"></div>
-
-        <div
-        class="relative flex flex-col gap-2 w-full bg-slate-300 rounded shadow-lg h-40 sm:h-70 overflow-y-auto">
-        <div class="flex flex-col gap-2 p-2 w-full">
-
-            @if(exercises.length === 0) {
+            <div class="flex flex-col gap-2 min-w-60">
                 <div
-                class="absolute top-[50%] w-full left-[50%] text-center transform -translate-x-1/2 -translate-y-1/2 border-red-400 rounded p-4">
-                <span class="text-2xl font-semibold text-indigo-900">No Exercises Added</span>
+
+                class="flex items-center gap-1">
+                <span class="leading-none mt-2 font-semibold text-lg text-red-600">*</span>
+                <label for="workoutDate" class="font-semibold">Date</label>
             </div>
-        }
-
-        @for(exercise of exercises.controls; track $index) {
-            <div (click)="removeExercise($index)" class="group cursor-pointer flex flex-col gap-2 relative bg-linear-to-br from-slate-700 via-slate-600 to-slate-700 rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden">
-
-                <div class="absolute inset-0 bg-indigo-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-
-                <div class="relative flex justify-between items-center px-5 py-3">
-                    <div class="sm:flex flex-wrap items-center gap-3 hidden">
-                        <div class="bg-indigo-500/20 p-3 rounded-lg group-hover:bg-indigo-500/30 transition-colors">
-                            @if(isExerciseTypeCardio(exercise)) {
-                                <ng-icon name="faSolidPersonRunning" class="text-indigo-300! lg:text-2xl"></ng-icon>
-
-                            }
-                            @else {
-                                <ng-icon name="faSolidDumbbell" class="text-indigo-300! lg:text-2xl"></ng-icon>
-
-                            }
-                        </div>
-                        <div>
-                            <p class="text-indigo-200 text-xs font-medium uppercase tracking-wider">Exercise</p>
-                            <h1 class="text-indigo-100 text-2xl sm:text-3xl font-bold">{{$index + 1}}</h1>
-                        </div>
-                    </div>
-
-                    <div class="flex  sm:w-auto mx-auto sm:mx-0 sm:justify-end justify-between gap-2 w-full ">
-                        <div class="flex items-center gap-2 bg-slate-800/50 px-3 py-2 rounded-lg">
-                            <ng-icon name="faSolidCircle" class="hidden! lg:block! text-xs text-indigo-400!"></ng-icon>
-                            <div>
-                                <p class="text-indigo-300 text-xs">Exercise name</p>
-                                <p class="text-white sm:text-lg font-bold">{{exercise.get('exerciseName')?.value}}</p>
-                            </div>
-                        </div>
-
-                        <div class="flex items-center gap-2 bg-slate-800/50 px-3 py-2 rounded-lg">
-                            <ng-icon name="faSolidCircle" class="hidden! lg:block! text-xs text-orange-500!"></ng-icon>
-                            <div>
-                                @if(isExerciseTypeCardio(exercise)) {
-                                    @if(isCardioTypeSteadyState(exercise)) {
-                                        <p class="text-orange-300 text-xs">Duration</p>
-                                        <p class="text-white text-lg font-bold">{{ exercise.get('durationMinutes')?.value }} : {{exercise.get('durationSeconds')?.value}}</p>
-                                    }
-                                    @else {
-                                        <p class="text-orange-300 text-xs">Intervals</p>
-                                        <p class="text-white text-lg font-bold">{{exercise.get('intervalsCount')?.value}}</p>
-                                    }
-
-                                }
-                                @else {
-                                    <p class="text-orange-300 text-xs">Sets</p>
-                                    <p class="text-white text-lg font-bold">{{ getExerciseSets(exercise) }}</p>
-                                }
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
+            <div
+            [class.border-red-500]="isControlInvalid('workoutDate')"
+            [class.border-transparent]="!isControlInvalid('workoutDate')"
+            class="flex bg-slate-300 rounded shadow-lg border-2 border-transparent transition-all duration-200">
+            <div class="p-2 flex items-center bg-slate-400 rounded-l">
+                <ng-icon class="self-center text-slate-800! text-xl" name="faSolidCalendarDay"></ng-icon>
+            </div>
+            <input formControlName="workoutDate" class="px-1 text-center w-full outline-none border-none" type="date"
+            id="date">
+        </div>
+        @if(form.get('workoutDate')?.invalid && (form.get('workoutDate')?.dirty || form.get('workoutDate')?.touched)) {
+            <div class="text-red-600 text-sm  mx-auto font-semibold">
+                @if(form.get('workoutDate')?.errors?.['required']) {
+                    <span>Date is required</span>
+                }
+                @if(form.get('workoutDate')?.errors?.['validationError']) {
+                    <span>{{ form.get('workoutDate')?.errors?.['validationError'] }}</span>
+                }
             </div>
         }
     </div>
+
+
+
+</div>
+<div class="mx-auto">
+    <button
+    type="button"
+    (click)="isModalFormOpen = true"
+    class="transition-all flex justify-center items-center duration-200 cursor-pointer bg-yellow-500 hover:opacity-70 active:opacity-70 text-gray-700 shadow-lg font-bold py-1 px-4 rounded text-lg">
+    <p class="font-semibold self-center">Add Exercise</p>
+</button>
+</div>
+
+<div class="border-b-2 border-slate-800"></div>
+
+<div
+class="relative flex flex-col gap-2 w-full bg-slate-300 rounded shadow-lg h-40 sm:h-70 overflow-y-auto">
+<div class="flex flex-col gap-2 p-2 w-full">
+
+    @if(exercises.length === 0) {
+        <div
+        class="absolute top-[50%] w-full left-[50%] text-center transform -translate-x-1/2 -translate-y-1/2 border-red-400 rounded p-4">
+        <span class="text-2xl font-semibold text-indigo-900">No Exercises Added</span>
+    </div>
+}
+
+@for(exercise of exercises.controls; track $index) {
+    <div (click)="removeExercise($index)" class="group cursor-pointer flex flex-col gap-2 relative bg-linear-to-br from-slate-700 via-slate-600 to-slate-700 rounded-xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden">
+
+        <div class="absolute inset-0 bg-indigo-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+        <div class="relative flex justify-between items-center px-5 py-3">
+            <div class="sm:flex flex-wrap items-center gap-3 hidden">
+                <div class="bg-indigo-500/20 p-3 rounded-lg group-hover:bg-indigo-500/30 transition-colors">
+                    @if(isExerciseTypeCardio(exercise)) {
+                        <ng-icon name="faSolidPersonRunning" class="text-indigo-300! lg:text-2xl"></ng-icon>
+
+                    }
+                    @else {
+                        <ng-icon name="faSolidDumbbell" class="text-indigo-300! lg:text-2xl"></ng-icon>
+
+                    }
+                </div>
+                <div>
+                    <p class="text-indigo-200 text-xs font-medium uppercase tracking-wider">Exercise</p>
+                    <h1 class="text-indigo-100 text-2xl sm:text-3xl font-bold">{{$index + 1}}</h1>
+                </div>
+            </div>
+
+            <div class="flex  sm:w-auto mx-auto sm:mx-0 sm:justify-end justify-between gap-2 w-full ">
+                <div class="flex items-center gap-2 bg-slate-800/50 px-3 py-2 rounded-lg">
+                    <ng-icon name="faSolidCircle" class="hidden! lg:block! text-xs text-indigo-400!"></ng-icon>
+                    <div>
+                        <p class="text-indigo-300 text-xs">Exercise name</p>
+                        <p class="text-white sm:text-lg font-bold">{{exercise.get('exerciseName')?.value}}</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2 bg-slate-800/50 px-3 py-2 rounded-lg">
+                    <ng-icon name="faSolidCircle" class="hidden! lg:block! text-xs text-orange-500!"></ng-icon>
+                    <div>
+                        @if(isExerciseTypeCardio(exercise)) {
+                            @if(isCardioTypeSteadyState(exercise)) {
+                                <p class="text-orange-300 text-xs">Duration</p>
+                                <p class="text-white text-lg font-bold">{{ exercise.get('durationMinutes')?.value }} : {{exercise.get('durationSeconds')?.value}}</p>
+                            }
+                            @else {
+                                <p class="text-orange-300 text-xs">Intervals</p>
+                                <p class="text-white text-lg font-bold">{{exercise.get('intervalsCount')?.value}}</p>
+                            }
+
+                        }
+                        @else {
+                            <p class="text-orange-300 text-xs">Sets</p>
+                            <p class="text-white text-lg font-bold">{{ getExerciseSets(exercise) }}</p>
+                        }
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+}
+</div>
 
 </div>
 
 <div class="border-b-2 border-slate-800"></div>
 <div class="flex flex-col gap-2 min-w-60">
     <label for="name" class="font-semibold">Notes (optional)</label>
-    <div class="flex bg-slate-300 rounded shadow-lg ">
-        <div class="px-3 py-2 flex items-center bg-slate-400 rounded-l">
-            <ng-icon class="self-center text-slate-800! text-xl" name="faSolidNoteSticky"></ng-icon>
-        </div>
-        <textarea formControlName="notes" name="notes" id="notes" class="px-1 pt-1 outline-none border-none w-full resize-none"
-        placeholder="Write your custom notes..."></textarea>
+    <div
+    [class.border-red-500]="isControlInvalid('notes')"
+    [class.border-transparent]="!isControlInvalid('notes')"
+    class="flex bg-slate-300 rounded shadow-lg border-2 border-transparent transition-all duration-200">
+    <div class="px-3 py-2 flex items-center bg-slate-400 rounded-l">
+        <ng-icon class="self-center text-slate-800! text-xl" name="faSolidNoteSticky"></ng-icon>
     </div>
+    <textarea formControlName="notes" name="notes" id="notes" class="px-1 pt-1 outline-none border-none w-full resize-none"
+    placeholder="Write your custom notes..."></textarea>
+</div>
+@if(isControlInvalid('notes')) {
+    <div class="text-red-600 text-sm  mx-auto font-semibold">
+        @if(form.get('notes')?.errors?.['maxlength']) {
+            <span>Notes cannot exceed 100 characters</span>
+        }
+        @if(form.get('notes')?.errors?.['validationError']) {
+            <span>{{ form.get('notes')?.errors?.['validationError'] }}</span>
+        }
+    </div>
+}
 </div>
 
 <div class="mx-auto">
