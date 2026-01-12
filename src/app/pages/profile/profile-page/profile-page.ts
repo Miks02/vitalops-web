@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, WritableSignal } from '@angular/core';
 import { LayoutState } from '../../../layout/services/layout-state';
 import { FormBuilder, FormsModule, ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { NgIcon, provideIcons } from "@ng-icons/core";
@@ -74,8 +74,8 @@ export class ProfilePage {
     profileForm: FormGroup = this.fb.group({}) as FormGroup;
     profilePictureForm: FormGroup = this.fb.group({}) as FormGroup;
     editingField: string | null = null;
-    selectedProfileImageFile: any = signal(null);
-    previewImage: string | null = null;
+    selectedProfileImageFile: WritableSignal<File | null> = signal(null);
+    previewImage: WritableSignal<string> = signal("");
 
     userData: UserData = {
         name: 'Milan Nikolić',
@@ -91,13 +91,6 @@ export class ProfilePage {
         this.layoutState.setTitle("My Profile");
         this.initForm();
         this.initSampleWorkouts();
-        this.initProfilePictureForm();
-    }
-
-    initProfilePictureForm() {
-        this.profilePictureForm = this.fb.group({
-            profilePicture: ['']
-        })
     }
 
     initForm() {
@@ -150,7 +143,7 @@ export class ProfilePage {
     }
 
     getProfileImageSrc(): string {
-        if (this.previewImage) return this.previewImage;
+        if (this.previewImage() !== "") return this.previewImage();
         if ((this.userData as any).profileImage) return (this.userData as any).profileImage;
         return this.userData.gender === 'Male' ? 'user_male.png' : (this.userData.gender === 'Female' ? 'user_female.png' : 'user_other.png');
     }
@@ -162,7 +155,7 @@ export class ProfilePage {
         this.selectedProfileImageFile.set(file);
         const reader = new FileReader();
         reader.onload = () => {
-            this.previewImage = reader.result as string;
+            this.previewImage.set(reader.result as string);
         };
         reader.readAsDataURL(file);
     }
@@ -171,12 +164,12 @@ export class ProfilePage {
         if (this.previewImage) {
             (this.userData as any).profileImage = this.previewImage;
             this.selectedProfileImageFile.set(null);
-            this.previewImage = null;
+            this.previewImage.set("");
         }
     }
 
     cancelProfilePicture() {
         this.selectedProfileImageFile.set(null);
-        this.previewImage = null;
+        this.previewImage.set("");
     }
 }

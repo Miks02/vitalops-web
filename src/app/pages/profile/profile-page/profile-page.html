@@ -6,15 +6,15 @@
                 <label class="w-55 h-55 bg-slate-700 text-white flex items-center justify-center text-2xl font-semibold rounded-md hover:opacity-50 transition-all duration-200 hover:shadow-2xl cursor-pointer overflow-hidden relative">
                     <input #fileInput type="file" accept="image/*" (change)="onProfilePictureSelected($event)" hidden name="profile_image">
                     <img [src]="getProfileImageSrc()" class="object-cover w-full h-full" alt="Profile">
-                    <div class="absolute right-2 bottom-2 bg-yellow-400 rounded-full p-1 shadow-md">
-                        <ng-icon name="faSolidPencil" class="text-slate-800"></ng-icon>
+                    <div class="absolute right-2 bottom-2 bg-yellow-400 rounded-full p-1 w-11 h-11  shadow-md">
+                        <ng-icon name="faSolidPencil" class="text-slate-800 absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2"></ng-icon>
                     </div>
                 </label>
 
-                @if(previewImage) {
-                    <div class="mt-3 flex gap-2">
-                        <button type="button" (click)="saveProfilePicture()" class="bg-green-500 text-white px-3 py-1 rounded cursor-pointer transition-all duration-200 hover:opacity-90">Save Changes</button>
-                        <button type="button" (click)="cancelProfilePicture()" class="bg-red-500 text-white px-3 py-1 rounded cursor-pointer transition-all duration-200 hover:opacity-90">Cancel</button>
+                @if(previewImage() != "") {
+                    <div class="mt-3 flex gap-2 font-semibold">
+                        <button type="button" (click)="saveProfilePicture()" class="bg-linear-to-br from-emerald-500 to-emerald-600/70 shadow-md text-white px-3 py-1 rounded cursor-pointer transition-all duration-200 hover:opacity-50 active:opacity-40">Save Changes</button>
+                        <button type="button" (click)="cancelProfilePicture()" class="bg-linear-to-br from-red-500 to-red-600 text-white px-3 py-1 shadow-md active:opacity-40 rounded cursor-pointer transition-all duration-200 hover:opacity-50">Cancel</button>
                     </div>
                 }
 
