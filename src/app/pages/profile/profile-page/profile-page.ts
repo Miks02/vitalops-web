@@ -35,6 +35,16 @@ import { AccountStatus } from '../../../core/models/AccountStatus';
 import { tap } from 'rxjs';
 import { WorkoutListItemDto } from '../../workout/models/WorkoutListItemDto';
 import { RouterLink } from '@angular/router';
+import {
+    createFullNameForm,
+    createDateOfBirthForm,
+    createUsernameForm,
+    createEmailForm,
+    createGenderForm,
+    createWeightForm,
+    createHeightForm,
+    createProfilePictureForm
+} from '../../../core/helpers/Factories';
 
 @Component({
   selector: 'app-profile-page',
@@ -73,17 +83,25 @@ export class ProfilePage {
     workoutStreak: WritableSignal<number | undefined> = signal(undefined);
     dailyCalorieGoal: WritableSignal<number | undefined> = signal(undefined);
 
-    private profileDetails = toSignal(this.profileService.profilePage$.pipe(
+    profileDetails = toSignal(this.profileService.profilePage$.pipe(
         tap(res => {
             this.userData.set(res?.userDetails);
             this.recentWorkouts.set(res?.recentWorkouts as WorkoutListItemDto[]);
             this.workoutStreak.set(res?.workoutStreak);
             this.dailyCalorieGoal.set(res?.dailyCalorieGoal);
+            this.initForms();
         })
     ))
 
-    profileForm: FormGroup = this.fb.group({}) as FormGroup;
-    profilePictureForm: FormGroup = this.fb.group({}) as FormGroup;
+    fullNameForm: WritableSignal<FormGroup> = signal(this.fb.group({}));
+    dateOfBirthForm: WritableSignal<FormGroup> = signal(this.fb.group({}));
+    usernameForm: WritableSignal<FormGroup> = signal(this.fb.group({}));
+    emailForm: WritableSignal<FormGroup> = signal(this.fb.group({}));
+    genderForm: WritableSignal<FormGroup> = signal(this.fb.group({}));
+    weightForm: WritableSignal<FormGroup> = signal(this.fb.group({}));
+    heightForm: WritableSignal<FormGroup> = signal(this.fb.group({}));
+    profilePictureForm: WritableSignal<FormGroup> = signal(this.fb.group({}));
+
     editingField: string | null = null;
     selectedProfileImageFile: WritableSignal<File | null> = signal(null);
     previewImage: WritableSignal<string> = signal("");
@@ -134,62 +152,129 @@ export class ProfilePage {
 
     ngOnInit() {
         this.layoutState.setTitle("My Profile");
-        this.initForm();
-        this.initSampleWorkouts();
         this.profileService.getProfilePage().subscribe((res) => {
-            this.userData.set(res?.userDetails)
+            this.userData.set(res?.userDetails);
+            this.initForms();
         });
-
     }
 
-    initForm() {
-        this.profileForm = this.fb.group({
-            name: [this.userData()?.fullName],
-            username: [this.userData()?.userName],
-            email: [this.userData()?.email],
-            dateOfBirth: [this.userData()?.gender],
-            gender: [this.userData()?.gender],
-            weight: [this.userData()?.weight],
-            height: [this.userData()?.height]
-        });
+    initForms() {
+        const user = this.userData();
+        if (!user) return;
+
+        const fullName = user.fullName || '';
+        const [firstName, lastName] = fullName.includes(' ')
+            ? fullName.split(' ', 2)
+            : [fullName, ''];
+
+        this.fullNameForm.set(createFullNameForm(this.fb, firstName, lastName));
+        this.dateOfBirthForm.set(createDateOfBirthForm(this.fb, user.dateOfBirth || ''));
+        this.usernameForm.set(createUsernameForm(this.fb, user.userName || ''));
+        this.emailForm.set(createEmailForm(this.fb, user.email || ''));
+        this.genderForm.set(createGenderForm(this.fb, user.gender || null));
+        this.weightForm.set(createWeightForm(this.fb, user.weight || null));
+        this.heightForm.set(createHeightForm(this.fb, user.height || null));
+        this.profilePictureForm.set(createProfilePictureForm(this.fb));
     }
 
     startEditing(field: string) {
         this.editingField = field;
-        console.log(this.userData()?.fullName)
-    }
-
-    saveField(field: string) {
-        if (this.profileForm.get(field)?.valid) {
-            (this.userData as any)[field] = this.profileForm.get(field)?.value;
-            this.editingField = null;
-        }
     }
 
     cancelEditing() {
         this.editingField = null;
-        this.initForm();
+        this.initForms();
     }
 
     isEditing(field: string): boolean {
         return this.editingField === field;
     }
 
-    lastWorkouts: Array<{name: string; date: string; exercises: number}> = [];
+    isControlValid(form: FormGroup | null | undefined, controlName?: string): boolean {
+        if (!form) return true;
+        if (controlName) {
+            const ctl = form.get(controlName);
+            return !!ctl && ctl.valid;
+        }
+        return form.valid;
+    }
 
-    initSampleWorkouts() {
-        this.lastWorkouts = [
-            { name: 'Full Body Blast', date: '2025-12-30', exercises: 8 },
-            { name: 'Upper Strength', date: '2025-12-28', exercises: 6 },
-            { name: 'Leg Power', date: '2025-12-26', exercises: 7 },
-            { name: 'HIIT Session', date: '2025-12-24', exercises: 5 },
-            { name: 'Core Focus', date: '2025-12-22', exercises: 4 },
-            { name: 'Push/Pull', date: '2025-12-20', exercises: 6 },
-            { name: 'Cardio Mix', date: '2025-12-18', exercises: 3 },
-            { name: 'Strength Endurance', date: '2025-12-15', exercises: 9 },
-            { name: 'Mobility Flow', date: '2025-12-12', exercises: 4 },
-            { name: 'Upper Hypertrophy', date: '2025-12-10', exercises: 7 }
-        ];
+    onSubmitFullName() {
+        const form = this.fullNameForm();
+        if (form.valid) {
+            const firstName = form.get('firstName')?.value;
+            const lastName = form.get('lastName')?.value;
+            if (this.userData()) {
+                (this.userData as any).fullName = `${firstName} ${lastName}`;
+            }
+            this.editingField = null;
+        }
+    }
+
+    onSubmitDateOfBirth() {
+        const form = this.dateOfBirthForm();
+        if (form.valid) {
+            const dateOfBirth = form.get('dateOfBirth')?.value;
+            if (this.userData()) {
+                (this.userData as any).dateOfBirth = dateOfBirth;
+            }
+            this.editingField = null;
+        }
+    }
+
+    onSubmitUsername() {
+        const form = this.usernameForm();
+        if (form.valid) {
+            const username = form.get('username')?.value;
+            if (this.userData()) {
+                (this.userData as any).userName = username;
+            }
+            this.editingField = null;
+        }
+    }
+
+    onSubmitEmail() {
+        const form = this.emailForm();
+        if (form.valid) {
+            const email = form.get('email')?.value;
+            if (this.userData()) {
+                (this.userData as any).email = email;
+            }
+            this.editingField = null;
+        }
+    }
+
+    onSubmitGender() {
+        const form = this.genderForm();
+        if (form.valid) {
+            const gender = form.get('gender')?.value;
+            if (this.userData()) {
+                (this.userData as any).gender = gender;
+            }
+            this.editingField = null;
+        }
+    }
+
+    onSubmitWeight() {
+        const form = this.weightForm();
+        if (form.valid) {
+            const weight = form.get('weight')?.value;
+            if (this.userData()) {
+                (this.userData as any).weight = weight;
+            }
+            this.editingField = null;
+        }
+    }
+
+    onSubmitHeight() {
+        const form = this.heightForm();
+        if (form.valid) {
+            const height = form.get('height')?.value;
+            if (this.userData()) {
+                (this.userData as any).height = height;
+            }
+            this.editingField = null;
+        }
     }
 
     getProfileImageSrc(): string {
@@ -211,15 +296,24 @@ export class ProfilePage {
     }
 
     saveProfilePicture() {
-        if (this.previewImage) {
-            (this.userData as any).profileImage = this.previewImage;
-            this.selectedProfileImageFile.set(null);
-            this.previewImage.set("");
+        if (this.previewImage()) {
+            const form = this.profilePictureForm();
+            form.get('profileImage')?.setValue(this.previewImage());
+            this.onSubmitProfilePicture();
         }
     }
 
     cancelProfilePicture() {
         this.selectedProfileImageFile.set(null);
         this.previewImage.set("");
+    }
+
+    onSubmitProfilePicture() {
+        const form = this.profilePictureForm();
+        if (this.previewImage()) {
+            (this.userData as any).profileImage = this.previewImage();
+            this.selectedProfileImageFile.set(null);
+            this.previewImage.set("");
+        }
     }
 }
