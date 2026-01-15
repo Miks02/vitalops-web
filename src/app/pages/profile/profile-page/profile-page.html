@@ -2,7 +2,7 @@
 <div class="flex flex-wrap gap-6">
     <div class="flex flex-col gap-4 w-full lg:w-1/3 2xl:max-w-100">
         <div class="flex flex-col bg-slate-200 w-auto rounded-2xl shadow-lg py-6 transition-all duration-200 hover:shadow-2xl">
-            <form [formGroup]="profilePictureForm()" class="flex flex-col items-center">
+            <form [formGroup]="profilePictureForm" class="flex flex-col items-center">
                 <label class="w-55 h-55 bg-slate-700 text-white flex items-center justify-center text-2xl font-semibold rounded-md hover:opacity-50 transition-all duration-200 hover:shadow-2xl cursor-pointer overflow-hidden relative">
                     <input #fileInput type="file" accept="image/*" (change)="onProfilePictureSelected($event)" hidden name="profile_image">
                     <img [src]="getProfileImageSrc()" class="object-cover w-full h-full" alt="Profile">
@@ -27,7 +27,7 @@
                 <h1 class="font-bold text-xl text-slate-800">User information</h1>
             </div>
             <div class="flex flex-col gap-4 p-4">
-                <div [class]="!isControlValid(genderForm()) && isEditing('gender') ? 'border-2 border-red-500 rounded-lg' : 'bg-linear-to-b from-white to-slate-50 rounded-lg'" class="text-slate-800 p-4 shadow-sm transform transition hover:-translate-y-1 hover:shadow-lg">
+                <div [class]="!isControlValid(genderForm) && isEditing('gender') ? 'border-2 border-red-500 rounded-lg' : 'bg-linear-to-b from-white to-slate-50 rounded-lg'" class="text-slate-800 p-4 shadow-sm transform transition hover:-translate-y-1 hover:shadow-lg">
                     <div class="flex justify-between items-center">
                         <div class="flex items-center gap-2">
                             <ng-icon class="text-emerald-600! text-xl" name="faSolidVenusMars"></ng-icon>
@@ -42,7 +42,7 @@
                     </div>
 
                     @if (isEditing('gender')) {
-                        <form [formGroup]="genderForm()" (ngSubmit)="onSubmitGender()" class="mt-2 animate-in fade-in duration-200">
+                        <form [formGroup]="genderForm" (ngSubmit)="onSubmitGender()" class="mt-2 animate-in fade-in duration-200">
                             <select formControlName="gender" class="w-full p-2 rounded border border-slate-500 focus:outline-none focus:border-blue-500">
                                 <option [ngValue]="null">Select gender</option>
                                 <option [ngValue]="1">Male</option>
@@ -50,7 +50,7 @@
                                 <option [ngValue]="3">Other</option>
                             </select>
                             <div class="flex justify-end gap-2 mt-2">
-                                <button type="submit" [disabled]="genderForm().invalid" class="bg-green-500 text-white px-3 py-1 rounded cursor-pointer transition-all duration-200 hover:opacity-90 active:scale-95 active:opacity-80 disabled:opacity-50">
+                                <button type="submit" [disabled]="genderForm.invalid" class="bg-green-500 text-white px-3 py-1 rounded cursor-pointer transition-all duration-200 hover:opacity-90 active:scale-95 active:opacity-80 disabled:opacity-50">
                                     <ng-icon name="faSolidCheck"></ng-icon>
                                 </button>
                                 <button type="button" (click)="cancelEditing()" class="bg-red-500 text-white px-3 py-1 rounded cursor-pointer transition-all duration-200 hover:opacity-90 active:scale-95 active:opacity-80">
@@ -63,7 +63,7 @@
                     }
                 </div>
 
-                <div [class]="!isControlValid(weightForm(), 'weight') && isEditing('weight') ? 'border-2 border-red-500 rounded-lg' : 'bg-linear-to-b from-white to-slate-50 rounded-lg'" class="text-slate-800 p-4 shadow-sm transform transition hover:-translate-y-1 hover:shadow-lg">
+                <div [class]="!isControlValid(weightForm, 'weight') && isEditing('weight') ? 'border-2 border-red-500 rounded-lg' : 'bg-linear-to-b from-white to-slate-50 rounded-lg'" class="text-slate-800 p-4 shadow-sm transform transition hover:-translate-y-1 hover:shadow-lg">
                     <div class="flex justify-between items-center">
                         <div class="flex items-center gap-2">
                             <ng-icon class="text-emerald-600! text-xl" name="faSolidWeightScale"></ng-icon>
@@ -78,19 +78,19 @@
                     </div>
 
                     @if (isEditing('weight')) {
-                        <form [formGroup]="weightForm()" (ngSubmit)="onSubmitWeight()" class="mt-2 animate-in fade-in duration-200">
+                        <form [formGroup]="weightForm" (ngSubmit)="onSubmitWeight()" class="mt-2 animate-in fade-in duration-200">
                             <div class="flex items-center">
                                 <input formControlName="weight" class="w-full p-2 rounded-l border border-slate-500 focus:outline-none focus:border-blue-500" type="number">
                                 <span class="bg-slate-500 text-white p-2 rounded-r border border-slate-500">KG</span>
                             </div>
-                            @if (weightForm().get('weight')?.hasError('min')) {
+                            @if (weightForm.get('weight')?.hasError('min')) {
                                 <p class="text-red-500 text-sm mt-1">Weight must be greater than 25 KG</p>
                             }
-                            @if (weightForm().get('weight')?.hasError('max')) {
+                            @if (weightForm.get('weight')?.hasError('max')) {
                                 <p class="text-red-500 text-sm mt-1">Weight must be lower than 400 KG</p>
                             }
                             <div class="flex justify-end gap-2 mt-2">
-                                <button type="submit" [disabled]="weightForm().invalid" class="bg-green-500 text-white px-3 py-1 rounded cursor-pointer transition-all duration-200 hover:opacity-90 active:scale-95 active:opacity-80 disabled:opacity-50">
+                                <button type="submit" [disabled]="weightForm.invalid" class="bg-green-500 text-white px-3 py-1 rounded cursor-pointer transition-all duration-200 hover:opacity-90 active:scale-95 active:opacity-80 disabled:opacity-50">
                                     <ng-icon name="faSolidCheck"></ng-icon>
                                 </button>
                                 <button type="button" (click)="cancelEditing()" class="bg-red-500 text-white px-3 py-1 rounded cursor-pointer transition-all duration-200 hover:opacity-90 active:scale-95 active:opacity-80">
@@ -103,7 +103,7 @@
                     }
                 </div>
 
-                <div [class]="!isControlValid(heightForm(), 'height') && isEditing('height') ? 'border-2 border-red-500 rounded-lg' : 'bg-linear-to-b from-white to-slate-50 rounded-lg'" class="text-slate-800 p-4 shadow-sm transform transition hover:-translate-y-1 hover:shadow-lg">
+                <div [class]="!isControlValid(heightForm, 'height') && isEditing('height') ? 'border-2 border-red-500 rounded-lg' : 'bg-linear-to-b from-white to-slate-50 rounded-lg'" class="text-slate-800 p-4 shadow-sm transform transition hover:-translate-y-1 hover:shadow-lg">
                     <div class="flex justify-between items-center">
                         <div class="flex items-center gap-2">
                             <ng-icon class="text-emerald-600! text-xl" name="faSolidRulerVertical"></ng-icon>
@@ -118,19 +118,19 @@
                     </div>
 
                     @if (isEditing('height')) {
-                        <form [formGroup]="heightForm()" (ngSubmit)="onSubmitHeight()" class="mt-2 animate-in fade-in duration-200">
+                        <form [formGroup]="heightForm" (ngSubmit)="onSubmitHeight()" class="mt-2 animate-in fade-in duration-200">
                             <div class="flex items-center">
                                 <input formControlName="height" class="w-full p-2 rounded-l border border-slate-500 focus:outline-none focus:border-blue-500" type="number">
                                 <span class="bg-slate-500 text-white p-2 rounded-r border border-slate-500">CM</span>
                             </div>
-                            @if (heightForm().get('height')?.hasError('min')) {
+                            @if (heightForm.get('height')?.hasError('min')) {
                                 <p class="text-red-500 text-sm mt-1">Height must be greater than 70 cm</p>
                             }
-                            @if (heightForm().get('height')?.getError('max')) {
+                            @if (heightForm.get('height')?.getError('max')) {
                                 <p class="text-red-500 text-sm mt-1">Height must be lower than 250 cm</p>
                             }
                             <div class="flex justify-end gap-2 mt-2">
-                                <button type="submit" [disabled]="heightForm().invalid" class="bg-green-500 text-white px-3 py-1 rounded cursor-pointer transition-all duration-200 hover:opacity-90 active:scale-95 active:opacity-80 disabled:opacity-50">
+                                <button type="submit" [disabled]="heightForm.invalid" class="bg-green-500 text-white px-3 py-1 rounded cursor-pointer transition-all duration-200 hover:opacity-90 active:scale-95 active:opacity-80 disabled:opacity-50">
                                     <ng-icon name="faSolidCheck"></ng-icon>
                                 </button>
                                 <button type="button" (click)="cancelEditing()" class="bg-red-500 text-white px-3 py-1 rounded cursor-pointer transition-all duration-200 hover:opacity-90 active:scale-95 active:opacity-80">
@@ -143,7 +143,7 @@
                     }
                 </div>
 
-                <div [class]="!isControlValid(dateOfBirthForm(), 'dateOfBirth') && isEditing('dateOfBirth') ? 'border-2 border-red-500 rounded-lg' : 'bg-linear-to-b from-white to-slate-50 rounded-lg'" class="text-slate-800 p-4 shadow-sm transform transition hover:-translate-y-1 hover:shadow-lg">
+                <div [class]="!isControlValid(dateOfBirthForm, 'dateOfBirth') && isEditing('dateOfBirth') ? 'border-2 border-red-500 rounded-lg' : 'bg-linear-to-b from-white to-slate-50 rounded-lg'" class="text-slate-800 p-4 shadow-sm transform transition hover:-translate-y-1 hover:shadow-lg">
                     <div class="flex justify-between items-center">
                         <div class="flex items-center gap-2">
                             <ng-icon class="text-emerald-600! text-xl" name="faSolidCalendarDay"></ng-icon>
@@ -158,13 +158,13 @@
                     </div>
 
                     @if (isEditing('dateOfBirth')) {
-                        <form [formGroup]="dateOfBirthForm()" (ngSubmit)="onSubmitDateOfBirth()" class="mt-2 animate-in fade-in duration-200">
+                        <form [formGroup]="dateOfBirthForm" (ngSubmit)="onSubmitDateOfBirth()" class="mt-2 animate-in fade-in duration-200">
                             <input formControlName="dateOfBirth" class="w-full p-2 rounded border border-slate-500 focus:outline-none focus:border-blue-500" type="date">
-                            @if (dateOfBirthForm().get('dateOfBirth')?.hasError('required')) {
+                            @if (dateOfBirthForm.get('dateOfBirth')?.hasError('required')) {
                                 <p class="text-red-500 text-sm mt-1">Date of birth is required</p>
                             }
                             <div class="flex justify-end gap-2 mt-2">
-                                <button type="submit" [disabled]="dateOfBirthForm().invalid" class="bg-green-500 text-white px-3 py-1 rounded cursor-pointer transition-all duration-200 hover:opacity-90 active:scale-95 active:opacity-80 disabled:opacity-50">
+                                <button type="submit" [disabled]="dateOfBirthForm.invalid" class="bg-green-500 text-white px-3 py-1 rounded cursor-pointer transition-all duration-200 hover:opacity-90 active:scale-95 active:opacity-80 disabled:opacity-50">
                                     <ng-icon name="faSolidCheck"></ng-icon>
                                 </button>
                                 <button type="button" (click)="cancelEditing()" class="bg-red-500 text-white px-3 py-1 rounded cursor-pointer transition-all duration-200 hover:opacity-90 active:scale-95 active:opacity-80">
@@ -177,7 +177,7 @@
                     }
                 </div>
 
-                <div [class]="!isControlValid(fullNameForm()) && isEditing('name') ? 'border-2 border-red-500 rounded-lg' : 'bg-linear-to-b from-white to-slate-50 rounded-lg'" class="text-slate-800 p-4 shadow-sm transform transition hover:-translate-y-1 hover:shadow-lg">
+                <div [class]="!isControlValid(fullNameForm) && isEditing('name') ? 'border-2 border-red-500 rounded-lg' : 'bg-linear-to-b from-white to-slate-50 rounded-lg'" class="text-slate-800 p-4 shadow-sm transform transition hover:-translate-y-1 hover:shadow-lg">
                     <div class="flex justify-between items-center">
                         <div class="flex items-center gap-2">
                             <ng-icon class="text-emerald-600! text-xl" name="faSolidUser"></ng-icon>
@@ -192,35 +192,35 @@
                     </div>
 
                     @if (isEditing('name')) {
-                        <form [formGroup]="fullNameForm()" (ngSubmit)="onSubmitFullName()" class="mt-2 animate-in fade-in duration-200">
+                        <form [formGroup]="fullNameForm" (ngSubmit)="onSubmitFullName()" class="mt-2 animate-in fade-in duration-200">
                             <div class="flex gap-2 mb-2">
                                 <div class="flex-1">
-                                    <input formControlName="firstName" placeholder="First name" class="w-full p-2 rounded border" [class]="!isControlValid(fullNameForm(), 'firstName') && fullNameForm().get('firstName')?.touched ? 'border-red-500' : 'border-slate-500'" type="text">
-                                    @if (fullNameForm().get('firstName')?.hasError('required')) {
+                                    <input formControlName="firstName" placeholder="First name" class="w-full p-2 rounded border" [class]="!isControlValid(fullNameForm, 'firstName') && fullNameForm.get('firstName')?.touched ? 'border-red-500' : 'border-slate-500'" type="text">
+                                    @if (fullNameForm.get('firstName')?.hasError('required')) {
                                         <p class="text-red-500 text-xs mt-1">First name is required</p>
                                     }
-                                    @if (fullNameForm().get('firstName')?.hasError('minlength')) {
+                                    @if (fullNameForm.get('firstName')?.hasError('minlength')) {
                                         <p class="text-red-500 text-xs mt-1">Minimum 2 characters required</p>
                                     }
-                                    @if (fullNameForm().get('firstName')?.hasError('maxlength')) {
+                                    @if (fullNameForm.get('firstName')?.hasError('maxlength')) {
                                         <p class="text-red-500 text-xs mt-1">Maximum 20 characters allowed</p>
                                     }
                                 </div>
                                 <div class="flex-1">
-                                    <input formControlName="lastName" placeholder="Last name" class="w-full p-2 rounded border" [class]="!isControlValid(fullNameForm(), 'lastName') && fullNameForm().get('lastName')?.touched ? 'border-red-500' : 'border-slate-500'" type="text">
-                                    @if (fullNameForm().get('lastName')?.hasError('required')) {
+                                    <input formControlName="lastName" placeholder="Last name" class="w-full p-2 rounded border" [class]="!isControlValid(fullNameForm, 'lastName') && fullNameForm.get('lastName')?.touched ? 'border-red-500' : 'border-slate-500'" type="text">
+                                    @if (fullNameForm.get('lastName')?.hasError('required')) {
                                         <p class="text-red-500 text-xs mt-1">Last name is required</p>
                                     }
-                                    @if (fullNameForm().get('lastName')?.hasError('minlength')) {
+                                    @if (fullNameForm.get('lastName')?.hasError('minlength')) {
                                         <p class="text-red-500 text-xs mt-1">Minimum 2 characters required</p>
                                     }
-                                    @if (fullNameForm().get('lastName')?.hasError('maxlength')) {
+                                    @if (fullNameForm.get('lastName')?.hasError('maxlength')) {
                                         <p class="text-red-500 text-xs mt-1">Maximum 20 characters allowed</p>
                                     }
                                 </div>
                             </div>
                             <div class="flex justify-end gap-2 mt-2">
-                                <button type="submit" [disabled]="fullNameForm().invalid" class="bg-green-500 text-white px-3 py-1 rounded cursor-pointer transition-all duration-200 hover:opacity-90 active:scale-95 active:opacity-80 disabled:opacity-50">
+                                <button type="submit" [disabled]="fullNameForm.invalid" class="bg-green-500 text-white px-3 py-1 rounded cursor-pointer transition-all duration-200 hover:opacity-90 active:scale-95 active:opacity-80 disabled:opacity-50">
                                     <ng-icon name="faSolidCheck"></ng-icon>
                                 </button>
                                 <button type="button" (click)="cancelEditing()" class="bg-red-500 text-white px-3 py-1 rounded cursor-pointer transition-all duration-200 hover:opacity-90 active:scale-95 active:opacity-80">
@@ -233,7 +233,7 @@
                     }
                 </div>
 
-                <div [class]="!isControlValid(usernameForm(), 'username') && isEditing('username') ? 'border-2 border-red-500 rounded-lg' : 'bg-linear-to-b from-white to-slate-50 rounded-lg'" class="text-slate-800 p-4 shadow-sm transform transition hover:-translate-y-1 hover:shadow-lg">
+                <div [class]="!isControlValid(usernameForm, 'username') && isEditing('username') ? 'border-2 border-red-500 rounded-lg' : 'bg-linear-to-b from-white to-slate-50 rounded-lg'" class="text-slate-800 p-4 shadow-sm transform transition hover:-translate-y-1 hover:shadow-lg">
                     <div class="flex justify-between items-center">
                         <div class="flex items-center gap-2">
                             <ng-icon class="text-emerald-600! text-xl" name="faSolidUser"></ng-icon>
@@ -248,19 +248,19 @@
                     </div>
 
                     @if (isEditing('username')) {
-                        <form [formGroup]="usernameForm()" (ngSubmit)="onSubmitUsername()" class="mt-2 animate-in fade-in duration-200">
+                        <form [formGroup]="usernameForm" (ngSubmit)="onSubmitUsername()" class="mt-2 animate-in fade-in duration-200">
                             <input formControlName="username" class="w-full p-2 rounded border border-slate-500 focus:outline-none focus:border-blue-500" type="text">
-                            @if (usernameForm().get('username')?.hasError('required')) {
+                            @if (usernameForm.get('username')?.hasError('required')) {
                                 <p class="text-red-500 text-sm mt-1">Username is required</p>
                             }
-                            @if (usernameForm().get('username')?.hasError('minlength')) {
+                            @if (usernameForm.get('username')?.hasError('minlength')) {
                                 <p class="text-red-500 text-sm mt-1">Minimum 4 characters required</p>
                             }
-                            @if (usernameForm().get('username')?.hasError('maxlength')) {
+                            @if (usernameForm.get('username')?.hasError('maxlength')) {
                                 <p class="text-red-500 text-sm mt-1">Maximum 20 characters allowed</p>
                             }
                             <div class="flex justify-end gap-2 mt-2">
-                                <button type="submit" [disabled]="usernameForm().invalid" class="bg-green-500 text-white px-3 py-1 rounded cursor-pointer transition-all duration-200 hover:opacity-90 active:scale-95 active:opacity-80 disabled:opacity-50">
+                                <button type="submit" [disabled]="usernameForm.invalid" class="bg-green-500 text-white px-3 py-1 rounded cursor-pointer transition-all duration-200 hover:opacity-90 active:scale-95 active:opacity-80 disabled:opacity-50">
                                     <ng-icon name="faSolidCheck"></ng-icon>
                                 </button>
                                 <button type="button" (click)="cancelEditing()" class="bg-red-500 text-white px-3 py-1 rounded cursor-pointer transition-all duration-200 hover:opacity-90 active:scale-95 active:opacity-80">
@@ -273,7 +273,7 @@
                     }
                 </div>
 
-                <div [class]="!isControlValid(emailForm(), 'email') && isEditing('email') ? 'border-2 border-red-500 rounded-lg' : 'bg-linear-to-b from-white to-slate-50 rounded-lg'" class="text-slate-800 p-4 shadow-sm transform transition hover:-translate-y-1 hover:shadow-lg">
+                <div [class]="!isControlValid(emailForm, 'email') && isEditing('email') ? 'border-2 border-red-500 rounded-lg' : 'bg-linear-to-b from-white to-slate-50 rounded-lg'" class="text-slate-800 p-4 shadow-sm transform transition hover:-translate-y-1 hover:shadow-lg">
                     <div class="flex justify-between items-center">
                         <div class="flex items-center gap-2">
                             <ng-icon class="text-emerald-600! text-xl" name="faSolidEnvelope"></ng-icon>
@@ -288,16 +288,16 @@
                     </div>
 
                     @if (isEditing('email')) {
-                        <form [formGroup]="emailForm()" (ngSubmit)="onSubmitEmail()" class="mt-2 animate-in fade-in duration-200">
+                        <form [formGroup]="emailForm" (ngSubmit)="onSubmitEmail()" class="mt-2 animate-in fade-in duration-200">
                             <input formControlName="email" class="w-full p-2 rounded border border-slate-500 focus:outline-none focus:border-blue-500" type="email">
-                            @if (emailForm().get('email')?.hasError('required')) {
+                            @if (emailForm.get('email')?.hasError('required')) {
                                 <p class="text-red-500 text-sm mt-1">Email is required</p>
                             }
-                            @if (emailForm().get('email')?.hasError('email')) {
+                            @if (emailForm.get('email')?.hasError('email')) {
                                 <p class="text-red-500 text-sm mt-1">Please enter a valid email address</p>
                             }
                             <div class="flex justify-end gap-2 mt-2">
-                                <button type="submit" [disabled]="emailForm().invalid" class="bg-green-500 text-white px-3 py-1 rounded cursor-pointer transition-all duration-200 hover:opacity-90 active:scale-95 active:opacity-80 disabled:opacity-50">
+                                <button type="submit" [disabled]="emailForm.invalid" class="bg-green-500 text-white px-3 py-1 rounded cursor-pointer transition-all duration-200 hover:opacity-90 active:scale-95 active:opacity-80 disabled:opacity-50">
                                     <ng-icon name="faSolidCheck"></ng-icon>
                                 </button>
                                 <button type="button" (click)="cancelEditing()" class="bg-red-500 text-white px-3 py-1 rounded cursor-pointer transition-all duration-200 hover:opacity-90 active:scale-95 active:opacity-80">
@@ -416,6 +416,7 @@
             <div class="flex bg-linear-to-br from-yellow-500 to-yellow-400 w-full rounded-t-2xl px-4 py-2">
                 <h1 class="font-bold text-xl text-slate-800">Last 10 workouts</h1>
             </div>
+
 
             <div class="max-h-90 overflow-y-auto">
                 <div class="p-4 flex flex-col gap-4">
