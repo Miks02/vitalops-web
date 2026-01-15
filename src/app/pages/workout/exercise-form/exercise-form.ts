@@ -65,6 +65,7 @@ export class ExerciseForm {
     }
 
     createSetGroup(reps: number, weight: number): FormGroup {
+
         return this.fb.group({
             reps: [reps, [Validators.required, Validators.min(1)]],
             weightKg: [weight, [Validators.required, Validators.min(1)]]
@@ -75,11 +76,11 @@ export class ExerciseForm {
         const reps = this.form.get('tempReps')?.value;
         const weight = this.form.get('tempWeight')?.value
 
-        if(this.tempWeight?.invalid || this.tempReps?.invalid) {
-            this.tempWeight?.markAsTouched();
-            this.tempReps?.markAsTouched();
+        if(weight == null || reps == null) {
             return;
         }
+
+        this.form.updateValueAndValidity();
         this.sets.push(this.createSetGroup(reps, weight))
     }
 
@@ -151,7 +152,6 @@ export class ExerciseForm {
     }
 
     private handleSetsChange() {
-        console.log("ljaljk")
         this.sets.valueChanges
         .pipe(takeUntil(this.destroy$))
         .subscribe(value => {
