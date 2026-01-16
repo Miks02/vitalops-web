@@ -11,7 +11,8 @@ import {
     faSolidNoteSticky,
     faSolidXmark,
     faSolidCircle,
-    faSolidPersonRunning
+    faSolidPersonRunning,
+    faSolidChildReaching
 } from "@ng-icons/font-awesome/solid";
 import { LayoutState } from '../../../layout/services/layout-state';
 import { FormBuilder, FormsModule, ReactiveFormsModule, FormArray, AbstractControl,} from '@angular/forms';
@@ -29,7 +30,7 @@ import { handleValidationErrors } from '../../../core/helpers/FormHelpers';
     imports: [NgIcon, FormsModule, ExerciseForm, ReactiveFormsModule],
     templateUrl: './workout-form.html',
     styleUrl: './workout-form.css',
-    providers: [provideIcons({faSolidTag, faSolidCalendarDay, faSolidDumbbell, faSolidFireFlameCurved, faSolidBookOpen, faSolidBars, faSolidPencil, faSolidNoteSticky, faSolidXmark, faSolidCircle, faSolidPersonRunning})]
+    providers: [provideIcons({faSolidTag, faSolidCalendarDay, faSolidDumbbell, faSolidFireFlameCurved, faSolidBookOpen, faSolidBars, faSolidNoteSticky, faSolidXmark, faSolidCircle, faSolidPersonRunning, faSolidChildReaching})]
 })
 export class WorkoutForm {
     isModalFormOpen: boolean = false;
@@ -46,8 +47,43 @@ export class WorkoutForm {
         return this.form.get('exercises') as FormArray
     }
 
+    getTotalSets(): number {
+        let total = 0;
+        for (const exercise of this.exercises.controls) {
+            const sets = exercise.get('sets') as FormArray | null;
+            total += sets?.length ?? 0;
+        }
+        return total;
+    }
+
+    getWeightExerciseCount(): number {
+        return this.getExerciseTypeCount(ExerciseType.Weights);
+    }
+
+    getBodyweightExerciseCount(): number {
+        return this.getExerciseTypeCount(ExerciseType.Bodyweight);
+    }
+
+    getCardioExerciseCount(): number {
+        return this.getExerciseTypeCount(ExerciseType.Cardio);
+    }
+
+    private getExerciseTypeCount(type: ExerciseType): number {
+        let count = 0;
+        for (const exercise of this.exercises.controls) {
+            if (exercise.get('exerciseType')?.value === type) {
+                count++;
+            }
+        }
+        return count;
+    }
+
     getExerciseSets(exercise: AbstractControl): number {
         return (exercise.get('sets') as Object as []).length;
+    }
+
+    getExerciseType(exercise: AbstractControl): number {
+        return (exercise.get('exerciseType'))?.value
     }
 
     isExerciseTypeCardio(exercise: AbstractControl): boolean {
