@@ -11,6 +11,17 @@ import {
     faSolidNoteSticky,
     faSolidXmark,
     faSolidCircle,
+    faSolidScaleUnbalanced,
+    faSolidRotate,
+    faSolidCheck,
+    faSolidFilter,
+    faSolidPersonRunning,
+    faSolidClock,
+    faSolidHeartCircleBolt,
+    faSolidHeartPulse,
+    faSolidRoute,
+    faSolidStopwatch,
+    faSolidForwardStep,
 } from "@ng-icons/font-awesome/solid";
 import { FormBuilder, FormsModule, Validators, ReactiveFormsModule, FormArray, FormGroup, RequiredValidator } from "@angular/forms";
 import { ExerciseType } from '../models/ExerciseType';
@@ -18,6 +29,7 @@ import { CardioType } from '../models/CardioType';
 import { clearValidators, onlyNumbersCheck, minArrayLength, clearFormInputs, addValidators } from '../../../core/helpers/FormHelpers';
 import { createExerciseForm } from '../../../core/helpers/Factories';
 import { Subject, takeUntil } from 'rxjs';
+import { NotificationService } from '../../../core/services/notification-service';
 
 
 @Component({
@@ -25,7 +37,7 @@ import { Subject, takeUntil } from 'rxjs';
     imports: [NgIcon, FormsModule, ReactiveFormsModule],
     templateUrl: './exercise-form.html',
     styleUrl: './exercise-form.css',
-    providers: [provideIcons({faSolidTag, faSolidCalendarDay, faSolidDumbbell, faSolidFireFlameCurved, faSolidBookOpen, faSolidBars, faSolidPencil, faSolidNoteSticky, faSolidXmark, faSolidCircle})]
+    providers: [provideIcons({faSolidTag, faSolidCalendarDay, faSolidCheck, faSolidFireFlameCurved, faSolidBookOpen, faSolidBars, faSolidPencil, faSolidNoteSticky, faSolidXmark, faSolidCircle, faSolidScaleUnbalanced, faSolidRotate, faSolidFilter, faSolidPersonRunning, faSolidClock, faSolidHeartCircleBolt, faSolidHeartPulse, faSolidRoute, faSolidStopwatch, faSolidForwardStep})]
 })
 export class ExerciseForm {
     @Output()
@@ -34,6 +46,7 @@ export class ExerciseForm {
     exercises!: FormArray;
 
     private fb = inject(FormBuilder)
+    private notificationService = inject(NotificationService)
 
     private destroy$ = new Subject<void>();
 
@@ -77,6 +90,7 @@ export class ExerciseForm {
         const weight = this.form.get('tempWeight')?.value
 
         if(weight == null || reps == null) {
+            this.notificationService.showWarning("Enter weight and reps before adding a set");
             return;
         }
 
