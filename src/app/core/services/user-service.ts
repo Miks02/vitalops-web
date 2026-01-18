@@ -44,7 +44,7 @@ export class UserService {
     getMe(): Observable<UserDetailsDto> {
 
         if(!this.isUserLoaded) {
-            return this.http.get<UserDetailsDto>(`${this.api}/user/me`)
+            return this.http.get<UserDetailsDto>(`${this.api}/users/me`)
             .pipe(
                 tap((res) => {
                     this.userDetails = res;
@@ -63,7 +63,7 @@ export class UserService {
     }
 
     updateFullName(fullName: UpdateFullNameDto) {
-        return this.http.patch<UpdateFullNameDto>(`${this.api}/user/fullname`, fullName )
+        return this.http.patch<UpdateFullNameDto>(`${this.api}/users/fullname`, fullName )
         .pipe(
             tap((res) => {
                 const next = this.mergeUserDetails({fullName: res.firstName + ' ' + res.lastName});
@@ -74,7 +74,7 @@ export class UserService {
     }
 
     updateWeight(weight: UpdateWeightDto) {
-        return this.http.patch<number>(`${this.api}/user/weight`, weight)
+        return this.http.patch<number>(`${this.api}/users/weight`, weight)
         .pipe(
             tap((res) => {
                 const next = this.mergeUserDetails({weight: res});
@@ -84,7 +84,7 @@ export class UserService {
     }
 
     updateUserName(username: UpdateUserNameDto) {
-        return this.http.patch<string>(`${this.api}/user/username`, username)
+        return this.http.patch<string>(`${this.api}/users/username`, username)
         .pipe(
             tap(res => {
                 const next = this.mergeUserDetails({ userName: res });
@@ -95,7 +95,7 @@ export class UserService {
     }
 
     updateEmail(email: UpdateEmailDto) {
-        return this.http.patch<string>(`${this.api}/user/email`, email)
+        return this.http.patch<string>(`${this.api}/users/email`, email)
         .pipe(
             tap(res => {
                 const next = this.mergeUserDetails({ email: res });
@@ -106,7 +106,7 @@ export class UserService {
     }
 
     updateDateOfBirth(dob: UpdateDateOfBirthDto) {
-        return this.http.patch<string>(`${this.api}/user/date-of-birth`, dob)
+        return this.http.patch<string>(`${this.api}/users/date-of-birth`, dob)
         .pipe(
             tap(res => {
                 const next = this.mergeUserDetails({ dateOfBirth: res });
@@ -117,7 +117,7 @@ export class UserService {
     }
 
     updateGender(gender: UpdateGenderDto) {
-        return this.http.patch<Gender>(`${this.api}/user/gender`, gender)
+        return this.http.patch<Gender>(`${this.api}/users/gender`, gender)
         .pipe(
             tap(res => {
                 const next = this.mergeUserDetails({ gender: res });
@@ -128,7 +128,7 @@ export class UserService {
     }
 
     updateHeight(height: UpdateHeightDto) {
-        return this.http.patch<number>(`${this.api}/user/height`, height)
+        return this.http.patch<number>(`${this.api}/users/height`, height)
         .pipe(
             tap(res => {
                 const next = this.mergeUserDetails({ height: res });
