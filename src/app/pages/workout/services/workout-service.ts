@@ -8,6 +8,7 @@ import { WorkoutListItemDto } from '../models/WorkoutListItemDto';
 import { WorkoutPageDto } from '../models/WorkoutPageDto';
 import { WorkoutSummaryDto } from '../models/WorkoutSummaryDto';
 import { QueryParams } from '../../../core/models/QueryParams';
+import { WorkoutList } from '../workout-list/workout-list';
 
 @Injectable({
     providedIn: 'root',
@@ -52,6 +53,10 @@ export class WorkoutService {
                 }),
                  map(res => res)
             )
+    }
+
+    getUserWorkout(id: number): Observable<WorkoutDetailsDto> {
+        return this.http.get<WorkoutDetailsDto>(`${this.api}/workouts/${id}`);
     }
 
     addWorkout(model: CreateWorkoutDto): Observable<WorkoutDetailsDto> {
