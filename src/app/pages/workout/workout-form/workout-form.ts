@@ -24,6 +24,7 @@ import { WorkoutService } from '../services/workout-service';
 import { Router } from '@angular/router';
 import { NotificationService } from '../../../core/services/notification-service';
 import { handleValidationErrors } from '../../../core/helpers/FormHelpers';
+import { take } from 'rxjs';
 
 @Component({
     selector: 'app-workout-form',
@@ -110,7 +111,7 @@ export class WorkoutForm {
         }
     }
 
-     isControlInvalid(control: string): boolean | undefined {
+    isControlInvalid(control: string): boolean | undefined {
         const c = this.form.get(control);
         return c?.invalid && (c?.touched || c.dirty)
     }
