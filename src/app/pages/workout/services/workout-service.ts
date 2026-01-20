@@ -8,7 +8,7 @@ import { WorkoutListItemDto } from '../models/WorkoutListItemDto';
 import { WorkoutPageDto } from '../models/WorkoutPageDto';
 import { WorkoutSummaryDto } from '../models/WorkoutSummaryDto';
 import { QueryParams } from '../../../core/models/QueryParams';
-import { WorkoutList } from '../workout-list/workout-list';
+import { WorkoutsPerMonthDto } from '../models/WorkoutsPerMonthDto';
 
 @Injectable({
     providedIn: 'root',
@@ -22,9 +22,11 @@ export class WorkoutService {
     private queryParams = new BehaviorSubject<QueryParams>(
         {sort: "", search: "", date: "", page: 1}
     )
+    private workoutCountsSubject = new BehaviorSubject<WorkoutsPerMonthDto | null>(null)
 
     pagedWorkouts$ = this.pagedWorkoutsSubject.asObservable();
     workoutSummary$ = this.workoutSummarySubject.asObservable();
+    workoutCounts$ = this.workoutCountsSubject.asObservable();
 
     private http = inject(HttpClient)
 
@@ -57,6 +59,15 @@ export class WorkoutService {
 
     getUserWorkout(id: number): Observable<WorkoutDetailsDto> {
         return this.http.get<WorkoutDetailsDto>(`${this.api}/workouts/${id}`);
+    }
+
+    getUserWorkoutCountsByMonth(year: number | null = null) {
+        const params = new HttpParams().set('year', year?.toString()!)
+
+        return this.http.get<WorkoutsPerMonthDto>(`${this.api}/workouts/workouts-per-month`, {params})
+            .pipe(
+                tap(res => this.workoutCountsSubject.next(res))
+            )
     }
 
     addWorkout(model: CreateWorkoutDto): Observable<WorkoutDetailsDto> {
