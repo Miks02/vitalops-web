@@ -70,143 +70,155 @@
                         <ng-icon name="faSolidGhost" class="text-xl"></ng-icon>
                         <p
                         class="text-xl font-semibold overflow-hidden whitespace-nowrap border-r-2 border-transparent w-[12ch] animate-typewriter">
-                            No Data Yet...
-                        </p>
-                    </div>
-                } @else {
-                    <p
-
-                    class="text-xl font-semibold overflow-hidden whitespace-nowrap border-r-2 border-transparent  w-[12ch]">
-                        {{dashboardSource()?.lastWorkoutDate | date}}
+                        No Data Yet...
                     </p>
+                </div>
+            } @else {
+                <p
+
+                class="text-xl font-semibold overflow-hidden whitespace-nowrap border-r-2 border-transparent  w-[12ch]">
+                {{dashboardSource()?.lastWorkoutDate | date}}
+            </p>
+        }
+    </div>
+
+</div>
+
+<div class="flex gap-4 flex-wrap">
+    <div class="bg-slate-200 rounded-2xl shadow-xl transition-shadow duration-200 hover:shadow-2xl grow">
+        <div class="flex justify-between bg-linear-to-br from-amber-500 to-amber-400 w-full rounded-t-2xl px-4 py-2 text-slate-800">
+            <h1 class="font-bold text-xl">Workout tracking</h1>
+            @if(years()?.length! > 0) {
+                <select
+                (change)="loadCounts(selectedYear)"
+                [(ngModel)]="selectedYear"
+                class="px-2 py-1 bg-slate-100 rounded-md shadow-md text-slate-800 font-semibold">
+                @for(year of years(); track $index) {
+                    <option [ngValue]="year">{{year}}</option>
                 }
-            </div>
+            </select>
+        }
 
-        </div>
-
-        <div class="flex gap-4 flex-wrap">
-            <div class="bg-slate-200 rounded-2xl shadow-xl transition-shadow duration-200 hover:shadow-2xl grow">
-                <div class="flex justify-between bg-linear-to-br from-amber-500 to-amber-400 w-full rounded-t-2xl px-4 py-2 text-slate-800">
-                    <h1 class="font-bold text-xl">Workout tracking</h1>
-                    <select
-                    (change)="loadCounts(selectedYear)"
-                    [(ngModel)]="selectedYear"
-                    class="px-2 py-1 bg-slate-100 rounded-md shadow-md text-slate-800 font-semibold">
-                        @for(year of years(); track $index) {
-                            <option [ngValue]="year">{{year}}</option>
-                        }
-                    </select>
-                </div>
-
-                <div class="flex flex-col min-h-70 gap-4">
-                    <div  class="flex justify-between items-center h-full flex-col grow gap-4 p-4">
-                        <app-workouts-chart [workoutCountsSource]="workoutsPerMonth" class="flex-1 min-w-85 max-w-[99%] mx-auto w-[26vw]"></app-workouts-chart>
-                    </div>
-
-                </div>
-            </div>
-            <div class="bg-slate-200 rounded-2xl shadow-xl transition-shadow duration-200 hover:shadow-2xl grow">
-                <div class="flex justify-between bg-linear-to-br from-violet-500 to-violet-400 w-full rounded-t-2xl px-4 py-2">
-                    <h1 class="font-bold text-xl text-slate-200">Weight tracking</h1>
-                    <select class="px-2 py-1 bg-slate-100 rounded-md shadow-md text-slate-800 font-semibold">
-                        <option selected disabled hidden>2026</option>
-                    </select>
-                </div>
-
-                <div class="flex flex-col gap-4 min-h-70">
-                    <div  class="flex items-center justify-center flex-col grow gap-4 p-4">
-                        <app-weight-chart class="flex-1 min-w-85 max-w-[99%] grow w-[26vw] mx-auto"></app-weight-chart>
-                    </div>
-
-                </div>
-            </div>
-
-        </div>
-        <div class="bg-slate-200 rounded-2xl shadow-xl transition-all duration-200 hover:shadow-2xl grow flex flex-col ">
-            <div class="flex flex-wrap bg-linear-to-br from-yellow-500 to-yellow-400 w-full rounded-t-2xl px-4 py-2">
-                <h1 class="font-bold text-xl text-slate-800">Quick actions</h1>
-            </div>
-
-            <div class="p-4 bg-slate-200 space-y-3 rounded-b-2xl flex  h-full items-center justify-center">
-                <div class="flex justify-center items-center flex-wrap md:flex-nowrap  gap-3 font-semibold text-slate-800  w-full">
-                    <a routerLink="/workout-form" class="text-left w-full bg-linear-to-br from-yellow-400 to-yellow-500 cursor-pointer rounded px-3 py-2 hover:opacity-50 transition-all duration-200 flex items-center gap-2 justify-center text-lg sm:text-xl active:opacity-40 shadow-all">
-                        <ng-icon name="faSolidDumbbell" class="self-center"></ng-icon>
-                        <span class="self-center">Add Workout</span>
-                    </a>
-                    <button class="text-left w-full bg-linear-to-br from-yellow-400 to-yellow-500 cursor-pointer rounded px-3 py-2 hover:opacity-50 transition-all duration-200 flex items-center gap-2 justify-center text-lg sm:text-xl active:opacity-40 shadow-all">
-                        <ng-icon name="faSolidScaleUnbalanced" class="self-center"></ng-icon>
-                        <span class="self-center">Log Weight</span>
-                    </button>
-                    <button class="text-left w-full bg-linear-to-br from-yellow-400 to-yellow-500 cursor-pointer rounded px-3 py-2 hover:opacity-50 transition-all duration-200 flex items-center gap-2 justify-center text-lg sm:text-xl active:opacity-40 shadow-all">
-                        <ng-icon name="faSolidUtensils" class="self-center"></ng-icon>
-                        <span class="self-center">Add Meal</span>
-                    </button>
-                    <button class="text-left w-full bg-linear-to-br from-yellow-400 to-yellow-500 cursor-pointer rounded px-3 py-2 hover:opacity-50 transition-all duration-200 flex items-center gap-2 justify-center text-lg sm:text-xl active:opacity-40 shadow-all">
-                        <ng-icon name="faSolidCalculator" class="self-center"></ng-icon>
-                        <span class="self-center">Calorie Calculator</span>
-                    </button>
-                </div>
-            </div>
-        </div>
     </div>
 
-    <div class="flex flex-col gap-5 justify-between  rounded-2xl  grow">
-        <div class="flex flex-col  w-full gap-4">
-            <div class="bg-slate-200 rounded-2xl shadow-lg p-8 flex flex-col w-full grow items-center text-center hover:shadow-xl transition-all duration-200">
-                <div class="rounded-full w-24 h-24 bg-slate-600 flex items-center justify-center text-white text-2xl font-semibold">{{this.userSource()?.fullName?.at(0) || "?"}}</div>
-                <h4 class="mt-4 text-lg font-semibold text-slate-800">{{this.userSource()?.fullName }}</h4>
-                <div class="mt-3 w-full grid grid-cols-3 gap-4 text-center">
-                    <div>
-                        <div class="text-sm text-slate-500">Weight</div>
-                        <div class="font-semibold text-slate-800">{{getUserWeight()}}</div>
-                    </div>
-                    <div>
-                        <div class="text-sm text-slate-500">Height</div>
-                        <div class="font-semibold text-slate-800">{{getUserHeight()}}</div>
-                    </div>
-                    <div>
-                        <div class="text-sm text-slate-500">Age</div>
-                        <div class="font-semibold text-slate-800">{{getUserAge()}}</div>
-                    </div>
+    <div class="flex flex-col min-h-70 gap-4">
+        <div  class="flex justify-between items-center h-full flex-col grow gap-4 p-4">
+            @if(years()?.length! > 0) {
+                <app-workouts-chart [workoutCountsSource]="workoutsPerMonth" class="flex-1 min-w-85 max-w-[99%] mx-auto w-[26vw]"></app-workouts-chart>
+            }
+            @else {
+                <div class="flex flex-col gap-2 justify-center items-center py-15 flex-1 min-w-85 max-w-[99%] mx-auto w-[26vw]">
+                    <ng-icon name="faSolidChartLine" class="text-5xl text-slate-800!"></ng-icon>
+                    <h1 class="text-2xl text-slate-800 font-semibold text-center">No workouts found</h1>
+                    <a routerLink="/workout-form" class="text-xl text-slate-700 font-semibold hover:text-slate-900 hover:opacity-80 hover:underline">Start tracking to see your progress chart</a>
+                </div>
+            }
+        </div>
+
+    </div>
+</div>
+<div class="bg-slate-200 rounded-2xl shadow-xl transition-shadow duration-200 hover:shadow-2xl grow">
+    <div class="flex justify-between bg-linear-to-br from-violet-500 to-violet-400 w-full rounded-t-2xl px-4 py-2">
+        <h1 class="font-bold text-xl text-slate-200">Weight tracking</h1>
+        <select class="px-2 py-1 bg-slate-100 rounded-md shadow-md text-slate-800 font-semibold">
+            <option selected disabled hidden>2026</option>
+        </select>
+    </div>
+
+    <div class="flex flex-col gap-4 min-h-70">
+        <div  class="flex items-center justify-center flex-col grow gap-4 p-4">
+            <app-weight-chart class="flex-1 min-w-85 max-w-[99%] grow w-[26vw] mx-auto"></app-weight-chart>
+        </div>
+
+    </div>
+</div>
+
+</div>
+<div class="bg-slate-200 rounded-2xl shadow-xl transition-all duration-200 hover:shadow-2xl grow flex flex-col ">
+    <div class="flex flex-wrap bg-linear-to-br from-yellow-500 to-yellow-400 w-full rounded-t-2xl px-4 py-2">
+        <h1 class="font-bold text-xl text-slate-800">Quick actions</h1>
+    </div>
+
+    <div class="p-4 bg-slate-200 space-y-3 rounded-b-2xl flex  h-full items-center justify-center">
+        <div class="flex justify-center items-center flex-wrap md:flex-nowrap  gap-3 font-semibold text-slate-800  w-full">
+            <a routerLink="/workout-form" class="text-left w-full bg-linear-to-br from-yellow-400 to-yellow-500 cursor-pointer rounded px-3 py-2 hover:opacity-50 transition-all duration-200 flex items-center gap-2 justify-center text-lg sm:text-xl active:opacity-40 shadow-all">
+                <ng-icon name="faSolidDumbbell" class="self-center"></ng-icon>
+                <span class="self-center">Add Workout</span>
+            </a>
+            <button class="text-left w-full bg-linear-to-br from-yellow-400 to-yellow-500 cursor-pointer rounded px-3 py-2 hover:opacity-50 transition-all duration-200 flex items-center gap-2 justify-center text-lg sm:text-xl active:opacity-40 shadow-all">
+                <ng-icon name="faSolidScaleUnbalanced" class="self-center"></ng-icon>
+                <span class="self-center">Log Weight</span>
+            </button>
+            <button class="text-left w-full bg-linear-to-br from-yellow-400 to-yellow-500 cursor-pointer rounded px-3 py-2 hover:opacity-50 transition-all duration-200 flex items-center gap-2 justify-center text-lg sm:text-xl active:opacity-40 shadow-all">
+                <ng-icon name="faSolidUtensils" class="self-center"></ng-icon>
+                <span class="self-center">Add Meal</span>
+            </button>
+            <button class="text-left w-full bg-linear-to-br from-yellow-400 to-yellow-500 cursor-pointer rounded px-3 py-2 hover:opacity-50 transition-all duration-200 flex items-center gap-2 justify-center text-lg sm:text-xl active:opacity-40 shadow-all">
+                <ng-icon name="faSolidCalculator" class="self-center"></ng-icon>
+                <span class="self-center">Calorie Calculator</span>
+            </button>
+        </div>
+    </div>
+</div>
+</div>
+
+<div class="flex flex-col gap-5 justify-between  rounded-2xl  grow">
+    <div class="flex flex-col  w-full gap-4">
+        <div class="bg-slate-200 rounded-2xl shadow-lg p-8 flex flex-col w-full grow items-center text-center hover:shadow-xl transition-all duration-200">
+            <div class="rounded-full w-24 h-24 bg-slate-600 flex items-center justify-center text-white text-2xl font-semibold">{{this.userSource()?.fullName?.at(0) || "?"}}</div>
+            <h4 class="mt-4 text-lg font-semibold text-slate-800">{{this.userSource()?.fullName }}</h4>
+            <div class="mt-3 w-full grid grid-cols-3 gap-4 text-center">
+                <div>
+                    <div class="text-sm text-slate-500">Weight</div>
+                    <div class="font-semibold text-slate-800">{{getUserWeight()}}</div>
+                </div>
+                <div>
+                    <div class="text-sm text-slate-500">Height</div>
+                    <div class="font-semibold text-slate-800">{{getUserHeight()}}</div>
+                </div>
+                <div>
+                    <div class="text-sm text-slate-500">Age</div>
+                    <div class="font-semibold text-slate-800">{{getUserAge()}}</div>
                 </div>
             </div>
+        </div>
 
-            <div class="bg-slate-200 rounded-2xl shadow-xl transition-all duration-200 hover:shadow-2xl">
-                <div class="flex bg-linear-to-br from-yellow-500 to-yellow-400 w-full rounded-t-2xl px-4 py-2">
-                    <h1 class="font-bold text-xl text-slate-800">Last 10 workouts</h1>
-                </div>
+        <div class="bg-slate-200 rounded-2xl shadow-xl transition-all duration-200 hover:shadow-2xl">
+            <div class="flex bg-linear-to-br from-yellow-500 to-yellow-400 w-full rounded-t-2xl px-4 py-2">
+                <h1 class="font-bold text-xl text-slate-800">Last 10 workouts</h1>
+            </div>
 
 
-                <div class="max-h-90 overflow-y-auto">
-                    <div class="p-4 flex flex-col gap-4">
-                        @if(dashboardSource()?.recentWorkouts?.length === 0 || !dashboardSource()?.recentWorkouts) {
-                            <div class="flex flex-col gap-2 justify-center items-center py-15">
-                                <ng-icon name="faSolidDumbbell" class="text-6xl text-slate-800!"></ng-icon>
-                                <h1 class="text-3xl text-slate-800 font-semibold text-center">No workouts found</h1>
-                                <a routerLink="/workout-form" class="text-xl text-slate-700 font-semibold hover:text-slate-900 hover:opacity-80 hover:underline">Add your first workout</a>
-                            </div>
-                        }
-                        @else {
-                            @for(workout of dashboardSource()?.recentWorkouts; track $index) {
-                                <div class="bg-white rounded-xl p-4 text-slate-800 shadow-lg flex justify-between items-center transition hover:-translate-y-1 hover:bg-amber-200 cursor-pointer active:bg-amber-300">
-                                    <div>
-                                        <div class="font-semibold text-lg">{{workout.name}}</div>
-                                        <div class="text-emerald-700 font-semibold">{{workout.workoutDate | date}}</div>
-                                    </div>
-                                    <div class="text-amber-600 font-semibold">{{workout.exerciseCount}} exercises</div>
+            <div class="max-h-90 overflow-y-auto">
+                <div class="p-4 flex flex-col gap-4">
+                    @if(dashboardSource()?.recentWorkouts?.length === 0 || !dashboardSource()?.recentWorkouts) {
+                        <div class="flex flex-col gap-2 justify-center items-center py-15">
+                            <ng-icon name="faSolidDumbbell" class="text-6xl text-slate-800!"></ng-icon>
+                            <h1 class="text-3xl text-slate-800 font-semibold text-center">No workouts found</h1>
+                            <a routerLink="/workout-form" class="text-xl text-slate-700 font-semibold hover:text-slate-900 hover:opacity-80 hover:underline">Add your first workout</a>
+                        </div>
+                    }
+                    @else {
+                        @for(workout of dashboardSource()?.recentWorkouts; track $index) {
+                            <div class="bg-white rounded-xl p-4 text-slate-800 shadow-lg flex justify-between items-center transition hover:-translate-y-1 hover:bg-amber-200 cursor-pointer active:bg-amber-300">
+                                <div>
+                                    <div class="font-semibold text-lg">{{workout.name}}</div>
+                                    <div class="text-emerald-700 font-semibold">{{workout.workoutDate | date}}</div>
                                 </div>
+                                <div class="text-amber-600 font-semibold">{{workout.exerciseCount}} exercises</div>
+                            </div>
 
-                            }
                         }
+                    }
 
 
 
-                    </div>
                 </div>
-
             </div>
-        </div>
 
+        </div>
     </div>
+
+</div>
 
 </div>
