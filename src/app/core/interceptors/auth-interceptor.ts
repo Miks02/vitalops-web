@@ -32,7 +32,7 @@ function handle401Error(
     authService: AuthService): Observable<HttpEvent<any>> {
         if(!isRefreshing) {
             isRefreshing = true;
-
+            authService.accessToken = null;
             return authService.rotateAuthTokens().pipe(
                 switchMap((res): Observable<HttpEvent<any>> => {
                     isRefreshing = false;
@@ -65,7 +65,7 @@ function handle401Error(
         }
 
         return authService.accessToken$.pipe(
-            filter(token => token !== null),
+            filter(token => token != null),
             take(1),
             switchMap((token): Observable<HttpEvent<any>> => next(addTokenHeader(req, token)))
         )

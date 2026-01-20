@@ -24,8 +24,12 @@ export class AuthService {
 
     get accessToken(): string | null {return this.accessTokenSubject.value}
     set accessToken(accessToken: string | null) {
-        localStorage.setItem('token', accessToken as string)
         this.accessTokenSubject.next(accessToken)
+
+        if(accessToken === null) 
+            localStorage.removeItem('token')
+        else
+            localStorage.setItem('token', accessToken as string)
     }
 
     constructor() {
