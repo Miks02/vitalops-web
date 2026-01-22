@@ -21,15 +21,22 @@ body {
   box-shadow: 0 -5px 5px -5px #333;
 }
 
-@theme {
-  @keyframes typewriter {
-    from {
-      width: 0;
-    }
-    to {
-      width: 12ch;
-    }
+@keyframes typewriter {
+  from {
+    max-width: 0%;
   }
+  to {
+    max-width: var(--target-width);
+  }
+}
 
-  --animate-typewriter: typewriter 2s linear forwards;
+:root {
+  --animate-typewriter: typewriter 2s steps(50, end) forwards;
+}
+
+.typewriter {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  animation: var(--animate-typewriter);
 }
