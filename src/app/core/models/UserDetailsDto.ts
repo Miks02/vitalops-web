@@ -8,7 +8,8 @@ export type UserDetailsDto = {
     imagePath: string,
 
     gender?: Gender,
-    weight?: number,
+    currentWeight?: number,
+    targetWeight?: number,
     height?: number,
 
     accountStatus: AccountStatus,
