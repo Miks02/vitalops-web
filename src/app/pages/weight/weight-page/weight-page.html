@@ -1,62 +1,123 @@
 <div class="flex flex-col flex-wrap gap-6">
 
     <div class="flex gap-6 flex-col md:flex-row">
-        <div class="flex flex-col pl-5 justify-between bg-linear-to-br from-violet-500/90 to-violet-600 shadow-xl rounded-2xl grow h-45 px-2 py-4 font-semibold hover:shadow-white/50 transition-all duration-200 text-gray-100">
+        <div class="flex flex-col pl-5 justify-between bg-linear-to-br from-violet-500/90 to-violet-600 shadow-xl rounded-2xl w-full h-45 px-2 py-4 font-semibold hover:shadow-white/50 transition-all duration-200 text-gray-100">
             <div class="flex items-center gap-5">
-                <ng-icon name="faSolidScaleUnbalanced" class="text-5xl"></ng-icon>
-                <h5 class="text-3xl text-violet-100/90">Current Weight</h5>
+                <ng-icon name="faSolidScaleUnbalanced" class="text-3xl sm:text-5xl"></ng-icon>
+                <h5 class="text-2xl sm:text-3xl text-violet-100/90">Current Weight</h5>
 
             </div>
             <div class="flex gap-4 items-center opacity-95">
                 <div class="flex flex-col gap-2">
-                    <p class="text-3xl ">88 KG</p>
-                    <p class="italic text-lg text-violet-100/80">Last measured 5 days ago</p>
+                    @if(!currentWeight()) {
+                        <div class="flex gap-4">
+                            <ng-icon name="faSolidGhost" class="self-center text-2xl sm:text-3xl"></ng-icon>
+                            <p
+                            class="text-2xl sm:text-3xl  whitespace-nowrap typewriter items-center">No data yet</p>
+                        </div>
+
+                        <p class="italic text-lg text-violet-100/80 typewriter">Add your first weight log</p>
+                    } @else {
+                        <p
+                        class="text-2xl sm:text-3xl overflow-hidden whitespace-nowrap border-r-2 border-transparent ">{{currentWeight()?.weight}} KG</p>
+                        <p class="italic text-lg text-violet-100/80">Last measured at {{currentWeight()?.createdAt | date}}</p>
+                    }
+
                 </div>
-                <!-- <ng-icon name="faSolidGhost" class="text-xl"></ng-icon>
-                <p class="text-xl font-semibold overflow-hidden whitespace-nowrap border-r-2 border-transparent animate-typewriter w-[14ch]">
-                    No Data Yet...
-                </p> -->
+
             </div>
 
         </div>
 
-        <div class="flex flex-col pl-5 justify-between bg-linear-to-br from-emerald-500/90 to-emerald-600 shadow-xl rounded-2xl grow h-45 px-2 py-4 text-gray-100 font-semibold hover:shadow-white/50 transition-all duration-200">
+        <div class="flex flex-col pl-5 justify-between bg-linear-to-br from-emerald-500/90 to-emerald-600 shadow-xl rounded-2xl w-full h-45 px-2 py-4 text-gray-100 font-semibold hover:shadow-white/50 transition-all duration-200">
             <div class="flex items-center gap-5">
-                <ng-icon name="faSolidMagnifyingGlassChart" class="text-5xl"></ng-icon>
-                <h5 class="text-3xl text-emerald-100/90">Total Progress</h5>
+                <ng-icon name="faSolidMagnifyingGlassChart" class="text-3xl sm:text-5xl"></ng-icon>
+                <h5 class="text-2xl sm:text-3xl text-emerald-100/90">Total Progress</h5>
 
             </div>
             <div class="flex gap-4 items-center opacity-95">
                 <div class="flex flex-col gap-2">
-                    <p class="text-3xl "> -5.5 KG </p>
-                    <p class="text-emerald-100/80 italic text-lg">Since january 12th</p>
+                    @if(!progress()) {
+                        <div class="flex gap-4">
+                            <ng-icon name="faSolidGhost" class="self-center text-2xl sm:text-3xl"></ng-icon>
+                            <p
+                            class="text-2xl sm:text-3xl  whitespace-nowrap typewriter items-center">No data yet</p>
+                        </div>
+
+                        <p class="italic text-lg text-emerald-100/80 typewriter">Add more records to show progress</p>
+                    } @else {
+                        <p
+                        class="text-2xl sm:text-3xl overflow-hidden whitespace-nowrap border-r-2 border-transparent w-[12ch]">{{progress()}} KG</p>
+                        <p class="italic text-lg text-emerald-100/80">Since {{firstEntry()?.createdAt | date}}</p>
+                    }
+
                 </div>
-                <!-- <ng-icon name="faSolidGhost" class="text-xl"></ng-icon>
-                <p class="text-xl font-semibold overflow-hidden whitespace-nowrap border-r-2 border-transparent animate-typewriter w-[14ch]">
-                    No Data Yet...
-                </p> -->
+
             </div>
 
         </div>
 
-        <div class="flex flex-col pl-5 justify-between bg-linear-to-br from-rose-500/90 to-rose-600 shadow-xl rounded-2xl grow h-45 px-2 py-4 text-gray-100 font-semibold hover:shadow-white/50 transition-all duration-200">
+        <button
+        [disabled]="isTargetFormOpen()"
+        (click)="enableTargetWeightEdit()"
+        class="flex flex-col pl-5 justify-between bg-linear-to-br from-rose-500/90 to-rose-600 shadow-xl rounded-2xl w-full h-45 px-2 py-4 text-gray-100 font-semibold hover:shadow-white/50 transition-all duration-200 cursor-pointer">
             <div class="flex items-center gap-5">
-                <ng-icon name="faSolidBullseye" class="text-5xl"></ng-icon>
-                <h5 class="text-3xl text-rose-100/90">Target Weight</h5>
+                <ng-icon name="faSolidBullseye" class="text-3xl sm:text-5xl"></ng-icon>
+                <h5 class="text-2xl sm:text-3xl text-rose-100/90">Target Weight</h5>
 
             </div>
-            <div class="flex gap-4 items-center opacity-95">
+            <div class="flex gap-4 items-center opacity-95" [class.hidden]="isEditingTarget()">
                 <div class="flex flex-col gap-2">
-                    <p class="text-3xl ">83 KG</p>
-                    <p class="text-rose-100/80 italic text-lg">Keep going, you can do it!</p>
-                </div>
-                <!-- <ng-icon name="faSolidGhost" class="text-xl"></ng-icon>
-                <p class="text-xl font-semibold overflow-hidden whitespace-nowrap border-r-2 border-transparent animate-typewriter w-[14ch]">
-                    No Data Yet...
-                </p> -->
-            </div>
+                    @if(!targetWeight()) {
+                        <div class="flex gap-4">
+                            <ng-icon name="faSolidGhost" class="self-center text-2xl sm:text-3xl"></ng-icon>
+                            <p
+                            class="text-2xl sm:text-3xl  whitespace-nowrap typewriter items-center">No data yet</p>
+                        </div>
 
-        </div>
+                        <p
+                        class="italic text-lg text-rose-100/80 typewriter">Click to set your target weight</p>
+                    } @else {
+                        <p
+                        class="text-2xl sm:text-3xl overflow-hidden text-left">{{targetWeight()}} KG</p>
+                        <p class="italic text-lg text-rose-100/80">{{getTargetWeightMessage()}}</p>
+                    }
+
+                </div>
+
+            </div>
+            @if(isEditingTarget()) {
+                <form [formGroup]="targetWeightForm" (ngSubmit)="saveTargetWeight()" class="flex flex-col gap-3">
+                    <div
+                        [class.border-red-500]="isTargetWeightControlInvalid()"
+                        [class.border-transparent]="!isTargetWeightControlInvalid()"
+                        class="flex items-center gap-3 bg-white/20 rounded-lg px-3 py-2 border transition duration-200 focus-within:outline outline-rose-300">
+                        <ng-icon name="faSolidWeightScale" class="text-rose-100 text-xl"></ng-icon>
+                        <input
+                            formControlName="targetWeight"
+                            type="number"
+                            step="0.1"
+                            class="flex-1 bg-transparent outline-none text-lg placeholder-rose-200/60 text-white"
+                            placeholder="Enter target weight (kg)" />
+                    </div>
+                    <div class="flex gap-2 justify-end relative">
+                        <button
+                            type="button"
+                            (click)="cancelTargetWeightEdit()"
+                            class="bg-white/20 text-white px-4 py-1.5 rounded-lg font-semibold text-sm transition-all duration-200 hover:bg-white/30 cursor-pointer active:opacity-70 shadow-all">
+                            Cancel
+                        </button>
+                        <button
+                            [disabled]="targetWeightForm.invalid"
+                            type="submit"
+                            class="bg-emerald-300/90 shadow-all text-rose-600 px-4 py-1.5 rounded-lg font-semibold text-sm transition-all duration-200 disabled:opacity-50 hover:bg-rose-50 disabled:pointer-events-none active:opacity-70 cursor-pointer">
+                            Save
+                        </button>
+                    </div>
+                </form>
+            }
+
+        </button>
 
     </div>
 
@@ -71,7 +132,7 @@
 
             <div class="flex flex-col gap-4">
                 <div  class="flex items-center justify-center flex-col min-h-100 grow gap-4 p-4">
-                    <app-weight-chart class="flex-1 min-w-85 max-w-[99%] grow w-full mx-auto"></app-weight-chart>
+                    <app-weight-chart class="flex-1 min-w-auto sm:min-w-85 max-w-[99%] grow w-full mx-auto"></app-weight-chart>
                 </div>
 
             </div>
@@ -84,45 +145,57 @@
             </div>
 
             <div class="p-4">
-                <form class="space-y-4">
+                <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-4">
 
                     <label class="flex flex-col gap-2">
                         <span class="text-sm font-medium text-slate-700">Weight (kg)</span>
-                        <div class="flex items-center gap-4 justify-between shadow-md bg-linear-to-br from-white to-slate-50 rounded-lg px-4 py-4 transition-colors duration-200 focus-within:outline outline-amber-400">
-                            <div class="flex justify-center">
-                                <ng-icon name="faSolidWeightScale" class="text-amber-600/80! text-xl"></ng-icon>
-                            </div>
-                            <input type="number" step="0.1" name="weight" class="flex-1 bg-transparent outline-none text-lg" placeholder="Enter your current weight" />
+                        <div
+                        [class.border-red-500]="isControlInvalid('weight')"
+                        [class.border-transparent]="!isControlInvalid('weight')"
+                        class="flex items-center gap-4 justify-between shadow-md bg-linear-to-br from-white to-slate-50 rounded-lg px-4 py-4 transition duration-200 border border-transparent focus-within:outline outline-amber-400">
+                        <div class="flex justify-center">
+                            <ng-icon name="faSolidWeightScale" class="text-amber-600/80! text-xl"></ng-icon>
                         </div>
-                    </label>
-
-                    <label class="flex flex-col gap-2">
-                        <span class="text-sm font-medium text-slate-700">Time</span>
-                        <div class="flex items-center gap-4 justify-between shadow-md bg-linear-to-br from-white to-slate-50 rounded-lg px-4 py-4 transition-colors duration-200 focus-within:outline outline-amber-400">
-                            <div class="flex justify-center">
-                                <ng-icon name="faSolidClock" class="text-amber-600/80! text-xl"></ng-icon>
-                            </div>
-                            <input type="time" name="time" class="flex-1 bg-transparent outline-none text-lg" />
-                        </div>
-                    </label>
-
-                    <label class="flex flex-col gap-2">
-                        <span class="text-sm font-medium text-slate-700">Notes</span>
-                        <div class="flex items-start gap-4 justify-between shadow-md bg-linear-to-br from-white to-slate-50 rounded-lg px-4 py-4 transition-colors duration-200 focus-within:outline outline-amber-400">
-                            <div class="flex justify-center mt-1">
-                                <ng-icon name="faSolidNoteSticky" class="text-amber-600/80! text-xl"></ng-icon>
-                            </div>
-                            <textarea name="notes" rows="1" class="flex-1 bg-transparent outline-none resize-none text-lg" placeholder="Optional notes (e.g. after workout, fasting)"></textarea>
-                        </div>
-                    </label>
-
-                    <div class="flex justify-center pt-2">
-                        <button type="button" class="bg-emerald-500 text-white px-6 py-2 rounded-lg font-semibold shadow-all cursor-pointer transition-all duration-200 hover:shadow-md hover:opacity-70 active:opacity-50">Save Entry</button>
+                        <input formControlName="weight" type="number" step="0.1" name="weight" class="flex-1 bg-transparent outline-none text-lg" placeholder="Enter your current weight" />
                     </div>
-                </form>
-            </div>
+                </label>
 
+                <label class="flex flex-col gap-2">
+                    <span class="text-sm font-medium text-slate-700">Time</span>
+                    <div
+                    [class.border-red-500]="isControlInvalid('time')"
+                    [class.border-transparent]="!isControlInvalid('time')"
+                    class="flex items-center gap-4 justify-between shadow-md bg-linear-to-br from-white to-slate-50 rounded-lg px-4 py-4 transition-colors border duration-200 focus-within:outline outline-amber-400">
+                    <div class="flex justify-center">
+                        <ng-icon name="faSolidClock" class="text-amber-600/80! text-xl"></ng-icon>
+                    </div>
+                    <input formControlName="time" type="time" name="time" class="flex-1 bg-transparent outline-none text-lg" />
+                </div>
+            </label>
+
+            <label class="flex flex-col gap-2">
+                <span class="text-sm font-medium text-slate-700">Notes</span>
+                <div
+                [class.border-red-500]="isControlInvalid('notes')"
+                [class.border-transparent]="!isControlInvalid('notes')"
+                class="flex items-start gap-4 justify-between shadow-md bg-linear-to-br from-white to-slate-50 rounded-lg px-4 py-4 transition-colors duration-200 border focus-within:outline outline-amber-400">
+                <div class="flex justify-center mt-1">
+                    <ng-icon name="faSolidNoteSticky" class="text-amber-600/80! text-xl"></ng-icon>
+                </div>
+                <textarea formControlName="notes" name="notes" rows="1" class="flex-1 bg-transparent outline-none resize-none text-lg" placeholder="Optional notes (e.g. after workout, fasting)"></textarea>
+            </div>
+        </label>
+
+        <div class="flex justify-center pt-2">
+            <button
+            [disabled]="form.invalid"
+            type="submit"
+            class="bg-emerald-500 text-white px-6 py-2 rounded-lg font-semibold shadow-all cursor-pointer transition-all duration-200 disabled:opacity-50 hover:shadow-md hover:opacity-70 active:opacity-50 disabled:pointer-events-none">Save Entry</button>
         </div>
-    </div>
+    </form>
+</div>
+
+</div>
+</div>
 
 </div>

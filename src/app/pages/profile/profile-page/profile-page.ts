@@ -129,7 +129,7 @@ export class ProfilePage {
     })
 
     weightLabel = computed(() => {
-        const weight = this.userData()?.weight;
+        const weight = this.userData()?.currentWeight;
 
         if(!weight)
             return "Not specified";
@@ -173,7 +173,7 @@ export class ProfilePage {
         this.usernameForm.patchValue({ userName: user.userName || '' });
         this.emailForm.patchValue({ email: user.email || '' });
         this.genderForm.patchValue({ gender: user.gender ?? null });
-        this.weightForm.patchValue({ weight: user.weight ?? null });
+        this.weightForm.patchValue({ weight: user.currentWeight ?? null });
         this.heightForm.patchValue({ height: user.height ?? null });
     }
 
@@ -335,7 +335,7 @@ export class ProfilePage {
         const form = this.weightForm;
         if (form.valid) {
             const weight = form.get('weight')?.value;
-            if (this.cancelIfUnchangedValue(Number(weight), Number(this.userData()?.weight ?? null)))
+            if (this.cancelIfUnchangedValue(Number(weight), Number(this.userData()?.currentWeight ?? null)))
                 return;
 
             this.userService.updateWeight({weight: weight})

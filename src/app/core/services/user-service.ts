@@ -10,6 +10,7 @@ import { UpdateEmailDto } from '../models/User/UpdateEmailDto';
 import { UpdateDateOfBirthDto } from '../models/User/UpdateDateOfBirthDto';
 import { UpdateGenderDto } from '../models/User/UpdateGenderDto';
 import { UpdateHeightDto } from '../models/User/UpdateHeightDto';
+import { UpdateTargetWeightDto } from '../models/User/UpdateTargetWeightDto';
 import { Gender } from '../models/Gender';
 
 @Injectable({
@@ -77,7 +78,7 @@ export class UserService {
         return this.http.patch<number>(`${this.api}/users/weight`, weight)
         .pipe(
             tap((res) => {
-                const next = this.mergeUserDetails({weight: res});
+                const next = this.mergeUserDetails({currentWeight: res});
                 this.userDetailsSubject.next(next)
             }),
         )
@@ -132,6 +133,17 @@ export class UserService {
         .pipe(
             tap(res => {
                 const next = this.mergeUserDetails({ height: res });
+                this.userDetailsSubject.next(next);
+            }),
+            tap(res => { console.log(res); })
+        );
+    }
+
+    updateTargetWeight(targetWeight: UpdateTargetWeightDto) {
+        return this.http.patch<number>(`${this.api}/users/target-weight`, targetWeight)
+        .pipe(
+            tap(res => {
+                const next = this.mergeUserDetails({ targetWeight: res });
                 this.userDetailsSubject.next(next);
             }),
             tap(res => { console.log(res); })
