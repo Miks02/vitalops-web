@@ -1,7 +1,7 @@
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { CardioType } from "../../pages/workout/models/CardioType";
 import { ExerciseType } from "../../pages/workout/models/ExerciseType";
-import { minArrayLength } from "./FormHelpers";
+import { minArrayLength, onlyNumbersCheck } from "./FormHelpers";
 import { ExerciseEntryFormValue } from "../../pages/workout/models/ExerciseEntryFormValue";
 import { CreateWorkoutDto } from "../../pages/workout/models/CreateWorkoutDto";
 
@@ -32,7 +32,7 @@ export function createWorkoutForm(fb: FormBuilder): FormGroup {
         name: ['', Validators.required],
         workoutDate: [today, Validators.required],
         exercises: fb.array([], [minArrayLength(1)]),
-        notes: ['', [Validators.maxLength(50)]]
+        notes: ['', [Validators.maxLength(150)]]
     })
 }
 
@@ -107,4 +107,18 @@ export function createProfilePictureForm(fb: FormBuilder): FormGroup {
     return fb.group({
         profileImage: ['']
     });
+}
+
+export function createWeightEntryForm(fb: FormBuilder): FormGroup {
+    return fb.group({
+        weight: ['', [Validators.required, Validators.min(24), Validators.max(399), onlyNumbersCheck()]],
+        time: ['', Validators.required],
+        notes: ['', Validators.maxLength(100)]
+    });
+}
+
+export function createTargetWeightForm(fb: FormBuilder): FormGroup {
+    return fb.group({
+        targetWeight: ['', [Validators.required, Validators.min(24), Validators.max(399), onlyNumbersCheck()]]
+    })
 }
