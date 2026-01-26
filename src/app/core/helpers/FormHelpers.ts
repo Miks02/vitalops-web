@@ -1,6 +1,13 @@
 import { HttpErrorResponse } from "@angular/common/http";
-import { AbstractControl, FormArray, FormControl, FormGroup, ValidatorFn } from "@angular/forms";
+import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, ValidatorFn } from "@angular/forms";
 import { ValidationError } from "../models/ValidationError";
+
+export function isControlValid(control: string, form: FormGroup): boolean {
+    const ct = form?.get(control);
+    if(!ct)
+        return false;
+    return !(ct.invalid && (ct.touched || ct.dirty))
+}
 
 export function addValidators(keys: string[], form: FormGroup, validators: ValidatorFn | ValidatorFn[]) {
     const validatorArray = Array.isArray(validators)
@@ -78,7 +85,7 @@ export function minArrayLength(min: number): ValidatorFn {
 
 export function onlyNumbersCheck(): ValidatorFn {
     return (control: AbstractControl) => {
-        const regex = /^\d+$/;
+        const regex = /^\d+([.,]\d+)?$/;
         const input = control as FormControl
         if(regex.test(control.value))
             return null;
