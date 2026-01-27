@@ -1,17 +1,17 @@
-import { Component, computed, inject, AfterViewInit, signal } from '@angular/core';
+import { Component, computed, inject, AfterViewInit, signal, WritableSignal } from '@angular/core';
 import { WeightChart } from "../../misc/weight-chart/weight-chart";
 import { LayoutState } from '../../../layout/services/layout-state';
 import { NgIcon, provideIcons } from "@ng-icons/core";
 import {
-  faSolidBullseye,
-  faSolidChevronLeft,
-  faSolidChevronRight,
-  faSolidClock,
-  faSolidGhost,
-  faSolidMagnifyingGlassChart,
-  faSolidNoteSticky,
-  faSolidScaleUnbalanced,
-  faSolidWeightScale
+    faSolidBullseye,
+    faSolidChevronLeft,
+    faSolidChevronRight,
+    faSolidClock,
+    faSolidGhost,
+    faSolidMagnifyingGlassChart,
+    faSolidNoteSticky,
+    faSolidScaleUnbalanced,
+    faSolidWeightScale
 } from "@ng-icons/font-awesome/solid";
 import { FormBuilder, ɵInternalFormsSharedModule, ReactiveFormsModule, AbstractControl } from '@angular/forms';
 import { createWeightEntryForm, createTargetWeightForm } from '../../../core/helpers/Factories';
@@ -22,10 +22,15 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { DatePipe, DecimalPipe, SlicePipe } from "@angular/common";
 import { UserService } from '../../../core/services/user-service';
 import { isControlValid } from '../../../core/helpers/FormHelpers';
+import { ModalData } from '../../../core/models/ModalData';
+import { ModalType } from '../../../core/models/ModalType';
+import { WeightEntryDetailsDto } from '../models/WeightEntryDetailsDto';
+import { Modal } from "../../../layout/utilities/modal/modal";
+import { formatDate } from '../../../core/helpers/Utility';
 
 @Component({
     selector: 'app-weight-page',
-    imports: [WeightChart, NgIcon, ɵInternalFormsSharedModule, ReactiveFormsModule, ReactiveFormsModule, DatePipe, DecimalPipe, SlicePipe],
+    imports: [WeightChart, NgIcon, ɵInternalFormsSharedModule, ReactiveFormsModule, ReactiveFormsModule, DatePipe, DecimalPipe, SlicePipe, Modal],
     templateUrl: './weight-page.html',
     styleUrl: './weight-page.css',
     providers: [provideIcons({faSolidScaleUnbalanced, faSolidBullseye, faSolidMagnifyingGlassChart, faSolidClock, faSolidWeightScale, faSolidNoteSticky, faSolidGhost, faSolidChevronLeft, faSolidChevronRight})]
@@ -39,6 +44,8 @@ export class WeightPage  {
     private fb = inject(FormBuilder);
     private notificationService = inject(NotificationService);
 
+    isModalOpen = signal(false);
+    selectedWeightEntry: WritableSignal<WeightEntryDetailsDto | null> = signal(null);
     userSource = toSignal(this.userService.userDetails$, {initialValue: null});
     weightSummarySource = toSignal(this.weightService.weightSummary$, {initialValue: null});
     weightLogsSource = toSignal(this.weightService.weightLogs$, {initialValue: null})
@@ -70,8 +77,8 @@ export class WeightPage  {
 
     loadWeightSummary() {
         return this.weightService.getMyWeightSummary()
-            .pipe(take(1))
-            .subscribe()
+        .pipe(take(1))
+        .subscribe()
     }
 
     onSubmit() {
@@ -88,8 +95,7 @@ export class WeightPage  {
     }
 
     enableTargetWeightEdit() {
-        if(this.isTargetFormOpen())
-        {
+        if(this.isTargetFormOpen()) {
             this.isTargetFormOpen.set(false);
             return;
         }
@@ -122,6 +128,49 @@ export class WeightPage  {
         if(this.targetWeight() === this.currentWeight()?.weight)
             return "You have reached your goal, well done!";
         return "Keep going you can do it!";
+    }
+
+    loadWeightEntry(id: number) {
+        return this.weightService.getMyWeightLog(id)
+            .pipe(take(1))
+            .subscribe((res) => {
+                this.selectedWeightEntry.set(res)
+                this.isModalOpen.set(true);
+            })
+
+    }
+
+    deleteWeightEntry() {
+        if(!this.selectedWeightEntry())
+            return;
+
+        return this.weightService.deleteWeightEntry(this.selectedWeightEntry()?.id!)
+            .pipe(take(1))
+            .subscribe(() => {
+                this.loadWeightSummary()
+                this.isModalOpen.set(false);
+                this.notificationService.showSuccess("Weight log has been deleted successfully")
+            })
+    }
+
+    closeModal() {
+        this.isModalOpen.set(false);
+    }
+
+    buildModal(): ModalData {
+        const entry = this.selectedWeightEntry();
+        const entryDate = formatDate(entry?.createdAt!)
+        const notes = entry?.notes ? `| ${entry.notes}` : ""
+
+        return {
+            title: `${entry?.weight} KG | ${entry?.time.substring(0, 5)} | ${entryDate} ${notes}`,
+            subtitle: `${entry?.notes}\nYou are about to delete this weight entry. This action cannot be undone.`,
+            type: ModalType.Warning,
+            primaryActionLabel: 'Confirm',
+            secondaryActionLabel: 'Close',
+            primaryAction: () => this.deleteWeightEntry(),
+            secondaryAction: () => this.isModalOpen.set(false)
+        };
     }
 
 
