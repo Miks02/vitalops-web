@@ -6,7 +6,7 @@ import { environment } from '../../../../environments/environment.development';
 import { WeightEntryDetailsDto } from '../models/WeightEntryDetailsDto';
 import { BehaviorSubject, tap } from 'rxjs';
 import { WeightSummaryDto } from '../models/WeightSummaryDto';
-import { PagedResult } from '../../../core/models/PagedResult';
+import { WeightRecordDto } from '../models/WeightRecordDto';
 
 @Injectable({
   providedIn: 'root',
@@ -18,10 +18,10 @@ export class WeightEntryService {
     private userService = inject(UserService);
 
     private weightSummarySubject = new BehaviorSubject<WeightSummaryDto | undefined>(undefined);
-    private pagedWeightEntriesSubject = new BehaviorSubject<PagedResult<WeightEntryDetailsDto> | undefined>(undefined);
+    private weightLogsSubject = new BehaviorSubject<WeightRecordDto[] | undefined>(undefined);
 
     weightSummary$ = this.weightSummarySubject.asObservable();
-    pagedWeightEntries$ = this.pagedWeightEntriesSubject.asObservable();
+    weightLogs$ = this.weightLogsSubject.asObservable();
 
     set weightSummary(summary: Partial<WeightSummaryDto>) {
         const current = this.weightSummarySubject.getValue() as WeightSummaryDto;
@@ -37,9 +37,19 @@ export class WeightEntryService {
                         currentWeight: res.currentWeight,
                         progress: res.progress
                     }
+                    this.weightLogsSubject.next(res.weightLogs);
                     this.userService.userDetails = {currentWeight: res.currentWeight.weight}
                 })
             )
+    }
+
+    getMyWeightLogs() {
+        return this.http.get<WeightRecordDto[]>(`${this.api}/weight-entries/logs`)
+            .pipe(
+                tap(res => {
+                    this.weightLogsSubject.next(res);
+                })
+            );
     }
 
     addWeightEntry(request: WeightCreateRequestDto) {
