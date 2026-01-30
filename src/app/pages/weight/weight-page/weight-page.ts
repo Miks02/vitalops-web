@@ -1,9 +1,10 @@
-import { Component, computed, inject, AfterViewInit, signal, WritableSignal, isWritableSignal } from '@angular/core';
+import { Component, computed, inject, signal, WritableSignal } from '@angular/core';
 import { WeightChart } from "../../misc/weight-chart/weight-chart";
 import { LayoutState } from '../../../layout/services/layout-state';
 import { NgIcon, provideIcons } from "@ng-icons/core";
 import {
     faSolidBullseye,
+    faSolidChartLine,
     faSolidChevronLeft,
     faSolidChevronRight,
     faSolidClock,
@@ -16,7 +17,7 @@ import {
 import { FormBuilder, ɵInternalFormsSharedModule, ReactiveFormsModule, AbstractControl, FormsModule } from '@angular/forms';
 import { createWeightEntryForm, createTargetWeightForm } from '../../../core/helpers/Factories';
 import { WeightEntryService } from '../services/weight-entry-service';
-import { take, tap } from 'rxjs';
+import { take } from 'rxjs';
 import { NotificationService } from '../../../core/services/notification-service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { DatePipe, DecimalPipe, SlicePipe } from "@angular/common";
@@ -27,14 +28,13 @@ import { ModalType } from '../../../core/models/ModalType';
 import { WeightEntryDetailsDto } from '../models/WeightEntryDetailsDto';
 import { Modal } from "../../../layout/utilities/modal/modal";
 import { formatDate } from '../../../core/helpers/Utility';
-import { WeightChartDto } from '../models/WeightChartDto';
 
 @Component({
     selector: 'app-weight-page',
     imports: [WeightChart, NgIcon, ɵInternalFormsSharedModule, ReactiveFormsModule, ReactiveFormsModule, DatePipe, DecimalPipe, SlicePipe, Modal, FormsModule],
     templateUrl: './weight-page.html',
     styleUrl: './weight-page.css',
-    providers: [provideIcons({faSolidScaleUnbalanced, faSolidBullseye, faSolidMagnifyingGlassChart, faSolidClock, faSolidWeightScale, faSolidNoteSticky, faSolidGhost, faSolidChevronLeft, faSolidChevronRight})]
+    providers: [provideIcons({faSolidScaleUnbalanced, faSolidBullseye, faSolidMagnifyingGlassChart, faSolidClock, faSolidWeightScale, faSolidNoteSticky, faSolidGhost, faSolidChevronLeft, faSolidChevronRight, faSolidChartLine})]
 })
 export class WeightPage  {
     isControlValid = isControlValid
@@ -67,7 +67,7 @@ export class WeightPage  {
     currentWeight = computed(() => this.weightSummarySource()?.currentWeight);
     progress = computed(() => this.weightSummarySource()?.progress);
     targetWeight = computed(() => this.userSource()?.targetWeight);
-    weightChart = computed(() => this.weightSummarySource()?.weightChart);
+    weightChart = computed(() => this.weightSummarySource()?.weightChart!);
 
     ngOnInit() {
         this.layoutState.setTitle("Weight Tracking");
