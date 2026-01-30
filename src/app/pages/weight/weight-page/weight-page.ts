@@ -105,10 +105,17 @@ export class WeightPage  {
         if(this.form.invalid)
             return;
 
-        this.weightService.addWeightEntry(this.form.value).pipe(take(1)).subscribe({
+        this.weightService.addWeightEntry(this.form.value)
+        .pipe(take(1))
+        .subscribe({
             next: () => {
+                this.form.reset();
                 this.notificationService.showSuccess("Weight logged successfully");
                 this.loadWeightSummary();
+            },
+            error: (err) => {
+                if(err.error.errorCode === "General.LimitReached")
+                    this.notificationService.showInfo("You can only log weight once per day")
             }
         });
 
