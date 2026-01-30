@@ -16,6 +16,7 @@ import { DatePipe } from '@angular/common';
 import { WorkoutService } from '../workout/services/workout-service';
 import { FormsModule } from '@angular/forms';
 import { Gender } from '../../core/models/Gender';
+import { WeightEntryService } from '../weight/services/weight-entry-service';
 Chart.register(...registerables)
 
 @Component({
@@ -30,12 +31,15 @@ export class Dashboard {
     private dashboardState = inject(DashboardState);
     private userService = inject(UserService);
     private workoutService = inject(WorkoutService);
+    private weightService = inject(WeightEntryService);
     private router = inject(Router)
 
     dashboardSource = toSignal(this.dashboardState.dashboard$, {initialValue: null})
     userSource = toSignal(this.userService.userDetails$, {initialValue: null})
     workoutsPerMonth = toSignal(this.workoutService.workoutCounts$, {initialValue: null});
-    selectedYear: number | null = new Date().getFullYear();
+    weightChartSource = toSignal(this.weightService.weightChart$, {initialValue: null});
+
+    selectedYear: number = new Date().getFullYear();
 
     years = computed(() => this.workoutsPerMonth()?.years)
 
@@ -43,6 +47,7 @@ export class Dashboard {
         this.layoutState.setTitle("Dashboard")
         this.loadDashboard();
         this.loadCounts();
+        this.loadWeightChart();
     }
 
     ngAfterViewInit() {
@@ -62,6 +67,13 @@ export class Dashboard {
 
     loadCounts(year: number | null = null) {
         return this.workoutService.getUserWorkoutCountsByMonth(year)
+        .pipe(take(1))
+        .subscribe();
+    }
+
+    loadWeightChart() {
+        const targetWeight = this.userSource()?.targetWeight;
+        return this.weightService.getMyWeightChart(targetWeight)
         .pipe(take(1))
         .subscribe();
     }
