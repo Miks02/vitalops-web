@@ -28,6 +28,10 @@ export class UserService {
         this.userDetailsSubject.next({...currentUser,...userDetails});
     }
 
+    get userDetails() {
+        return this.userDetailsSubject.getValue() as UserDetailsDto;
+    }
+
     get isUserLoaded() {
         return this.userDetailsSubject.getValue() !== null;
     }
