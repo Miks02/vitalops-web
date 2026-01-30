@@ -19,7 +19,7 @@ export class WeightChart {
     public chartType: 'line' = 'line';
 
     @Input()
-    weightDataSource: Signal<WeightChartDto | undefined> = signal(undefined);
+    weightDataSource: Signal<WeightChartDto | null> = signal(null);
 
     public chartData = computed<ChartConfiguration<'line'>['data']>(() => {
         const data = this.weightDataSource();
