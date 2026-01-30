@@ -27,6 +27,7 @@ import { ModalType } from '../../../core/models/ModalType';
 import { WeightEntryDetailsDto } from '../models/WeightEntryDetailsDto';
 import { Modal } from "../../../layout/utilities/modal/modal";
 import { formatDate } from '../../../core/helpers/Utility';
+import { WeightChartDto } from '../models/WeightChartDto';
 
 @Component({
     selector: 'app-weight-page',
@@ -62,10 +63,11 @@ export class WeightPage  {
     years = computed(() => this.weightSummarySource()?.years);
 
     weightLogs = computed(() => this.weightListDetailsSource()?.weightLogs);
-    firstEntry = computed(() => this.weightSummarySource()?.firstEntry)
-    currentWeight = computed(() => this.weightSummarySource()?.currentWeight)
-    progress = computed(() => this.weightSummarySource()?.progress)
-    targetWeight = computed(() => this.userSource()?.targetWeight)
+    firstEntry = computed(() => this.weightSummarySource()?.firstEntry);
+    currentWeight = computed(() => this.weightSummarySource()?.currentWeight);
+    progress = computed(() => this.weightSummarySource()?.progress);
+    targetWeight = computed(() => this.userSource()?.targetWeight);
+    weightChart = computed(() => this.weightSummarySource()?.weightChart);
 
     ngOnInit() {
         this.layoutState.setTitle("Weight Tracking");
@@ -82,13 +84,19 @@ export class WeightPage  {
     }
 
     loadWeightSummary() {
-        return this.weightService.getMyWeightSummary(this.selectedMonth(), this.selectedYear())
+        return this.weightService.getMyWeightSummary(this.selectedMonth(), this.selectedYear(), this.targetWeight())
         .pipe(take(1))
         .subscribe()
     }
 
     loadWeightLogs() {
         return this.weightService.getMyWeightLogs(this.selectedMonth(), this.selectedYear())
+        .pipe(take(1))
+        .subscribe()
+    }
+
+    loadWeightChart(targetWeight: number | null = null) {
+        return this.weightService.getMyWeightChart(targetWeight ?? this.targetWeight())
         .pipe(take(1))
         .subscribe()
     }
@@ -123,10 +131,13 @@ export class WeightPage  {
         if(this.targetWeightForm.invalid)
             return;
 
-        this.userService.updateTargetWeight(this.targetWeightForm.value).pipe(take(1)).subscribe({
-            next: () => {
+        this.userService.updateTargetWeight(this.targetWeightForm.value)
+        .pipe(take(1))
+        .subscribe({
+            next: (res) => {
                 this.notificationService.showSuccess("Target weight updated successfully");
                 this.isTargetFormOpen.set(false);
+                this.loadWeightChart(res);
             }
         });
     }
@@ -200,7 +211,7 @@ export class WeightPage  {
             case 11: return "November";
             case 12: return "December";
             default:
-                return "Undefined"
+            return "Undefined"
         }
     }
 
