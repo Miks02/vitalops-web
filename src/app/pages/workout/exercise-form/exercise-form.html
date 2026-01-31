@@ -148,6 +148,21 @@
         </label>
     </div>
 
+    <div class="flex justify-center">
+        @if(currentWeight() === null || currentWeight() === undefined) {
+            <div class="text-center text-amber-600 bg-amber-50 border border-amber-200 rounded-lg px-4 py-3">
+                <p class="font-semibold">Please add your current weight in weight tracking page</p>
+                <p class="text-sm text-amber-700 mt-1">This will help calculate the total weight for bodyweight exercises</p>
+            </div>
+        }
+        @else {
+            <div class="text-center text-slate-600 bg-slate-50 border border-slate-200 rounded-lg px-4 py-3">
+                <p class="text-sm font-semibold text-amber-600">Your current weight</p>
+                <p class="text-lg font-bold text-amber-800">{{ currentWeight() }} KG</p>
+            </div>
+        }
+    </div>
+
     @if(sets.length > 0) {
         <div class="flex justify-center">
             <button
