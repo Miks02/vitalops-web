@@ -55,12 +55,13 @@
                                         [class.bg-linear-to-br]="true"
                                         [class.from-yellow-400]="exercise.exerciseType === 1"
                                         [class.to-amber-500]="exercise.exerciseType === 1"
-                                        [class.from-blue-400]="exercise.exerciseType === 2"
-                                        [class.to-blue-600]="exercise.exerciseType === 2"
+                                        [class.from-indigo-400]="exercise.exerciseType === 2"
+                                        [class.to-indigo-600]="exercise.exerciseType === 2"
                                         [class.from-red-400]="exercise.exerciseType === 3"
                                         [class.to-rose-500]="exercise.exerciseType === 3"
                                         class="w-12 h-12 rounded-xl shadow-lg flex items-center justify-center group-hover:scale-105 transition-transform">
-                                        @if(isExerciseTypeCardio(exercise)) { <ng-icon name="faSolidPersonRunning" class="text-white! text-xl"></ng-icon> }
+                                        @if(exercise.exerciseType === 3) { <ng-icon name="faSolidPersonRunning" class="text-white! text-xl"></ng-icon> }
+                                        @else if(exercise.exerciseType === 2) { <ng-icon name="faSolidChildReaching" class="text-white! text-xl"></ng-icon> }
                                         @else { <ng-icon name="faSolidDumbbell" class="text-white! text-xl"></ng-icon> }
                                     </div>
                                     <div>
@@ -185,13 +186,13 @@
                     </div>
                 </div>
 
-                <div class="flex items-center gap-4 bg-linear-to-br from-blue-100 to-blue-200 rounded-2xl shadow-md px-4 py-4 hover:shadow-lg transition-all">
-                    <div class="w-12 h-12 rounded-xl bg-linear-to-br from-blue-400 to-blue-600 flex items-center justify-center shadow-lg">
+                <div class="flex items-center gap-4 bg-linear-to-br from-indigo-100 to-indigo-200 rounded-2xl shadow-md px-4 py-4 hover:shadow-lg transition-all">
+                    <div class="w-12 h-12 rounded-xl bg-linear-to-br from-indigo-400 to-indigo-600 flex items-center justify-center shadow-lg">
                         <ng-icon name="faSolidChildReaching" class="text-white! text-xl"></ng-icon>
                     </div>
                     <div class="flex-1">
-                        <p class="text-xs text-blue-700 font-semibold uppercase tracking-wider">Bodyweight</p>
-                        <p class="text-2xl font-bold text-blue-900">{{ getBodyweightExerciseCount() }}</p>
+                        <p class="text-xs text-indigo-700 font-semibold uppercase tracking-wider">Bodyweight</p>
+                        <p class="text-2xl font-bold text-indigo-900">{{ getBodyweightExerciseCount() }}</p>
                     </div>
                 </div>
             </div>

@@ -95,6 +95,22 @@ export class WorkoutForm {
         return exercise.get('cardioType')?.value === CardioType.SteadyState
     }
 
+    exerciseTypeLabel(exercise: AbstractControl): string {
+        const type = exercise.get('exerciseType')?.value;
+        if (type === ExerciseType.Cardio) {
+            return 'Cardio';
+        }
+        if (type === ExerciseType.Bodyweight) {
+            return 'Bodyweight';
+        }
+        return 'Weights';
+    }
+
+    getSetCount(exercise: AbstractControl): number {
+        const sets = exercise.get('sets') as FormArray;
+        return sets?.length ?? 0;
+    }
+
     removeExercise(index: number) {
         return this.exercises.removeAt(index);
     }
