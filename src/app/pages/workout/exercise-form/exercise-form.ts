@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { Component, computed, EventEmitter, inject, Input, Output } from '@angular/core';
 import { NgIcon, provideIcons } from "@ng-icons/core";
 import {
     faSolidCalendarDay,
@@ -30,6 +30,8 @@ import { clearValidators, onlyNumbersCheck, minArrayLength, clearFormInputs, add
 import { createExerciseForm } from '../../../core/helpers/Factories';
 import { Subject, takeUntil } from 'rxjs';
 import { NotificationService } from '../../../core/services/notification-service';
+import { UserService } from '../../../core/services/user-service';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 
 @Component({
@@ -45,14 +47,18 @@ export class ExerciseForm {
     @Input()
     exercises!: FormArray;
 
-    private fb = inject(FormBuilder)
-    private notificationService = inject(NotificationService)
+    private userService = inject(UserService);
+    private fb = inject(FormBuilder);
+    private notificationService = inject(NotificationService);
 
     private destroy$ = new Subject<void>();
 
     form = createExerciseForm(this.fb)
     isControlValid = isControlValid
 
+    userSource = toSignal(this.userService.userDetails$, {initialValue: null})
+
+    currentWeight = computed(() => this.userSource()?.currentWeight)
 
     get sets() { return this.form.get('sets') as FormArray }
     get tempReps() { return this.form.get('tempReps') }
@@ -75,7 +81,6 @@ export class ExerciseForm {
     }
 
     createSetGroup(reps: number, weight: number): FormGroup {
-
         return this.fb.group({
             reps: [reps, [Validators.required, Validators.min(1)]],
             weightKg: [weight, [Validators.required, Validators.min(1)]]
@@ -122,22 +127,38 @@ export class ExerciseForm {
         this.form.get('exerciseType')!.valueChanges
         .pipe(takeUntil(this.destroy$))
         .subscribe(type => {
-            if(type === ExerciseType.Cardio) {
-                this.sets.clear();
-                this.form.get('cardioType')?.patchValue(CardioType.SteadyState)
-                clearValidators(['tempWeight', 'tempReps', 'sets'], this.form)
-                clearFormInputs(['tempWeight', 'tempReps'], this.form)
-                return;
-            }
-            if(type === ExerciseType.Weights || type === ExerciseType.Bodyweight) {
-                addValidators(['tempWeight', 'tempReps'], this.form, [Validators.required, Validators.min(0), onlyNumbersCheck()])
-                this.sets.addValidators(minArrayLength(1))
-                this.sets.updateValueAndValidity();
-                this.clearCardioInputs();
-                this.clearCardioValidators();
-                return;
-            }
+            this.resetFormInputs();
+                if(type === ExerciseType.Cardio) {
+                    this.form.get('cardioType')?.patchValue(CardioType.SteadyState)
+                    return;
+                }
+                if(type === ExerciseType.Weights) {
+                    addValidators(['tempWeight', 'tempReps'], this.form, [Validators.required, Validators.min(0),
+                    Validators.max(1000) ,onlyNumbersCheck()])
+                    this.addSetValidators();
+                    return;
+                }
+                if(type === ExerciseType.Bodyweight) {
+                    addValidators(['tempWeight'], this.form, [Validators.min(0), Validators.max(1000), onlyNumbersCheck()])
+                    addValidators(['tempReps', 'tempReps'], this.form, [Validators.required, Validators.min(0),
+                    Validators.max(1000),onlyNumbersCheck()])
+                    this.addSetValidators();
+                    return;
+                }
         })
+    }
+
+    private resetFormInputs() {
+        this.sets.clear();
+        clearValidators(['tempWeight', 'tempReps', 'sets'], this.form)
+        clearFormInputs(['tempWeight', 'tempReps'], this.form)
+        this.clearCardioInputs();
+        this.clearCardioValidators();
+    }
+
+    private addSetValidators() {
+        this.sets.addValidators(minArrayLength(1))
+        this.sets.updateValueAndValidity();
     }
 
     private handleCardioTypeChange() {

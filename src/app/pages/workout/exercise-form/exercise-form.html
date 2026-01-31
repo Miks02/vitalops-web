@@ -33,7 +33,7 @@
                 </div>
                 <select formControlName="exerciseType" class="flex-1 bg-transparent outline-none text-lg font-semibold appearance-none">
                     <option [ngValue]="1">Weights</option>
-                    <option [disabled]="true" [ngValue]="2">Bodyweight</option>
+                    <option [ngValue]="2">Bodyweight</option>
                     <option [ngValue]="3">Cardio</option>
                 </select>
             </div>
@@ -123,21 +123,27 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <label class="flex flex-col gap-2">
             <span class="text-sm font-medium text-slate-700">Added weight (KG)</span>
-            <div class="flex items-center gap-4 justify-between shadow-md bg-linear-to-br from-white to-slate-50 rounded-lg px-4 py-4 border">
+            <div
+            [class.border-red-500]="!isControlValid('tempWeight', form)"
+            [class.border-transparent]="isControlValid('tempWeight', form)"
+            class="flex items-center gap-4 justify-between shadow-md bg-linear-to-br from-white to-slate-50 rounded-lg px-4 py-4 border transition duration-200">
                 <div class="flex justify-center">
-                    <ng-icon name="faSolidPencil" class="text-emerald-700! text-xl"></ng-icon>
+                    <ng-icon name="faSolidScaleUnbalanced" class="text-emerald-700! text-xl"></ng-icon>
                 </div>
-                <input class="flex-1 bg-transparent outline-none text-lg" type="text" placeholder="Enter weight...">
+                <input formControlName="tempWeight" class="flex-1 bg-transparent outline-none text-lg" type="text" placeholder="Enter weight...">
             </div>
         </label>
 
         <label class="flex flex-col gap-2">
             <span class="text-sm font-medium text-slate-700">Reps</span>
-            <div class="flex items-center gap-4 justify-between shadow-md bg-linear-to-br from-white to-slate-50 rounded-lg px-4 py-4 border">
+            <div
+            [class.border-red-500]="!isControlValid('tempReps', form)"
+            [class.border-transparent]="isControlValid('tempReps', form)"
+            class="flex items-center gap-4 justify-between shadow-md bg-linear-to-br from-white to-slate-50 rounded-lg px-4 py-4 border transition duration-200">
                 <div class="flex justify-center">
-                    <ng-icon name="faSolidPencil" class="text-emerald-700! text-xl"></ng-icon>
+                    <ng-icon name="faSolidRotate" class="text-emerald-700! text-xl"></ng-icon>
                 </div>
-                <input class="flex-1 bg-transparent outline-none text-lg" type="text" placeholder="Enter reps...">
+                <input formControlName="tempReps" class="flex-1 bg-transparent outline-none text-lg" type="text" placeholder="Enter reps...">
             </div>
         </label>
     </div>
