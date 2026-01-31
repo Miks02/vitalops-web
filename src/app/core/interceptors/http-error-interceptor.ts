@@ -41,6 +41,15 @@ function handleErrors(error: HttpErrorResponse, notificationService: Notificatio
             errorMessage = "Duplicate Entry. Please check your input and try again."
             break;
         }
+        case 422: {
+            errorMessage = "Too many requests, try again later"
+            break;
+        }
+        case 499: {
+            errorMessage = "Request has been cancelled"
+            notificationService.showInfo(errorMessage);
+            return;
+        }
         default: {
             errorMessage = "An unexpected server error occurred. Please try again later."
             notificationDuration = Infinity;
