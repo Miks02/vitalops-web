@@ -159,26 +159,27 @@ export class ExerciseForm {
             }
             if(type === ExerciseType.Weights) {
                 addValidators(['tempWeight', 'tempReps'], this.form, [Validators.required, Validators.min(1),
-                    Validators.max(1000), onlyNumbersCheck()])
-                    this.addSetValidators();
-                    return;
-                }
-                if(type === ExerciseType.Bodyweight) {
-                    addValidators(['tempWeight'], this.form, [Validators.min(1), Validators.max(1000), onlyNumbersCheck()])
-                    addValidators(['tempReps', 'tempReps'], this.form, [Validators.required, Validators.min(1),
-                        Validators.max(1000),onlyNumbersCheck()])
-                        this.addSetValidators();
-                        return;
-                    }
-                })
+                Validators.max(1000), onlyNumbersCheck()])
+                this.addSetValidators();
+                return;
             }
+            if(type === ExerciseType.Bodyweight) {
+                addValidators(['tempWeight'], this.form, [Validators.min(1), Validators.max(1000), onlyNumbersCheck()])
+                addValidators(['tempReps'], this.form, [Validators.required, Validators.min(1),
+                Validators.max(1000),onlyNumbersCheck()])
+                this.addSetValidators();
+                return;
+                 }
+            })
+        }
 
     private resetFormInputs() {
         this.sets.clear();
-        clearValidators(['tempWeight', 'tempReps', 'sets'], this.form)
         clearFormInputs(['tempWeight', 'tempReps'], this.form)
+        clearValidators(['tempWeight', 'tempReps', 'sets'], this.form)
         this.clearCardioInputs();
         this.clearCardioValidators();
+        this.form.updateValueAndValidity();
     }
 
     private addSetValidators() {
