@@ -15,8 +15,8 @@
                 <label class="flex flex-col gap-2">
                     <span class="text-sm font-medium text-slate-700">Exercise name <span class="text-red-600">*</span></span>
                     <div class="flex items-center gap-4 justify-between shadow-md bg-linear-to-br from-white to-slate-50 rounded-lg px-4 py-4 transition-colors duration-200 border focus-within:outline outline-amber-400"
-                    [class.border-red-500]="isControlInvalid('exerciseName')"
-                    [class.border-transparent]="!isControlInvalid('exerciseName')">
+                    [class.border-red-500]="!isControlValid('exerciseName', form)"
+                    [class.border-transparent]="isControlValid('exerciseName', form)">
                     <div class="flex justify-center">
                         <ng-icon name="faSolidTag" class="text-emerald-700! text-xl"></ng-icon>
                     </div>
@@ -33,7 +33,7 @@
                 </div>
                 <select formControlName="exerciseType" class="flex-1 bg-transparent outline-none text-lg font-semibold appearance-none">
                     <option [ngValue]="1">Weights</option>
-                    <option [disabled]="true" [ngValue]="2">Bodyweight</option>
+                    <option [ngValue]="2">Bodyweight</option>
                     <option [ngValue]="3">Cardio</option>
                 </select>
             </div>
@@ -46,8 +46,8 @@
                 <label class="flex flex-col gap-2">
                     <span class="text-sm font-medium text-slate-700">Weight (KG)</span>
                     <div class="flex items-center gap-4 justify-between shadow-md bg-linear-to-br from-white to-slate-50 rounded-lg px-4 py-4 transition-colors duration-200 border focus-within:outline outline-amber-400"
-                    [class.border-red-500]="isControlInvalid('tempWeight')"
-                    [class.border-transparent]="!isControlInvalid('tempWeight')">
+                    [class.border-red-500]="!isControlValid('tempWeight', form)"
+                    [class.border-transparent]="isControlValid('tempWeight', form)">
                     <div class="flex justify-center">
                         <ng-icon name="faSolidScaleUnbalanced" class="text-emerald-700! text-xl"></ng-icon>
                     </div>
@@ -58,8 +58,8 @@
             <label class="flex flex-col gap-2">
                 <span class="text-sm font-medium text-slate-700">Reps</span>
                 <div class="flex items-center gap-4 justify-between shadow-md bg-linear-to-br from-white to-slate-50 rounded-lg px-4 py-4 transition-colors duration-200 border focus-within:outline outline-amber-400"
-                [class.border-red-500]="isControlInvalid('tempReps')"
-                [class.border-transparent]="!isControlInvalid('tempReps')">
+                    [class.border-red-500]="!isControlValid('tempReps', form)"
+                    [class.border-transparent]="isControlValid('tempReps', form)">
                 <div class="flex justify-center">
                     <ng-icon name="faSolidRotate" class="text-emerald-700! text-xl"></ng-icon>
                 </div>
@@ -123,39 +123,94 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <label class="flex flex-col gap-2">
             <span class="text-sm font-medium text-slate-700">Added weight (KG)</span>
-            <div class="flex items-center gap-4 justify-between shadow-md bg-linear-to-br from-white to-slate-50 rounded-lg px-4 py-4 border">
+            <div
+            [class.border-red-500]="!isControlValid('tempWeight', form)"
+            [class.border-transparent]="isControlValid('tempWeight', form)"
+            class="flex items-center gap-4 justify-between shadow-md bg-linear-to-br from-white to-slate-50 rounded-lg px-4 py-4 border transition duration-200">
                 <div class="flex justify-center">
-                    <ng-icon name="faSolidPencil" class="text-emerald-700! text-xl"></ng-icon>
+                    <ng-icon name="faSolidScaleUnbalanced" class="text-emerald-700! text-xl"></ng-icon>
                 </div>
-                <input class="flex-1 bg-transparent outline-none text-lg" type="text" placeholder="Enter weight...">
+                <input formControlName="tempWeight" class="flex-1 bg-transparent outline-none text-lg" type="text" placeholder="Enter weight...">
             </div>
         </label>
 
         <label class="flex flex-col gap-2">
             <span class="text-sm font-medium text-slate-700">Reps</span>
-            <div class="flex items-center gap-4 justify-between shadow-md bg-linear-to-br from-white to-slate-50 rounded-lg px-4 py-4 border">
+            <div
+            [class.border-red-500]="!isControlValid('tempReps', form)"
+            [class.border-transparent]="isControlValid('tempReps', form)"
+            class="flex items-center gap-4 justify-between shadow-md bg-linear-to-br from-white to-slate-50 rounded-lg px-4 py-4 border transition duration-200">
                 <div class="flex justify-center">
-                    <ng-icon name="faSolidPencil" class="text-emerald-700! text-xl"></ng-icon>
+                    <ng-icon name="faSolidRotate" class="text-emerald-700! text-xl"></ng-icon>
                 </div>
-                <input class="flex-1 bg-transparent outline-none text-lg" type="text" placeholder="Enter reps...">
+                <input formControlName="tempReps" class="flex-1 bg-transparent outline-none text-lg" type="text" placeholder="Enter reps...">
             </div>
         </label>
     </div>
 
     <div class="flex justify-center">
-        <button type="button" (click)="addSet()" class="bg-yellow-500 hover:opacity-90 active:opacity-80 text-gray-800 font-semibold px-6 py-2 rounded-lg shadow-md">
+        @if(currentWeight() === null || currentWeight() === undefined) {
+            <div class="text-center text-amber-600 bg-amber-50 border border-amber-200 rounded-lg px-4 py-3">
+                <p class="font-semibold">Please add your current weight in weight tracking page</p>
+                <p class="text-sm text-amber-700 mt-1">This will help calculate the total weight for bodyweight exercises</p>
+            </div>
+        }
+        @else {
+            <div class="text-center text-slate-600 bg-slate-50 border border-slate-200 rounded-lg px-4 py-3">
+                <p class="text-sm font-semibold text-amber-600">Your current weight</p>
+                <p class="text-lg font-bold text-amber-800">{{ currentWeight() }} KG</p>
+            </div>
+        }
+    </div>
+
+    @if(sets.length > 0) {
+        <div class="flex justify-center">
+            <button
+            type="button" (click)="addBodyweightSet()" class="bg-yellow-500 hover:opacity-70 active:opacity-50 text-gray-800 font-semibold px-6 py-2 rounded-lg shadow-all cursor-pointer transition-all duration-200">
             Add Set
         </button>
     </div>
+}
 
-    <div class="border-t-2 border-slate-300 my-2"></div>
+<div class="border-t-2 border-slate-300 my-2"></div>
 
-    <div class="space-y-3 max-h-40 overflow-y-auto shadow-md rounded-xl">
+<div class="space-y-3 max-h-40 overflow-y-auto shadow-md rounded-xl">
+    @if(sets.length === 0) {
         <div class="text-center text-slate-600 py-6 bg-slate-50 rounded-xl border border-slate-200">
             <p class="font-semibold text-slate-700">No Sets Added</p>
             <p class="text-sm text-slate-500 mt-1">Add sets to track your progress</p>
+
+            <button type="button" (click)="addBodyweightSet()" class="bg-yellow-500 hover:opacity-70 active:opacity-50 text-gray-800 mt-4 font-semibold px-6 py-2 rounded-lg shadow-all cursor-pointer transition-all duration-200">
+                Add Set
+            </button>
         </div>
-    </div>
+
+    }
+
+    @for(set of sets.controls; track $index) {
+        <div (click)="removeSet($index)" class="flex items-center justify-between bg-slate-50 rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 hover:bg-amber-200 cursor-pointer">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-yellow-400 shadow-all flex items-center justify-center">
+                    <ng-icon name="faSolidCheck" class="text-indigo-500"></ng-icon>
+                </div>
+                <div>
+                    <div class="text-sm font-semibold text-slate-800">Set {{$index + 1}}</div>
+                </div>
+            </div>
+            <div class="flex gap-6">
+                <div class="flex flex-col items-center gap-2 font-semibold text-amber-500">
+                    <ng-icon name="faSolidScaleUnbalanced" class="text-2xl!"></ng-icon>
+                    <p>{{set.get('weightKg')?.value}} KG</p>
+                </div>
+                <div class="flex flex-col gap-2 font-semibold text-emerald-700">
+                    <ng-icon name="faSolidRotate" class="text-2xl!"></ng-icon>
+
+                    <p>{{set.get('reps')?.value}}</p>
+                </div>
+            </div>
+        </div>
+    }
+</div>
 }
 
 @case(3) {
@@ -179,8 +234,8 @@
             <label class="flex flex-col gap-2">
                 <span class="text-sm font-medium text-slate-700">Duration (Minutes) <span class="text-red-600">*</span></span>
                 <div class="flex items-center gap-4 justify-between shadow-md bg-linear-to-br from-white to-slate-50 rounded-lg px-4 py-4 border focus-within:outline outline-amber-400"
-                [class.border-red-500]="isControlInvalid('durationMinutes')"
-                [class.border-transparent]="!isControlInvalid('durationMinutes')">
+                [class.border-red-500]="!isControlValid('durationMinutes', form)"
+                [class.border-transparent]="isControlValid('durationMinutes', form)">
                 <div class="flex justify-center">
                     <ng-icon name="faSolidClock" class="text-emerald-700! text-xl"></ng-icon>
                 </div>
@@ -191,8 +246,8 @@
         <label class="flex flex-col gap-2">
             <span class="text-sm font-medium text-slate-700">Duration (Seconds) <span class="text-red-600">*</span></span>
             <div class="flex items-center gap-4 justify-between shadow-md bg-linear-to-br from-white to-slate-50 rounded-lg px-4 py-4 border focus-within:outline outline-amber-400"
-            [class.border-red-500]="isControlInvalid('durationSeconds')"
-            [class.border-transparent]="!isControlInvalid('durationSeconds')">
+            [class.border-red-500]="!isControlValid('durationSeconds', form)"
+            [class.border-transparent]="isControlValid('durationSeconds', form)">
             <div class="flex justify-center">
                 <ng-icon name="faSolidClock" class="text-emerald-700! text-xl"></ng-icon>
             </div>
@@ -205,8 +260,8 @@
     <label class="flex flex-col gap-2">
         <span class="text-sm font-medium text-slate-700">Pace (min/km)</span>
         <div class="flex items-center gap-4 justify-between shadow-md bg-linear-to-br from-white to-slate-50 rounded-lg px-4 py-4 border focus-within:outline outline-amber-400"
-        [class.border-red-500]="isControlInvalid('pace')"
-        [class.border-transparent]="!isControlInvalid('pace')">
+        [class.border-red-500]="!isControlValid('pace', form)"
+        [class.border-transparent]="isControlValid('pace', form)">
         <div class="flex justify-center">
             <ng-icon name="faSolidStopwatch" class="text-emerald-700! text-xl"></ng-icon>
         </div>
@@ -217,8 +272,8 @@
 <label class="flex flex-col gap-2">
     <span class="text-sm font-medium text-slate-700">Distance (km) </span>
     <div class="flex items-center gap-4 justify-between shadow-md bg-linear-to-br from-white to-slate-50 rounded-lg px-4 py-4 border focus-within:outline outline-amber-400"
-    [class.border-red-500]="isControlInvalid('distance')"
-    [class.border-transparent]="!isControlInvalid('distance')">
+    [class.border-red-500]="!isControlValid('distance', form)"
+    [class.border-transparent]="isControlValid('distance', form)">
     <div class="flex justify-center">
         <ng-icon name="faSolidRoute" class="text-emerald-700! text-xl"></ng-icon>
     </div>
@@ -231,8 +286,8 @@
     <label class="flex flex-col gap-2">
         <span class="text-sm font-medium text-slate-700">Average heart rate</span>
         <div class="flex items-center gap-4 justify-between shadow-md bg-linear-to-br from-white to-slate-50 rounded-lg px-4 py-4 border focus-within:outline outline-amber-400"
-        [class.border-red-500]="isControlInvalid('avgHeartRate')"
-        [class.border-transparent]="!isControlInvalid('avgHeartRate')">
+        [class.border-red-500]="!isControlValid('avgHeartRate', form)"
+        [class.border-transparent]="isControlValid('avgHeartRate', form)">
         <div class="flex justify-center">
             <ng-icon name="faSolidHeartPulse" class="text-emerald-700! text-xl"></ng-icon>
         </div>
@@ -243,8 +298,8 @@
 <label class="flex flex-col gap-2">
     <span class="text-sm font-medium text-slate-700">Calories burned</span>
     <div class="flex items-center gap-4 justify-between shadow-md bg-linear-to-br from-white to-slate-50 rounded-lg px-4 py-4 border focus-within:outline outline-amber-400"
-    [class.border-red-500]="isControlInvalid('caloriesBurned')"
-    [class.border-transparent]="!isControlInvalid('caloriesBurned')">
+    [class.border-red-500]="!isControlValid('caloriesBurned', form)"
+    [class.border-transparent]="isControlValid('caloriesBurned', form)">
     <div class="flex justify-center">
         <ng-icon name="faSolidFireFlameCurved" class="text-emerald-700! text-xl"></ng-icon>
     </div>
@@ -259,8 +314,8 @@
         <label class="flex flex-col gap-2">
             <span class="text-sm font-medium text-slate-700">Work Interval (Seconds) <span class="text-red-600">*</span></span>
             <div class="flex items-center gap-4 justify-between shadow-md bg-linear-to-br from-white to-slate-50 rounded-lg px-4 py-4 border focus-within:outline outline-amber-400"
-            [class.border-red-500]="isControlInvalid('workInterval')"
-            [class.border-transparent]="!isControlInvalid('workInterval')">
+            [class.border-red-500]="!isControlValid('workInterval', form)"
+            [class.border-transparent]="isControlValid('workInterval', form)">
             <div class="flex justify-center">
                 <ng-icon name="faSolidClock" class="text-emerald-700! text-xl"></ng-icon>
             </div>
@@ -271,8 +326,8 @@
     <label class="flex flex-col gap-2">
         <span class="text-sm font-medium text-slate-700">Rest Interval (Seconds) <span class="text-red-600">*</span></span>
         <div class="flex items-center gap-4 justify-between shadow-md bg-linear-to-br from-white to-slate-50 rounded-lg px-4 py-4 border focus-within:outline outline-amber-400"
-        [class.border-red-500]="isControlInvalid('restInterval')"
-        [class.border-transparent]="!isControlInvalid('restInterval')">
+        [class.border-red-500]="!isControlValid('restInterval', form)"
+        [class.border-transparent]="isControlValid('restInterval', form)">
         <div class="flex justify-center">
             <ng-icon name="faSolidClock" class="text-emerald-700! text-xl"></ng-icon>
         </div>
@@ -285,8 +340,8 @@
     <label class="flex flex-col gap-2">
         <span class="text-sm font-medium text-slate-700">Intervals Count <span class="text-red-600">*</span></span>
         <div class="flex items-center gap-4 justify-between shadow-md bg-linear-to-br from-white to-slate-50 rounded-lg px-4 py-4 border focus-within:outline outline-amber-400"
-        [class.border-red-500]="isControlInvalid('intervalsCount')"
-        [class.border-transparent]="!isControlInvalid('intervalsCount')">
+        [class.border-red-500]="!isControlValid('intervalsCount', form)"
+        [class.border-transparent]="isControlValid('intervalsCount', form)">
         <div class="flex justify-center">
             <ng-icon name="faSolidForwardStep" class="text-emerald-700! text-xl"></ng-icon>
         </div>
@@ -297,8 +352,8 @@
 <label class="flex flex-col gap-2">
     <span class="text-sm font-medium text-slate-700">Calories Burned</span>
     <div class="flex items-center gap-4 justify-between shadow-md bg-linear-to-br from-white to-slate-50 rounded-lg px-4 py-4 border focus-within:outline outline-amber-400"
-    [class.border-red-500]="isControlInvalid('caloriesBurned')"
-    [class.border-transparent]="!isControlInvalid('caloriesBurned')">
+    [class.border-red-500]="!isControlValid('caloriesBurned', form)"
+    [class.border-transparent]="isControlValid('caloriesBurned', form)">
     <div class="flex justify-center">
         <ng-icon name="faSolidFireFlameCurved" class="text-emerald-700! text-xl"></ng-icon>
     </div>
@@ -311,8 +366,8 @@
     <label class="flex flex-col gap-2">
         <span class="text-sm font-medium text-slate-700">Average Heart Rate</span>
         <div class="flex items-center gap-4 justify-between shadow-md bg-linear-to-br from-white to-slate-50 rounded-lg px-4 py-4 border focus-within:outline outline-amber-400"
-        [class.border-red-500]="isControlInvalid('avgHeartRate')"
-        [class.border-transparent]="!isControlInvalid('avgHeartRate')">
+        [class.border-red-500]="!isControlValid('maxHeartRate', form)"
+        [class.border-transparent]="isControlValid('maxHeartRate', form)">
         <div class="flex justify-center">
             <ng-icon name="faSolidHeartPulse" class="text-emerald-700! text-xl"></ng-icon>
         </div>
@@ -323,8 +378,8 @@
 <label class="flex flex-col gap-2">
     <span class="text-sm font-medium text-slate-700">Max Heart Rate</span>
     <div class="flex items-center gap-4 justify-between shadow-md bg-linear-to-br from-white to-slate-50 rounded-lg px-4 py-4 border focus-within:outline outline-amber-400"
-    [class.border-red-500]="isControlInvalid('maxHeartRate')"
-    [class.border-transparent]="!isControlInvalid('maxHeartRate')">
+    [class.border-red-500]="!isControlValid('maxHeartRate', form)"
+    [class.border-transparent]="isControlValid('maxHeartRate', form)">
     <div class="flex justify-center">
         <ng-icon name="faSolidHeartCircleBolt" class="text-emerald-700! text-xl"></ng-icon>
     </div>

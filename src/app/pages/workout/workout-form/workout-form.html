@@ -12,14 +12,14 @@
                     <label class="flex flex-col gap-2">
                         <span class="text-sm font-medium text-slate-700">Workout name <span class="text-red-600">*</span></span>
                         <div class="flex items-center gap-4 justify-between shadow-md bg-linear-to-br from-white to-slate-50 rounded-lg px-4 py-4 transition-colors duration-200 border focus-within:outline outline-amber-400"
-                        [class.border-red-500]="isControlInvalid('name')"
-                        [class.border-transparent]="!isControlInvalid('name')">
+                        [class.border-red-500]="!isControlValid('name', form)"
+                        [class.border-transparent]="isControlValid('name', form)">
                         <div class="flex justify-center">
                             <ng-icon name="faSolidTag" class="text-emerald-700! text-xl"></ng-icon>
                         </div>
                         <input formControlName="name" class="flex-1 bg-transparent outline-none text-lg" type="text" placeholder="Enter workout name..">
                     </div>
-                    @if(isControlInvalid('name')) {
+                    @if(!isControlValid('name', form)) {
                         <div class="text-red-600 text-sm mx-auto font-semibold">
                             @if(form.get('name')?.errors?.['required']) {
                                 <span>Workout name is required</span>
@@ -34,8 +34,8 @@
                 <label class="flex flex-col gap-2">
                     <span class="text-sm font-medium text-slate-700">Date <span class="text-red-600">*</span></span>
                     <div class="flex items-center gap-4 justify-between shadow-md bg-linear-to-br from-white to-slate-50 rounded-lg px-4 py-4 transition-colors duration-200 border focus-within:outline outline-amber-400"
-                    [class.border-red-500]="isControlInvalid('workoutDate')"
-                    [class.border-transparent]="!isControlInvalid('workoutDate')">
+                    [class.border-red-500]="!isControlValid('workoutDate', form)"
+                    [class.border-transparent]="isControlValid('workoutDate', form)">
                     <div class="flex justify-center">
                         <ng-icon name="faSolidCalendarDay" class="text-emerald-700! text-xl"></ng-icon>
                     </div>
@@ -85,48 +85,65 @@
         }
 
         @for(exercise of exercises.controls; track $index) {
-            <div class="flex items-center justify-between bg-slate-50 rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 hover:bg-amber-200 cursor-pointer">
-                <div class="flex items-center gap-3">
-                    <div
-                    [class.bg-yellow-400]="getExerciseType((exercise)) === 1"
-                    [class.bg-blue-400]="getExerciseType((exercise)) === 2"
-                    [class.bg-red-400]="getExerciseType((exercise)) === 3"
-                    class="w-10 h-10 rounded-lg bg-yellow-400 shadow-all flex items-center justify-center">
-                    @if(isExerciseTypeCardio(exercise)) { <ng-icon name="faSolidPersonRunning" class="text-indigo-500"></ng-icon> }
-                    @else { <ng-icon name="faSolidDumbbell" class="text-indigo-500"></ng-icon> }
+            <div class="group flex flex-col gap-4 bg-linear-to-br from-white to-slate-50 rounded-2xl p-5 shadow-md hover:shadow-xl transition-all duration-300 border border-slate-100 hover:border-amber-200">
+                <div class="flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-4">
+                        <div
+                        [class.bg-linear-to-br]="true"
+                        [class.from-yellow-400]="getExerciseType(exercise) === 1"
+                        [class.to-amber-500]="getExerciseType(exercise) === 1"
+                        [class.from-indigo-400]="getExerciseType(exercise) === 2"
+                        [class.to-indigo-600]="getExerciseType(exercise) === 2"
+                        [class.from-red-400]="getExerciseType(exercise) === 3"
+                        [class.to-rose-500]="getExerciseType(exercise) === 3"
+                        class="w-12 h-12 rounded-xl shadow-lg flex items-center justify-center group-hover:scale-105 transition-transform">
+                        @if(getExerciseType(exercise) === 3) { <ng-icon name="faSolidPersonRunning" class="text-white! text-xl"></ng-icon> }
+                        @else if(getExerciseType(exercise) === 2) { <ng-icon name="faSolidChildReaching" class="text-white! text-xl"></ng-icon> }
+                        @else { <ng-icon name="faSolidDumbbell" class="text-white! text-xl"></ng-icon> }
+                    </div>
+                    <div>
+                        <div class="text-base font-bold text-slate-800">{{ exercise.get('exerciseName')?.value }}</div>
+                        <div class="text-xs text-slate-500 font-medium mt-0.5">{{ exerciseTypeLabel(exercise) }}</div>
+                    </div>
                 </div>
-                <div>
-                    <div class="text-sm font-semibold text-slate-800">{{ exercise.get('exerciseName')?.value }}</div>
-                    <div class="text-xs text-slate-500">@if(isExerciseTypeCardio(exercise)) {Cardio} @else {Strength}</div>
-                </div>
-            </div>
-            <div class="flex items-center gap-4">
-                <div class="text-right">
-                    @if(!isExerciseTypeCardio(exercise)){
-
-                        <div class="text-xs text-slate-500">Sets</div>
-                        <div class="font-bold text-slate-800">{{ exercise.get('sets')?.value?.length || 0 }}</div>
-                    }
-                    @else {
-                        @if(!isCardioTypeSteadyState(exercise)) {
-                            <div class="text-xs text-slate-500">Total intervals</div>
-                            <div class="flex gap-2 justify-center">
-                                <p class="font-bold text-slate-800 text-center">{{ exercise.get('intervalsCount')?.value || 0 }}</p>
-                            </div>
+                <div class="flex items-center justify-between">
+                    <div class="text-right">
+                        @if(!isExerciseTypeCardio(exercise)) {
+                            <span class="px-3 flex flex-col py-1 bg-slate-100 rounded-lg font-bold text-slate-700 text-sm">{{ getSetCount(exercise) }} sets</span>
                         }
                         @else {
-                            <div class="text-xs text-slate-500">Duration</div>
-                            <div class="flex gap-2 justify-center">
-                                <p class="font-bold text-slate-800">{{ exercise.get('durationMinutes')?.value || 0 }} : {{ exercise.get('durationSeconds')?.value || 0 }}</p>
-                            </div>
+                            <span class="px-3 py-1 bg-slate-100 rounded-lg font-bold text-slate-700 text-sm">{{ isCardioTypeSteadyState(exercise) ? 'Steady state' : 'HIIT' }}</span>
                         }
-
-
-                    }
-
+                    </div>
+                    <button (click)="removeExercise($index)" type="button" class="text-red-600 hover:text-white hover:bg-red-600 font-semibold px-3 py-1 rounded-lg transition-all duration-200 cursor-pointer">Remove</button>
                 </div>
-                <button (click)="removeExercise($index)" type="button" class="text-red-600 font-semibold px-2 py-1 outline rounded-md hover:bg-red-600 hover:text-white transition-all duration-200 cursor-pointer">Remove</button>
             </div>
+
+            @if(!isExerciseTypeCardio(exercise)) {
+                <div class="flex flex-wrap gap-2">
+                    @for(set of exercise.get('sets')?.value; track $index) {
+                        <span class="bg-white border-2 border-amber-200 text-slate-700 px-4 py-2 rounded-xl text-sm font-semibold shadow-sm hover:shadow-md hover:border-amber-300 transition-all">
+                            Set {{$index + 1}}: {{ set.weightKg }} kg × {{ set.reps }} reps
+                        </span>
+                    }
+                </div>
+            }
+            @else {
+                @if(isCardioTypeSteadyState(exercise)) {
+                    <div class="flex flex-wrap gap-3 text-sm">
+                        <span class="bg-white border-2 border-blue-200 rounded-xl px-4 py-2 shadow-sm font-semibold text-slate-700 hover:border-blue-300 transition-all">Duration: {{ exercise.get('durationMinutes')?.value || 0 }}m {{ exercise.get('durationSeconds')?.value || 0 }}s</span>
+                        <span class="bg-white border-2 border-blue-200 rounded-xl px-4 py-2 shadow-sm font-semibold text-slate-700 hover:border-blue-300 transition-all">Distance: {{ exercise.get('distanceKm')?.value || 0 }} km</span>
+                        <span class="bg-white border-2 border-blue-200 rounded-xl px-4 py-2 shadow-sm font-semibold text-slate-700 hover:border-blue-300 transition-all">Calories: {{ exercise.get('caloriesBurned')?.value || 0 }}</span>
+                    </div>
+                }
+                @else {
+                    <div class="flex flex-wrap gap-3 text-sm">
+                        <span class="bg-white border-2 border-red-200 rounded-xl px-4 py-2 shadow-sm font-semibold text-slate-700 hover:border-red-300 transition-all">Intervals: {{ exercise.get('intervalsCount')?.value || 0 }}</span>
+                        <span class="bg-white border-2 border-red-200 rounded-xl px-4 py-2 shadow-sm font-semibold text-slate-700 hover:border-red-300 transition-all">Work: {{ exercise.get('workIntervalSec')?.value || 0 }}s</span>
+                        <span class="bg-white border-2 border-red-200 rounded-xl px-4 py-2 shadow-sm font-semibold text-slate-700 hover:border-red-300 transition-all">Rest: {{ exercise.get('restIntervalSec')?.value || 0 }}s</span>
+                    </div>
+                }
+            }
         </div>
     }
 </div>
@@ -136,14 +153,14 @@
     <label class="flex flex-col gap-2">
         <span class="text-sm font-medium text-slate-700">Notes (optional)</span>
         <div class="flex items-start gap-4 justify-between shadow-md bg-linear-to-br from-white to-slate-50 rounded-lg px-4 py-4 transition-colors duration-200 border focus-within:outline outline-amber-400"
-        [class.border-red-500]="isControlInvalid('notes')"
-        [class.border-transparent]="!isControlInvalid('notes')">
+        [class.border-red-500]="isControlValid('notes', form)"
+        [class.border-transparent]="isControlValid('notes', form)">
         <div class="flex justify-center mt-1">
             <ng-icon name="faSolidNoteSticky" class="text-emerald-700! text-xl"></ng-icon>
         </div>
         <textarea formControlName="notes" rows="3" class="flex-1 bg-transparent outline-none resize-none text-lg" placeholder="Write your custom notes..."></textarea>
     </div>
-    @if(isControlInvalid('notes')) {
+    @if(!isControlValid('notes', form)) {
         <div class="text-red-600 text-sm mx-auto font-semibold">
             @if(form.get('notes')?.errors?.['maxlength']) {
                 <span>Notes cannot exceed 100 characters</span>
