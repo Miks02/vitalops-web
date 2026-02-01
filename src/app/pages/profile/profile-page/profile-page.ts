@@ -1,4 +1,4 @@
-import { Component, computed, inject, Signal, signal, WritableSignal } from '@angular/core';
+import { Component, computed, inject, signal, WritableSignal } from '@angular/core';
 import { LayoutState } from '../../../layout/services/layout-state';
 import { FormBuilder, FormsModule, ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { NgIcon, provideIcons } from "@ng-icons/core";
@@ -7,29 +7,22 @@ import {
     faSolidUser,
     faSolidCalendarDay,
     faSolidVenusMars,
-    faSolidWeightScale,
-    faSolidRulerVertical,
     faSolidPencil,
     faSolidCheck,
     faSolidXmark,
     faSolidEnvelope,
-    faSolidDumbbell,
-    faSolidUtensils,
-    faSolidScaleUnbalanced,
-    faSolidShieldHalved,
-    faSolidAddressCard,
-    faSolidCalculator,
-    faSolidFireFlameCurved,
-    faSolidScaleBalanced,
-    faSolidTrophy
-} from "@ng-icons/font-awesome/solid";
-import {
+    faSolidCamera,
+    faSolidAt,
+    faSolidTriangleExclamation,
+    faSolidTrash,
+    faSolidWrench,
     faSolidLock,
+    faSolidShieldHalved,
     faSolidKey,
-    faSolidTrash
+    faSolidClock,
+    faSolidRulerVertical,
+    faSolidWeightScale
 } from "@ng-icons/font-awesome/solid";
-import { WorkoutsChart } from "../../misc/workouts-chart/workouts-chart";
-import { WeightChart } from "../../misc/weight-chart/weight-chart";
 import { ProfileService } from '../services/profile-service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { AccountStatus } from '../../../core/models/AccountStatus';
@@ -41,7 +34,6 @@ import {
     createUsernameForm,
     createEmailForm,
     createGenderForm,
-    createWeightForm,
     createHeightForm,
     createProfilePictureForm
 } from '../../../core/helpers/Factories';
@@ -51,31 +43,28 @@ import { handleValidationErrors } from '../../../core/helpers/FormHelpers';
 
 @Component({
     selector: 'app-profile-page',
-    imports: [NgIcon, FormsModule, ReactiveFormsModule, DatePipe, WorkoutsChart, WeightChart, RouterLink],
+    imports: [NgIcon, FormsModule, ReactiveFormsModule, DatePipe, RouterLink],
     templateUrl: './profile-page.html',
     styleUrl: './profile-page.css',
     providers: [provideIcons({
         faSolidUser,
         faSolidCalendarDay,
         faSolidVenusMars,
-        faSolidWeightScale,
-        faSolidRulerVertical,
         faSolidPencil,
         faSolidCheck,
         faSolidXmark,
         faSolidEnvelope,
-        faSolidDumbbell,
-        faSolidLock,
+        faSolidCamera,
+        faSolidAt,
+        faSolidTriangleExclamation,
         faSolidTrash,
-        faSolidUtensils,
-        faSolidScaleUnbalanced,
-        faSolidCalculator,
+        faSolidWrench,
+        faSolidLock,
         faSolidShieldHalved,
         faSolidKey,
-        faSolidAddressCard,
-        faSolidFireFlameCurved,
-        faSolidScaleBalanced,
-        faSolidTrophy
+        faSolidClock,
+        faSolidRulerVertical,
+        faSolidWeightScale
     })]
 })
 export class ProfilePage {
@@ -94,7 +83,6 @@ export class ProfilePage {
     usernameForm: FormGroup = createUsernameForm(this.fb);
     emailForm: FormGroup = createEmailForm(this.fb);
     genderForm: FormGroup = createGenderForm(this.fb);
-    weightForm: FormGroup = createWeightForm(this.fb);
     heightForm: FormGroup = createHeightForm(this.fb);
     profilePictureForm: FormGroup = createProfilePictureForm(this.fb);
 
@@ -168,7 +156,6 @@ export class ProfilePage {
         this.usernameForm.patchValue({ userName: user.userName || '' });
         this.emailForm.patchValue({ email: user.email || '' });
         this.genderForm.patchValue({ gender: user.gender ?? null });
-        this.weightForm.patchValue({ weight: user.currentWeight ?? null });
         this.heightForm.patchValue({ height: user.height ?? null });
     }
 
@@ -323,28 +310,6 @@ export class ProfilePage {
                     handleValidationErrors(err, form);
                 }
             });
-        }
-    }
-
-    onSubmitWeight() {
-        const form = this.weightForm;
-        if (form.valid) {
-            const weight = form.get('weight')?.value;
-            if (this.cancelIfUnchangedValue(Number(weight), Number(this.userData()?.currentWeight ?? null)))
-                return;
-
-            this.userService.updateWeight({weight: weight})
-            .pipe(take(1))
-            .subscribe({
-                next: () => {
-                    this.editingField = null;
-                    this.notificationService.showSuccess("Profile updated successfully")
-                },
-                error: (err) => {
-                    handleValidationErrors(err, form);
-                }
-            });
-
         }
     }
 
