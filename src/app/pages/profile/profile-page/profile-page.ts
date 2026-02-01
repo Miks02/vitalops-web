@@ -87,10 +87,6 @@ export class ProfilePage {
 
     userData = toSignal(this.userService.userDetails$, {initialValue: null});
 
-    recentWorkouts = computed(() => this.profileDetailsSource()?.recentWorkouts ?? []);
-    workoutStreak = computed(() => this.profileDetailsSource()?.workoutStreak);
-    dailyCalorieGoal = computed(() => this.profileDetailsSource()?.dailyCalorieGoal);
-
     profileDetailsSource = toSignal(this.profileService.profilePage$, {initialValue: null})
 
     fullNameForm: FormGroup = createFullNameForm(this.fb);
@@ -113,7 +109,6 @@ export class ProfilePage {
             console.log(this.profileDetailsSource()?.recentWorkouts)
         });
     }
-
 
     genderLabel = computed(() => {
         switch(this.userData()?.gender) {
