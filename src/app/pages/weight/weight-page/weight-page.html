@@ -9,7 +9,7 @@
             </div>
             <div class="flex gap-4 items-center opacity-95">
                 <div class="flex flex-col gap-2">
-                    @if(!currentWeight()) {
+                    @if(currentWeight()?.weight === null) {
                         <div class="flex gap-4">
                             <ng-icon name="faSolidGhost" class="self-center text-2xl sm:text-3xl"></ng-icon>
                             <p
@@ -129,7 +129,7 @@
         </div>
 
         <div class="flex flex-col gap-4">
-            @if(weightChart().entries.length > 1) {
+            @if(weightChart() !== undefined && weightChart().entries.length > 1) {
                 <div class="flex items-center justify-center flex-col min-h-100 grow gap-4 p-4">
                     <app-weight-chart [weightDataSource]="weightChart" class="flex-1 min-w-auto sm:min-w-85 max-w-[99%] grow w-full mx-auto"></app-weight-chart>
                 </div>
@@ -146,38 +146,41 @@
         </div>
     </div>
 
-    <div class="bg-slate-200 rounded-2xl shadow-xl transition-shadow duration-200 hover:shadow-2xl grow flex flex-col">
+    <div class="bg-slate-200 rounded-2xl shadow-xl transition-shadow duration-200 hover:shadow-2xl grow flex flex-col max-w-110">
         <div class="flex justify-between items-center bg-linear-to-br from-violet-500 to-violet-400 w-full rounded-t-2xl px-4 py-2 flex-wrap gap-2">
             <h1 class="font-bold text-xl text-slate-200">Weight Logs</h1>
-            <div class="flex gap-2 flex-wrap items-center">
+            @if(weightLogs()?.length! > 0) {
+                <div class="flex gap-2 flex-wrap items-center">
+                    <select
+                    [(ngModel)]="selectedMonth"
+                    (change)="loadWeightLogs()"
+                    class="px-2 py-1 bg-slate-100 rounded-md shadow-md text-slate-800 font-semibold text-sm min-w-25 text-center">
+                    <option [ngValue]="null" selected disabled hidden>{{convertMonthNumberToString(months()?.at(0)!)}}</option>
+                    @for(month of months(); track month) {
+                        <option [ngValue]="month">{{convertMonthNumberToString(month)}}</option>
+                    }
+                </select>
                 <select
-                [(ngModel)]="selectedMonth"
+                [(ngModel)]="selectedYear"
                 (change)="loadWeightLogs()"
-                class="px-2 py-1 bg-slate-100 rounded-md shadow-md text-slate-800 font-semibold text-sm min-w-25 text-center">
-                <option [ngValue]="null" selected disabled hidden>{{convertMonthNumberToString(months()?.at(0)!)}}</option>
-                @for(month of months(); track month) {
-                    <option [ngValue]="month">{{convertMonthNumberToString(month)}}</option>
+                class="px-2 py-1 bg-slate-100 rounded-md shadow-md text-slate-800 font-semibold text-sm text-center">
+                <option [ngValue]="null" selected disabled hidden>{{years()?.at(0)}}</option>
+                @for(year of years(); track year) {
+                    <option [ngValue]="year">{{year}}</option>
                 }
             </select>
-            <select
-            [(ngModel)]="selectedYear"
-            (change)="loadWeightLogs()"
-            class="px-2 py-1 bg-slate-100 rounded-md shadow-md text-slate-800 font-semibold text-sm text-center">
-            <option [ngValue]="null" selected disabled hidden>{{years()?.at(0)}}</option>
-            @for(year of years(); track year) {
-                <option [ngValue]="year">{{year}}</option>
-            }
-        </select>
-    </div>
+        </div>
+    }
+
 </div>
 
 <div class="p-4 flex flex-col flex-1">
     <div class="flex flex-col gap-2 flex-1 overflow-y-auto max-h-90">
-        @if(!weightLogs() || weightLogs()?.length === 0) {
-            <div class="flex flex-col gap-2 justify-center items-center py-20">
-                <ng-icon name="faSolidScaleUnbalanced" class="text-5xl text-slate-800!"></ng-icon>
-                <h1 class="text-3xl text-slate-800 font-semibold">No weight logs found</h1>
-                <p class="text-xl text-slate-700 font-semibold">Try adjusting your filters</p>
+        @if(weightLogs()?.length === 0) {
+            <div class="flex flex-col gap-2 justify-center items-center h-full py-20">
+                <ng-icon name="faSolidScaleUnbalanced" class="text-4xl sm:text-6xl opacity-50 text-slate-600!"></ng-icon>
+                <h1 class="text-xl sm:text-2xl font-semibold text-center text-slate-600">No weight logs found</h1>
+                <p class="text-lg sm:text-xl font-semibold text-center text-slate-600">Log your first weight entry to show data</p>
             </div>
         }
         @for(log of weightLogs(); track log.id) {
