@@ -5,10 +5,10 @@
 
         <div class="bg-slate-200 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden">
             <div class="bg-linear-to-br from-yellow-500 to-yellow-400 px-4 py-2">
-                <h2 class="text-xl font-bold text-slate-800">Profile Picture</h2>
+                <h2 class="text-xl font-bold text-slate-800">Profile Avatar</h2>
             </div>
             <div class="p-6 h-full">
-                <form [formGroup]="profilePictureForm" class="flex flex-col justify-center items-center gap-4">
+                <div class="flex flex-col justify-center items-center gap-4">
                     <label class="relative group cursor-pointer">
                         <div class="w-36 h-36 md:w-50 md:h-50 rounded-full overflow-hidden ring-4 ring-yellow-400 ring-offset-4 ring-offset-slate-200 shadow-xl transition-all duration-300 group-hover:ring-yellow-500 group-hover:shadow-2xl">
                             <img [src]="getProfileImageSrc()" class="object-cover w-full h-full transition-all duration-300 group-hover:scale-105" alt="Profile">
@@ -26,360 +26,372 @@
 
                     @if(previewImage() != "") {
                         <div class="flex gap-3">
-                            <button type="button" (click)="saveProfilePicture()" class="bg-linear-to-br from-emerald-500 to-emerald-600 text-white px-4 py-2 rounded-lg font-semibold shadow-md transition-all duration-200 hover:shadow-lg hover:scale-105 active:scale-95">
-                                <ng-icon name="faSolidCheck" class="mr-1"></ng-icon> Save
+                            <button
+                            (click)="saveProfilePicture()"
+                            class="min-w-25 bg-linear-to-br from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold py-2 px-3 rounded-lg shadow-md hover:shadow-lg transition duration-200 flex items-center justify-center gap-2 active:scale-95 cursor-pointer shadow-all">
+                            <ng-icon name="faSolidCheck"></ng-icon>
+                            <span>Save</span>
+                        </button>
+                        <button
+                        (click)="cancelProfilePicture()"
+                        class="min-w-25 bg-linear-to-br from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold py-2 px-3 rounded-lg shadow-md hover:shadow-lg transition duration-200 flex items-center justify-center gap-2 active:scale-95 cursor-pointer shadow-all">
+                        <ng-icon name="faSolidXmark"></ng-icon>
+                        <span>Cancel</span>
+                    </button>
+                </div>
+            }
+            @if(userData()?.imagePath !== undefined && previewImage() === "") {
+                <button class=" bg-linear-to-br from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-semibold py-2 px-3 rounded-lg shadow-md hover:shadow-lg transition duration-200 flex items-center justify-center gap-2 active:scale-95 cursor-pointer shadow-all">
+                    <ng-icon name="faSolidTrash"></ng-icon>
+                    <span>Remove picture</span>
+                </button>
+            }
+        </div>
+    </div>
+</div>
+
+
+<div class="lg:col-span-2 bg-slate-200 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden">
+    <div class="bg-linear-to-br from-yellow-500 to-yellow-400 px-4 py-2">
+        <h2 class="text-xl font-bold text-slate-800">User Information</h2>
+    </div>
+    <div class="p-4 md:p-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 overflow-y-auto">
+
+
+            <div [class]="!isControlValid(fullNameForm) && isEditing('name') ? 'ring-2 ring-red-500' : ''" class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-200">
+                <div class="flex justify-between items-center mb-2">
+                    <div class="flex items-center gap-2">
+                        <ng-icon class="text-emerald-600! text-lg" name="faSolidUser"></ng-icon>
+                        <span class="font-semibold text-slate-700">Full Name</span>
+                    </div>
+                    @if (!isEditing('name')) {
+                        <button type="button" (click)="startEditing('name')" class="text-amber-500 hover:text-amber-600 p-1 rounded-lg hover:bg-amber-50 transition-all duration-200">
+                            <ng-icon name="faSolidPencil"></ng-icon>
+                        </button>
+                    } @else {
+                        <div class="flex gap-1">
+                            <button type="button" (click)="onSubmitFullName()" [disabled]="fullNameForm.invalid" class="text-emerald-500 hover:text-emerald-600 p-1 rounded-lg hover:bg-emerald-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                                <ng-icon name="faSolidCheck"></ng-icon>
                             </button>
-                            <button type="button" (click)="cancelProfilePicture()" class="bg-linear-to-br from-red-500 to-red-600 text-white px-4 py-2 rounded-lg font-semibold shadow-md transition-all duration-200 hover:shadow-lg hover:scale-105 active:scale-95">
-                                <ng-icon name="faSolidXmark" class="mr-1"></ng-icon> Cancel
+                            <button type="button" (click)="cancelEditing()" class="text-red-500 hover:text-red-600 p-1 rounded-lg hover:bg-red-50 transition-all duration-200">
+                                <ng-icon name="faSolidXmark"></ng-icon>
                             </button>
                         </div>
                     }
-                </form>
-            </div>
-        </div>
-
-
-        <div class="lg:col-span-2 bg-slate-200 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden">
-            <div class="bg-linear-to-br from-yellow-500 to-yellow-400 px-4 py-2">
-                <h2 class="text-xl font-bold text-slate-800">User Information</h2>
-            </div>
-            <div class="p-4 md:p-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 overflow-y-auto">
-
-
-                    <div [class]="!isControlValid(fullNameForm) && isEditing('name') ? 'ring-2 ring-red-500' : ''" class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-200">
-                        <div class="flex justify-between items-center mb-2">
-                            <div class="flex items-center gap-2">
-                                <ng-icon class="text-emerald-600! text-lg" name="faSolidUser"></ng-icon>
-                                <span class="font-semibold text-slate-700">Full Name</span>
-                            </div>
-                            @if (!isEditing('name')) {
-                                <button type="button" (click)="startEditing('name')" class="text-amber-500 hover:text-amber-600 p-1 rounded-lg hover:bg-amber-50 transition-all duration-200">
-                                    <ng-icon name="faSolidPencil"></ng-icon>
-                                </button>
-                            } @else {
-                                <div class="flex gap-1">
-                                    <button type="button" (click)="onSubmitFullName()" [disabled]="fullNameForm.invalid" class="text-emerald-500 hover:text-emerald-600 p-1 rounded-lg hover:bg-emerald-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
-                                        <ng-icon name="faSolidCheck"></ng-icon>
-                                    </button>
-                                    <button type="button" (click)="cancelEditing()" class="text-red-500 hover:text-red-600 p-1 rounded-lg hover:bg-red-50 transition-all duration-200">
-                                        <ng-icon name="faSolidXmark"></ng-icon>
-                                    </button>
-                                </div>
-                            }
-                        </div>
-                        @if (isEditing('name')) {
-                            <form [formGroup]="fullNameForm" class="grid grid-cols-2 gap-2">
-                                <div>
-                                    <input formControlName="firstName" placeholder="First name" class="w-full p-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition-all text-sm" type="text">
-                                    @if (fullNameForm.get('firstName')?.hasError('required') || fullNameForm.get('firstName')?.hasError('minlength') || fullNameForm.get('firstName')?.hasError('maxlength')) {
-                                        <p class="text-red-500 text-xs mt-1">2-20 chars</p>
-                                    }
-                                </div>
-                                <div>
-                                    <input formControlName="lastName" placeholder="Last name" class="w-full p-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition-all text-sm" type="text">
-                                    @if (fullNameForm.get('lastName')?.hasError('required') || fullNameForm.get('lastName')?.hasError('minlength') || fullNameForm.get('lastName')?.hasError('maxlength')) {
-                                        <p class="text-red-500 text-xs mt-1">2-20 chars</p>
-                                    }
-                                </div>
-                            </form>
-                        } @else {
-                            <p class="text-slate-800 font-medium">{{userData()?.fullName ?? "Not specified"}}</p>
-                        }
-                    </div>
-
-
-                    <div [class]="!isControlValid(usernameForm, 'userName') && isEditing('username') ? 'ring-2 ring-red-500' : ''" class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-200">
-                        <div class="flex justify-between items-center mb-2">
-                            <div class="flex items-center gap-2">
-                                <ng-icon class="text-emerald-600! text-lg" name="faSolidAt"></ng-icon>
-                                <span class="font-semibold text-slate-700">Username</span>
-                            </div>
-                            @if (!isEditing('username')) {
-                                <button type="button" (click)="startEditing('username')" class="text-amber-500 hover:text-amber-600 p-1 rounded-lg hover:bg-amber-50 transition-all duration-200">
-                                    <ng-icon name="faSolidPencil"></ng-icon>
-                                </button>
-                            } @else {
-                                <div class="flex gap-1">
-                                    <button type="button" (click)="onSubmitUsername()" [disabled]="usernameForm.invalid" class="text-emerald-500 hover:text-emerald-600 p-1 rounded-lg hover:bg-emerald-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
-                                        <ng-icon name="faSolidCheck"></ng-icon>
-                                    </button>
-                                    <button type="button" (click)="cancelEditing()" class="text-red-500 hover:text-red-600 p-1 rounded-lg hover:bg-red-50 transition-all duration-200">
-                                        <ng-icon name="faSolidXmark"></ng-icon>
-                                    </button>
-                                </div>
-                            }
-                        </div>
-                        @if (isEditing('username')) {
-                            <form [formGroup]="usernameForm">
-                                <input formControlName="userName" class="w-full p-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition-all text-sm" type="text">
-                                @if (usernameForm.get('userName')?.hasError('required') || usernameForm.get('userName')?.hasError('minlength') || usernameForm.get('userName')?.hasError('maxlength')) {
-                                    <p class="text-red-500 text-xs mt-1">4-20 characters</p>
-                                }
-                                @if(usernameForm.get('userName')?.hasError("duplicateUserName")) {
-                                    <p class="text-red-500 text-xs mt-1">Username is taken</p>
-                                }
-                            </form>
-                        } @else {
-                            <p class="text-slate-800 font-medium">{{userData()?.userName ?? "Not specified"}}</p>
-                        }
-                    </div>
-
-
-                    <div [class]="!isControlValid(emailForm, 'email') && isEditing('email') ? 'ring-2 ring-red-500' : ''" class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-200">
-                        <div class="flex justify-between items-center mb-2">
-                            <div class="flex items-center gap-2">
-                                <ng-icon class="text-emerald-600! text-lg" name="faSolidEnvelope"></ng-icon>
-                                <span class="font-semibold text-slate-700">Email</span>
-                            </div>
-                            @if (!isEditing('email')) {
-                                <button type="button" (click)="startEditing('email')" class="text-amber-500 hover:text-amber-600 p-1 rounded-lg hover:bg-amber-50 transition-all duration-200">
-                                    <ng-icon name="faSolidPencil"></ng-icon>
-                                </button>
-                            } @else {
-                                <div class="flex gap-1">
-                                    <button type="button" (click)="onSubmitEmail()" [disabled]="emailForm.invalid" class="text-emerald-500 hover:text-emerald-600 p-1 rounded-lg hover:bg-emerald-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
-                                        <ng-icon name="faSolidCheck"></ng-icon>
-                                    </button>
-                                    <button type="button" (click)="cancelEditing()" class="text-red-500 hover:text-red-600 p-1 rounded-lg hover:bg-red-50 transition-all duration-200">
-                                        <ng-icon name="faSolidXmark"></ng-icon>
-                                    </button>
-                                </div>
-                            }
-                        </div>
-                        @if (isEditing('email')) {
-                            <form [formGroup]="emailForm">
-                                <input formControlName="email" class="w-full p-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition-all text-sm" type="email">
-                                @if (emailForm.get('email')?.hasError('required') || emailForm.get('email')?.hasError('email')) {
-                                    <p class="text-red-500 text-xs mt-1">Valid email required</p>
-                                }
-                                @if(emailForm.get('email')?.hasError("emailTaken")) {
-                                    <p class="text-red-500 text-xs mt-1">Email is taken</p>
-                                }
-                            </form>
-                        } @else {
-                            <p class="text-slate-800 font-medium truncate">{{userData()?.email ?? "Not specified"}}</p>
-                        }
-                    </div>
-
-
-                    <div [class]="!isControlValid(dateOfBirthForm, 'dateOfBirth') && isEditing('dateOfBirth') ? 'ring-2 ring-red-500' : ''" class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-200">
-                        <div class="flex justify-between items-center mb-2">
-                            <div class="flex items-center gap-2">
-                                <ng-icon class="text-emerald-600! text-lg" name="faSolidCalendarDay"></ng-icon>
-                                <span class="font-semibold text-slate-700">Date of Birth</span>
-                            </div>
-                            @if (!isEditing('dateOfBirth')) {
-                                <button type="button" (click)="startEditing('dateOfBirth')" class="text-amber-500 hover:text-amber-600 p-1 rounded-lg hover:bg-amber-50 transition-all duration-200">
-                                    <ng-icon name="faSolidPencil"></ng-icon>
-                                </button>
-                            } @else {
-                                <div class="flex gap-1">
-                                    <button type="button" (click)="onSubmitDateOfBirth()" [disabled]="dateOfBirthForm.invalid" class="text-emerald-500 hover:text-emerald-600 p-1 rounded-lg hover:bg-emerald-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
-                                        <ng-icon name="faSolidCheck"></ng-icon>
-                                    </button>
-                                    <button type="button" (click)="cancelEditing()" class="text-red-500 hover:text-red-600 p-1 rounded-lg hover:bg-red-50 transition-all duration-200">
-                                        <ng-icon name="faSolidXmark"></ng-icon>
-                                    </button>
-                                </div>
-                            }
-                        </div>
-                        @if (isEditing('dateOfBirth')) {
-                            <form [formGroup]="dateOfBirthForm">
-                                <input formControlName="dateOfBirth" class="w-full p-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition-all text-sm" type="date">
-                            </form>
-                        } @else {
-                            <p class="text-slate-800 font-medium">{{(userData()?.dateOfBirth | date:'mediumDate') ?? 'Not specified'}}</p>
-                        }
-                    </div>
-
-
-                    <div [class]="!isControlValid(genderForm) && isEditing('gender') ? 'ring-2 ring-red-500' : ''" class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-200">
-                        <div class="flex justify-between items-center mb-2">
-                            <div class="flex items-center gap-2">
-                                <ng-icon class="text-emerald-600! text-lg" name="faSolidVenusMars"></ng-icon>
-                                <span class="font-semibold text-slate-700">Gender</span>
-                            </div>
-                            @if (!isEditing('gender')) {
-                                <button type="button" (click)="startEditing('gender')" class="text-amber-500 hover:text-amber-600 p-1 rounded-lg hover:bg-amber-50 transition-all duration-200">
-                                    <ng-icon name="faSolidPencil"></ng-icon>
-                                </button>
-                            } @else {
-                                <div class="flex gap-1">
-                                    <button type="button" (click)="onSubmitGender()" [disabled]="genderForm.invalid" class="text-emerald-500 hover:text-emerald-600 p-1 rounded-lg hover:bg-emerald-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
-                                        <ng-icon name="faSolidCheck"></ng-icon>
-                                    </button>
-                                    <button type="button" (click)="cancelEditing()" class="text-red-500 hover:text-red-600 p-1 rounded-lg hover:bg-red-50 transition-all duration-200">
-                                        <ng-icon name="faSolidXmark"></ng-icon>
-                                    </button>
-                                </div>
-                            }
-                        </div>
-                        @if (isEditing('gender')) {
-                            <form [formGroup]="genderForm">
-                                <select formControlName="gender" class="w-full p-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition-all bg-white text-sm">
-                                    <option [ngValue]="null">Select gender</option>
-                                    <option [ngValue]="1">Male</option>
-                                    <option [ngValue]="2">Female</option>
-                                    <option [ngValue]="3">Other</option>
-                                </select>
-                            </form>
-                        } @else {
-                            <p class="text-slate-800 font-medium">{{genderLabel()}}</p>
-                        }
-                    </div>
-
-
-                    <div class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-200">
-                        <div class="flex justify-between items-center mb-2">
-                            <div class="flex items-center gap-2">
-                                <ng-icon class="text-emerald-600! text-lg" name="faSolidClock"></ng-icon>
-                                <span class="font-semibold text-slate-700">Active Since</span>
-                            </div>
-                        </div>
-                        <p class="text-slate-800 font-medium">{{(userData()?.registeredAt | date:'mediumDate') ?? 'Not specified'}}</p>
-                    </div>
-
                 </div>
+                @if (isEditing('name')) {
+                    <form [formGroup]="fullNameForm" class="grid grid-cols-2 gap-2">
+                        <div>
+                            <input formControlName="firstName" placeholder="First name" class="w-full p-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition-all text-sm" type="text">
+                            @if (fullNameForm.get('firstName')?.hasError('required') || fullNameForm.get('firstName')?.hasError('minlength') || fullNameForm.get('firstName')?.hasError('maxlength')) {
+                                <p class="text-red-500 text-xs mt-1">2-20 chars</p>
+                            }
+                        </div>
+                        <div>
+                            <input formControlName="lastName" placeholder="Last name" class="w-full p-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition-all text-sm" type="text">
+                            @if (fullNameForm.get('lastName')?.hasError('required') || fullNameForm.get('lastName')?.hasError('minlength') || fullNameForm.get('lastName')?.hasError('maxlength')) {
+                                <p class="text-red-500 text-xs mt-1">2-20 chars</p>
+                            }
+                        </div>
+                    </form>
+                } @else {
+                    <p class="text-slate-800 font-medium">{{userData()?.fullName ?? "Not specified"}}</p>
+                }
             </div>
-        </div>
 
+
+            <div [class]="!isControlValid(usernameForm, 'userName') && isEditing('username') ? 'ring-2 ring-red-500' : ''" class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-200">
+                <div class="flex justify-between items-center mb-2">
+                    <div class="flex items-center gap-2">
+                        <ng-icon class="text-emerald-600! text-lg" name="faSolidAt"></ng-icon>
+                        <span class="font-semibold text-slate-700">Username</span>
+                    </div>
+                    @if (!isEditing('username')) {
+                        <button type="button" (click)="startEditing('username')" class="text-amber-500 hover:text-amber-600 p-1 rounded-lg hover:bg-amber-50 transition-all duration-200">
+                            <ng-icon name="faSolidPencil"></ng-icon>
+                        </button>
+                    } @else {
+                        <div class="flex gap-1">
+                            <button type="button" (click)="onSubmitUsername()" [disabled]="usernameForm.invalid" class="text-emerald-500 hover:text-emerald-600 p-1 rounded-lg hover:bg-emerald-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                                <ng-icon name="faSolidCheck"></ng-icon>
+                            </button>
+                            <button type="button" (click)="cancelEditing()" class="text-red-500 hover:text-red-600 p-1 rounded-lg hover:bg-red-50 transition-all duration-200">
+                                <ng-icon name="faSolidXmark"></ng-icon>
+                            </button>
+                        </div>
+                    }
+                </div>
+                @if (isEditing('username')) {
+                    <form [formGroup]="usernameForm">
+                        <input formControlName="userName" class="w-full p-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition-all text-sm" type="text">
+                        @if (usernameForm.get('userName')?.hasError('required') || usernameForm.get('userName')?.hasError('minlength') || usernameForm.get('userName')?.hasError('maxlength')) {
+                            <p class="text-red-500 text-xs mt-1">4-20 characters</p>
+                        }
+                        @if(usernameForm.get('userName')?.hasError("duplicateUserName")) {
+                            <p class="text-red-500 text-xs mt-1">Username is taken</p>
+                        }
+                    </form>
+                } @else {
+                    <p class="text-slate-800 font-medium">{{userData()?.userName ?? "Not specified"}}</p>
+                }
+            </div>
+
+
+            <div [class]="!isControlValid(emailForm, 'email') && isEditing('email') ? 'ring-2 ring-red-500' : ''" class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-200">
+                <div class="flex justify-between items-center mb-2">
+                    <div class="flex items-center gap-2">
+                        <ng-icon class="text-emerald-600! text-lg" name="faSolidEnvelope"></ng-icon>
+                        <span class="font-semibold text-slate-700">Email</span>
+                    </div>
+                    @if (!isEditing('email')) {
+                        <button type="button" (click)="startEditing('email')" class="text-amber-500 hover:text-amber-600 p-1 rounded-lg hover:bg-amber-50 transition-all duration-200">
+                            <ng-icon name="faSolidPencil"></ng-icon>
+                        </button>
+                    } @else {
+                        <div class="flex gap-1">
+                            <button type="button" (click)="onSubmitEmail()" [disabled]="emailForm.invalid" class="text-emerald-500 hover:text-emerald-600 p-1 rounded-lg hover:bg-emerald-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                                <ng-icon name="faSolidCheck"></ng-icon>
+                            </button>
+                            <button type="button" (click)="cancelEditing()" class="text-red-500 hover:text-red-600 p-1 rounded-lg hover:bg-red-50 transition-all duration-200">
+                                <ng-icon name="faSolidXmark"></ng-icon>
+                            </button>
+                        </div>
+                    }
+                </div>
+                @if (isEditing('email')) {
+                    <form [formGroup]="emailForm">
+                        <input formControlName="email" class="w-full p-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition-all text-sm" type="email">
+                        @if (emailForm.get('email')?.hasError('required') || emailForm.get('email')?.hasError('email')) {
+                            <p class="text-red-500 text-xs mt-1">Valid email required</p>
+                        }
+                        @if(emailForm.get('email')?.hasError("emailTaken")) {
+                            <p class="text-red-500 text-xs mt-1">Email is taken</p>
+                        }
+                    </form>
+                } @else {
+                    <p class="text-slate-800 font-medium truncate">{{userData()?.email ?? "Not specified"}}</p>
+                }
+            </div>
+
+
+            <div [class]="!isControlValid(dateOfBirthForm, 'dateOfBirth') && isEditing('dateOfBirth') ? 'ring-2 ring-red-500' : ''" class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-200">
+                <div class="flex justify-between items-center mb-2">
+                    <div class="flex items-center gap-2">
+                        <ng-icon class="text-emerald-600! text-lg" name="faSolidCalendarDay"></ng-icon>
+                        <span class="font-semibold text-slate-700">Date of Birth</span>
+                    </div>
+                    @if (!isEditing('dateOfBirth')) {
+                        <button type="button" (click)="startEditing('dateOfBirth')" class="text-amber-500 hover:text-amber-600 p-1 rounded-lg hover:bg-amber-50 transition-all duration-200">
+                            <ng-icon name="faSolidPencil"></ng-icon>
+                        </button>
+                    } @else {
+                        <div class="flex gap-1">
+                            <button type="button" (click)="onSubmitDateOfBirth()" [disabled]="dateOfBirthForm.invalid" class="text-emerald-500 hover:text-emerald-600 p-1 rounded-lg hover:bg-emerald-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                                <ng-icon name="faSolidCheck"></ng-icon>
+                            </button>
+                            <button type="button" (click)="cancelEditing()" class="text-red-500 hover:text-red-600 p-1 rounded-lg hover:bg-red-50 transition-all duration-200">
+                                <ng-icon name="faSolidXmark"></ng-icon>
+                            </button>
+                        </div>
+                    }
+                </div>
+                @if (isEditing('dateOfBirth')) {
+                    <form [formGroup]="dateOfBirthForm">
+                        <input formControlName="dateOfBirth" class="w-full p-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition-all text-sm" type="date">
+                    </form>
+                } @else {
+                    <p class="text-slate-800 font-medium">{{(userData()?.dateOfBirth | date:'mediumDate') ?? 'Not specified'}}</p>
+                }
+            </div>
+
+
+            <div [class]="!isControlValid(genderForm) && isEditing('gender') ? 'ring-2 ring-red-500' : ''" class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-200">
+                <div class="flex justify-between items-center mb-2">
+                    <div class="flex items-center gap-2">
+                        <ng-icon class="text-emerald-600! text-lg" name="faSolidVenusMars"></ng-icon>
+                        <span class="font-semibold text-slate-700">Gender</span>
+                    </div>
+                    @if (!isEditing('gender')) {
+                        <button type="button" (click)="startEditing('gender')" class="text-amber-500 hover:text-amber-600 p-1 rounded-lg hover:bg-amber-50 transition-all duration-200">
+                            <ng-icon name="faSolidPencil"></ng-icon>
+                        </button>
+                    } @else {
+                        <div class="flex gap-1">
+                            <button type="button" (click)="onSubmitGender()" [disabled]="genderForm.invalid" class="text-emerald-500 hover:text-emerald-600 p-1 rounded-lg hover:bg-emerald-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                                <ng-icon name="faSolidCheck"></ng-icon>
+                            </button>
+                            <button type="button" (click)="cancelEditing()" class="text-red-500 hover:text-red-600 p-1 rounded-lg hover:bg-red-50 transition-all duration-200">
+                                <ng-icon name="faSolidXmark"></ng-icon>
+                            </button>
+                        </div>
+                    }
+                </div>
+                @if (isEditing('gender')) {
+                    <form [formGroup]="genderForm">
+                        <select formControlName="gender" class="w-full p-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition-all bg-white text-sm">
+                            <option [ngValue]="null">Select gender</option>
+                            <option [ngValue]="1">Male</option>
+                            <option [ngValue]="2">Female</option>
+                            <option [ngValue]="3">Other</option>
+                        </select>
+                    </form>
+                } @else {
+                    <p class="text-slate-800 font-medium">{{genderLabel()}}</p>
+                }
+            </div>
+
+
+            <div class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-200">
+                <div class="flex justify-between items-center mb-2">
+                    <div class="flex items-center gap-2">
+                        <ng-icon class="text-emerald-600! text-lg" name="faSolidClock"></ng-icon>
+                        <span class="font-semibold text-slate-700">Active Since</span>
+                    </div>
+                </div>
+                <p class="text-slate-800 font-medium">{{(userData()?.registeredAt | date:'mediumDate') ?? 'Not specified'}}</p>
+            </div>
+
+        </div>
     </div>
+</div>
+
+</div>
+
+
+<div class="bg-slate-200 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden">
+    <div class="bg-linear-to-br from-yellow-500 to-yellow-400 px-4 py-2">
+        <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+            Body Metrics
+        </h2>
+    </div>
+    <div class="p-4 md:p-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+
+            <div class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-200">
+                <div class="flex justify-between items-center mb-2">
+                    <div class="flex items-center gap-2">
+                        <ng-icon class="text-emerald-600! text-lg" name="faSolidWeightScale"></ng-icon>
+                        <span class="font-semibold text-slate-700">Weight</span>
+                    </div>
+                    <a routerLink="/weight" class="text-amber-500 hover:text-amber-600 p-1 rounded-lg hover:bg-amber-50 transition-all duration-200">
+                        <ng-icon name="faSolidPencil"></ng-icon>
+                    </a>
+                </div>
+                <p class="text-slate-800 font-medium text-lg">{{weightLabel()}}</p>
+            </div>
+
+
+            <div [class]="!isControlValid(heightForm, 'height') && isEditing('height') ? 'ring-2 ring-red-500' : ''" class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-200">
+                <div class="flex justify-between items-center mb-2">
+                    <div class="flex items-center gap-2">
+                        <ng-icon class="text-emerald-600! text-lg" name="faSolidRulerVertical"></ng-icon>
+                        <span class="font-semibold text-slate-700">Height</span>
+                    </div>
+                    @if (!isEditing('height')) {
+                        <button type="button" (click)="startEditing('height')" class="text-amber-500 hover:text-amber-600 p-1 rounded-lg hover:bg-amber-50 transition-all duration-200">
+                            <ng-icon name="faSolidPencil"></ng-icon>
+                        </button>
+                    } @else {
+                        <div class="flex gap-1">
+                            <button type="button" (click)="onSubmitHeight()" [disabled]="heightForm.invalid" class="text-emerald-500 hover:text-emerald-600 p-1 rounded-lg hover:bg-emerald-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                                <ng-icon name="faSolidCheck"></ng-icon>
+                            </button>
+                            <button type="button" (click)="cancelEditing()" class="text-red-500 hover:text-red-600 p-1 rounded-lg hover:bg-red-50 transition-all duration-200">
+                                <ng-icon name="faSolidXmark"></ng-icon>
+                            </button>
+                        </div>
+                    }
+                </div>
+                @if (isEditing('height')) {
+                    <form [formGroup]="heightForm">
+                        <div class="flex">
+                            <input formControlName="height" class="flex-1 p-2 rounded-l-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition-all text-sm" type="number">
+                            <span class="bg-slate-600 text-white px-3 py-2 rounded-r-lg font-semibold text-sm">CM</span>
+                        </div>
+                        @if (heightForm.get('height')?.hasError('min') || heightForm.get('height')?.hasError('max')) {
+                            <p class="text-red-500 text-xs mt-1">70-250 cm</p>
+                        }
+                    </form>
+                } @else {
+                    <p class="text-slate-800 font-medium text-lg">{{heightLabel()}}</p>
+                }
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
 
     <div class="bg-slate-200 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden">
         <div class="bg-linear-to-br from-yellow-500 to-yellow-400 px-4 py-2">
             <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
-                Body Metrics
+                Settings
             </h2>
         </div>
-        <div class="p-4 md:p-6">
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="p-4 md:p-6 space-y-4">
 
 
-                <div class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-200">
-                    <div class="flex justify-between items-center mb-2">
-                        <div class="flex items-center gap-2">
-                            <ng-icon class="text-emerald-600! text-lg" name="faSolidWeightScale"></ng-icon>
-                            <span class="font-semibold text-slate-700">Weight</span>
-                        </div>
-                        <a routerLink="/weight" class="text-amber-500 hover:text-amber-600 p-1 rounded-lg hover:bg-amber-50 transition-all duration-200">
-                            <ng-icon name="faSolidPencil"></ng-icon>
-                        </a>
+            <div class="bg-white rounded-xl p-4 shadow-sm">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="bg-emerald-100 p-2 rounded-lg">
+                        <ng-icon name="faSolidLock" class="text-emerald-600! text-xl"></ng-icon>
                     </div>
-                    <p class="text-slate-800 font-medium text-lg">{{weightLabel()}}</p>
-                </div>
-
-
-                <div [class]="!isControlValid(heightForm, 'height') && isEditing('height') ? 'ring-2 ring-red-500' : ''" class="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-all duration-200">
-                    <div class="flex justify-between items-center mb-2">
-                        <div class="flex items-center gap-2">
-                            <ng-icon class="text-emerald-600! text-lg" name="faSolidRulerVertical"></ng-icon>
-                            <span class="font-semibold text-slate-700">Height</span>
-                        </div>
-                        @if (!isEditing('height')) {
-                            <button type="button" (click)="startEditing('height')" class="text-amber-500 hover:text-amber-600 p-1 rounded-lg hover:bg-amber-50 transition-all duration-200">
-                                <ng-icon name="faSolidPencil"></ng-icon>
-                            </button>
-                        } @else {
-                            <div class="flex gap-1">
-                                <button type="button" (click)="onSubmitHeight()" [disabled]="heightForm.invalid" class="text-emerald-500 hover:text-emerald-600 p-1 rounded-lg hover:bg-emerald-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
-                                    <ng-icon name="faSolidCheck"></ng-icon>
-                                </button>
-                                <button type="button" (click)="cancelEditing()" class="text-red-500 hover:text-red-600 p-1 rounded-lg hover:bg-red-50 transition-all duration-200">
-                                    <ng-icon name="faSolidXmark"></ng-icon>
-                                </button>
-                            </div>
-                        }
-                    </div>
-                    @if (isEditing('height')) {
-                        <form [formGroup]="heightForm">
-                            <div class="flex">
-                                <input formControlName="height" class="flex-1 p-2 rounded-l-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition-all text-sm" type="number">
-                                <span class="bg-slate-600 text-white px-3 py-2 rounded-r-lg font-semibold text-sm">CM</span>
-                            </div>
-                            @if (heightForm.get('height')?.hasError('min') || heightForm.get('height')?.hasError('max')) {
-                                <p class="text-red-500 text-xs mt-1">70-250 cm</p>
-                            }
-                        </form>
-                    } @else {
-                        <p class="text-slate-800 font-medium text-lg">{{heightLabel()}}</p>
-                    }
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-
-
-
-
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-
-
-        <div class="bg-slate-200 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden">
-            <div class="bg-linear-to-br from-yellow-500 to-yellow-400 px-4 py-2">
-                <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
-                    Settings
-                </h2>
-            </div>
-            <div class="p-4 md:p-6 space-y-4">
-
-
-                <div class="bg-white rounded-xl p-4 shadow-sm">
-                    <div class="flex items-center gap-3 mb-4">
-                        <div class="bg-emerald-100 p-2 rounded-lg">
-                            <ng-icon name="faSolidLock" class="text-emerald-600! text-xl"></ng-icon>
-                        </div>
-                        <div>
-                            <h3 class="font-semibold text-slate-800">Security</h3>
-                            <p class="text-sm text-slate-500">Manage 2FA and account security</p>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <button [disabled]="true" class="bg-linear-to-br from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-slate-800 font-semibold py-3 px-4 rounded-lg shadow-md hover:shadow-lg transition duration-200 flex items-center justify-center gap-2 active:scale-95 cursor-pointer disabled:opacity-50 disabled:pointer-events-none">
-                            <ng-icon name="faSolidShieldHalved"></ng-icon>
-                            <span>Enable 2FA</span>
-                        </button>
-                        <button class="bg-linear-to-br from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-slate-800 font-semibold py-3 px-4 rounded-lg shadow-all hover:shadow-lg transition duration-200 flex items-center justify-center gap-2 active:scale-95 cursor-pointer">
-                            <ng-icon name="faSolidKey"></ng-icon>
-                            <span>Change Password</span>
-                        </button>
+                    <div>
+                        <h3 class="font-semibold text-slate-800">Security</h3>
+                        <p class="text-sm text-slate-500">Manage 2FA and account security</p>
                     </div>
                 </div>
-
-                <div class="bg-white rounded-xl p-4 shadow-sm border-l-4 border-red-500">
-                    <div class="flex items-center gap-3 mb-4">
-                        <div class="bg-red-100 p-2 rounded-lg">
-                            <ng-icon name="faSolidTriangleExclamation" class="text-red-600! text-xl"></ng-icon>
-                        </div>
-                        <div>
-                            <h3 class="font-semibold text-slate-800">Danger Zone</h3>
-                            <p class="text-sm text-slate-500">Irreversible account actions</p>
-                        </div>
-                    </div>
-                    <button class="w-full bg-linear-to-br from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold py-3 px-4 rounded-lg shadow-md hover:shadow-lg transition duration-200 flex items-center justify-center gap-2 active:scale-95 cursor-pointer shadow-all">
-                        <ng-icon name="faSolidTrash"></ng-icon>
-                        <span>Delete Account</span>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <button [disabled]="true" class="bg-linear-to-br from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-slate-800 font-semibold py-3 px-4 rounded-lg shadow-md hover:shadow-lg transition duration-200 flex items-center justify-center gap-2 active:scale-95 cursor-pointer disabled:opacity-50 disabled:pointer-events-none">
+                        <ng-icon name="faSolidShieldHalved"></ng-icon>
+                        <span>Enable 2FA</span>
+                    </button>
+                    <button class="bg-linear-to-br from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-slate-800 font-semibold py-3 px-4 rounded-lg shadow-all hover:shadow-lg transition duration-200 flex items-center justify-center gap-2 active:scale-95 cursor-pointer">
+                        <ng-icon name="faSolidKey"></ng-icon>
+                        <span>Change Password</span>
                     </button>
                 </div>
+            </div>
 
+            <div class="bg-white rounded-xl p-4 shadow-sm border-l-4 border-red-500">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="bg-red-100 p-2 rounded-lg">
+                        <ng-icon name="faSolidTriangleExclamation" class="text-red-600! text-xl"></ng-icon>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-slate-800">Danger Zone</h3>
+                        <p class="text-sm text-slate-500">Irreversible account actions</p>
+                    </div>
+                </div>
+                <button class="w-full bg-linear-to-br from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold py-3 px-4 rounded-lg shadow-md hover:shadow-lg transition duration-200 flex items-center justify-center gap-2 active:scale-95 cursor-pointer shadow-all">
+                    <ng-icon name="faSolidTrash"></ng-icon>
+                    <span>Delete Account</span>
+                </button>
             </div>
 
         </div>
 
-        <div class="bg-slate-200 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 opacity-90 overflow-hidden">
-            <div class="bg-linear-to-br from-yellow-500 to-yellow-400 px-4 py-2 flex items-center gap-2">
-                <h2 class="text-xl font-bold text-slate-800 gap-2">Preferences</h2>
-                <span class="ml-2 px-2 py-1 text-xs bg-emerald-700 text-slate-100 rounded-full font-semibold self-center">Coming Soon</span>
-            </div>
-            <div class="p-6 flex flex-col items-center justify-center h-full font-semibold">
-                <ng-icon name="faSolidWrench" class="text-5xl text-slate-600! mb-3"></ng-icon>
-                <p class="text-slate-600 font-bold text-2xl text-center">Preference settings will be available soon.</p>
-                <p class="text-slate-500 text-sm sm:text-xl text-center mt-1">Stay tuned for customization options!</p>
-            </div>
+    </div>
+
+    <div class="bg-slate-200 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 opacity-90 overflow-hidden relative">
+        <div class="bg-linear-to-br from-yellow-500 to-yellow-400 px-4 py-2 flex items-center gap-2">
+            <h2 class="text-xl font-bold text-slate-800 gap-2">Preferences</h2>
+            <span class="ml-2 px-2 py-1 text-xs bg-emerald-700 text-slate-100 rounded-full font-semibold self-center">Coming Soon</span>
         </div>
+        <div class="px-6 py-10 flex gap-3 absolute top-[55%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center font-semibold w-full">
+            <ng-icon name="faSolidWrench" class="text-5xl text-slate-600!"></ng-icon>
+            <p class="text-slate-600 font-bold text-2xl text-center">Preference settings will be available soon.</p>
+            <p class="text-slate-500 text-sm sm:text-xl text-center">Stay tuned for customization options!</p>
+        </div>
+    </div>
 
 </div>
 

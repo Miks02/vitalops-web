@@ -34,12 +34,12 @@ import {
     createUsernameForm,
     createEmailForm,
     createGenderForm,
-    createHeightForm,
-    createProfilePictureForm
+    createHeightForm
 } from '../../../core/helpers/Factories';
 import { UserService } from '../../../core/services/user-service';
 import { NotificationService } from '../../../core/services/notification-service';
 import { handleValidationErrors } from '../../../core/helpers/FormHelpers';
+import { environment } from '../../../../environments/environment.development';
 
 @Component({
     selector: 'app-profile-page',
@@ -74,6 +74,7 @@ export class ProfilePage {
     private userService = inject(UserService);
     private notificationService = inject(NotificationService);
 
+    urlOnly = environment.urlOnly;
     userData = toSignal(this.userService.userDetails$, {initialValue: null});
 
     profileDetailsSource = toSignal(this.profileService.profilePage$, {initialValue: null})
@@ -84,7 +85,6 @@ export class ProfilePage {
     emailForm: FormGroup = createEmailForm(this.fb);
     genderForm: FormGroup = createGenderForm(this.fb);
     heightForm: FormGroup = createHeightForm(this.fb);
-    profilePictureForm: FormGroup = createProfilePictureForm(this.fb);
 
     editingField: string | null = null;
     selectedProfileImageFile: WritableSignal<File | null> = signal(null);
@@ -94,7 +94,6 @@ export class ProfilePage {
         this.layoutState.setTitle("My Profile");
         this.profileService.getProfilePage().pipe(take(1)).subscribe((res) => {
             this.initForms();
-            console.log(this.profileDetailsSource()?.recentWorkouts)
         });
     }
 
@@ -333,7 +332,7 @@ export class ProfilePage {
 
     getProfileImageSrc(): string {
         if (this.previewImage() !== "") return this.previewImage();
-        if ((this.userData as any).profileImage) return (this.userData as any).profileImage;
+        if (this.userData()?.imagePath) return this.urlOnly + this.userData()!.imagePath;
         return this.userData()?.gender === 1 ? 'user_male.png' : (this.userData()?.gender === 2 ? 'user_female.png' : 'user_other.png');
     }
 
@@ -350,24 +349,25 @@ export class ProfilePage {
     }
 
     saveProfilePicture() {
-        if (this.previewImage()) {
-            const form = this.profilePictureForm;
-            form.get('profileImage')?.setValue(this.previewImage());
-            this.onSubmitProfilePicture();
+        if (this.selectedProfileImageFile()) {
+            this.userService.updateProfilePicture(this.selectedProfileImageFile()!)
+            .pipe(take(1))
+            .subscribe({
+                next: (imagePath) => {
+                    this.previewImage.set("");
+                    this.selectedProfileImageFile.set(null);
+                    this.notificationService.showSuccess("Profile picture updated successfully");
+                },
+                error: (err) => {
+                    console.error('Error uploading profile picture:', err);
+                    this.notificationService.showError("Failed to update profile picture");
+                }
+            });
         }
     }
 
     cancelProfilePicture() {
         this.selectedProfileImageFile.set(null);
         this.previewImage.set("");
-    }
-
-    onSubmitProfilePicture() {
-        const form = this.profilePictureForm;
-        if (this.previewImage()) {
-            (this.userData as any).profileImage = this.previewImage();
-            this.selectedProfileImageFile.set(null);
-            this.previewImage.set("");
-        }
     }
 }
