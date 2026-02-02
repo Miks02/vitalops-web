@@ -60,7 +60,6 @@ export class UserService {
     }
 
     deleteAccount() {
-        console.log("alo bre")
         return this.http.delete<void>(`${this.api}/users`)
     }
 
@@ -167,7 +166,5 @@ export class UserService {
             })
         )
     }
-
-
 
 }

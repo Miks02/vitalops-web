@@ -44,10 +44,11 @@ import { AuthService } from '../../../core/services/auth-service';
 import { Modal } from '../../../layout/utilities/modal/modal';
 import { ModalData } from '../../../core/models/ModalData';
 import { ModalType } from '../../../core/models/ModalType';
+import { PasswordForm } from '../password-form/password-form';
 
 @Component({
     selector: 'app-profile-page',
-    imports: [NgIcon, FormsModule, ReactiveFormsModule, DatePipe, RouterLink, Modal],
+    imports: [NgIcon, FormsModule, ReactiveFormsModule, DatePipe, RouterLink, Modal, PasswordForm],
     templateUrl: './profile-page.html',
     styleUrl: './profile-page.css',
     providers: [provideIcons({
@@ -96,6 +97,7 @@ export class ProfilePage {
     selectedProfileImageFile: WritableSignal<File | null> = signal(null);
     previewImage: WritableSignal<string> = signal("");
     isModalOpen = signal(false);
+    isPasswordFormOpen = signal(false);
 
     ngOnInit() {
         this.layoutState.setTitle("My Profile");

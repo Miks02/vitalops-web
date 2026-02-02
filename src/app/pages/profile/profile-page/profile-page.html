@@ -356,7 +356,7 @@
                         <ng-icon name="faSolidShieldHalved"></ng-icon>
                         <span>Enable 2FA</span>
                     </button>
-                    <button class="bg-linear-to-br from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-slate-800 font-semibold py-3 px-4 rounded-lg shadow-all hover:shadow-lg transition duration-200 flex items-center justify-center gap-2 active:scale-95 cursor-pointer">
+                    <button (click)="isPasswordFormOpen.set(true)" class="bg-linear-to-br from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-slate-800 font-semibold py-3 px-4 rounded-lg shadow-all hover:shadow-lg transition duration-200 flex items-center justify-center gap-2 active:scale-95 cursor-pointer">
                         <ng-icon name="faSolidKey"></ng-icon>
                         <span>Change Password</span>
                     </button>
@@ -403,4 +403,8 @@
 
 @if(isModalOpen()) {
     <app-modal (close)="closeModal()" [data]="buildModal()"></app-modal>
+}
+
+@if(isPasswordFormOpen()) {
+    <app-password-form (close)="isPasswordFormOpen.set(false)"></app-password-form>
 }
