@@ -93,18 +93,8 @@ export class UserService {
         )
     }
 
-    updateWeight(weight: UpdateWeightDto) {
-        return this.http.patch<number>(`${this.api}/users/weight`, weight)
-        .pipe(
-            tap((res) => {
-                const next = this.mergeUserDetails({currentWeight: res});
-                this.userDetailsSubject.next(next)
-            }),
-        )
-    }
-
     updateUserName(username: UpdateUserNameDto) {
-        return this.http.patch<string>(`${this.api}/users/username`, username)
+        return this.http.patch(`${this.api}/users/username`, username, {responseType: 'text'})
         .pipe(
             tap(res => {
                 const next = this.mergeUserDetails({ userName: res });
@@ -114,7 +104,7 @@ export class UserService {
     }
 
     updateEmail(email: UpdateEmailDto) {
-        return this.http.patch<string>(`${this.api}/users/email`, email)
+        return this.http.patch(`${this.api}/users/email`, email, {responseType: 'text'})
         .pipe(
             tap(res => {
                 const next = this.mergeUserDetails({ email: res });
