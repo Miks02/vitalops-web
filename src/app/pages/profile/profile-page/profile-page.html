@@ -40,7 +40,7 @@
                     </button>
                 </div>
             }
-            @if(userData()?.imagePath !== undefined && previewImage() === "") {
+            @if(userData()?.imagePath !== null && previewImage() === "") {
                 <button class=" bg-linear-to-br from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-semibold py-2 px-3 rounded-lg shadow-md hover:shadow-lg transition duration-200 flex items-center justify-center gap-2 active:scale-95 cursor-pointer shadow-all">
                     <ng-icon name="faSolidTrash"></ng-icon>
                     <span>Remove picture</span>
