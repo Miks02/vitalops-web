@@ -12,6 +12,7 @@ import { UpdateGenderDto } from '../models/User/UpdateGenderDto';
 import { UpdateHeightDto } from '../models/User/UpdateHeightDto';
 import { UpdateTargetWeightDto } from '../models/User/UpdateTargetWeightDto';
 import { Gender } from '../models/Gender';
+import { UpdateProfilePictureDto } from '../models/User/UpdateProfilePictureDto';
 
 @Injectable({
     providedIn: 'root',
@@ -46,25 +47,17 @@ export class UserService {
         this.userDetailsSubject.next(null);
     }
 
-    getMe(): Observable<UserDetailsDto> {
+    getMe() {
 
         if(!this.isUserLoaded) {
             return this.http.get<UserDetailsDto>(`${this.api}/users/me`)
             .pipe(
                 tap((res) => {
                     this.userDetails = res;
-                    console.log("User fetched successfully")
-                    console.log("USER: ", res);
-                }),
-                map((res) => {
-                    return res;
                 })
             )
-
         }
-        console.log("User is already loaded");
-        return  of(this.userDetailsSubject.getValue() as UserDetailsDto);
-
+        return of(this.userDetailsSubject.getValue() as UserDetailsDto);
     }
 
     updateFullName(fullName: UpdateFullNameDto) {
@@ -94,8 +87,7 @@ export class UserService {
             tap(res => {
                 const next = this.mergeUserDetails({ userName: res });
                 this.userDetailsSubject.next(next);
-            }),
-            tap(res => { console.log(res); })
+            })
         );
     }
 
@@ -105,8 +97,7 @@ export class UserService {
             tap(res => {
                 const next = this.mergeUserDetails({ email: res });
                 this.userDetailsSubject.next(next);
-            }),
-            tap(res => { console.log(res); })
+            })
         );
     }
 
@@ -116,8 +107,7 @@ export class UserService {
             tap(res => {
                 const next = this.mergeUserDetails({ dateOfBirth: res });
                 this.userDetailsSubject.next(next);
-            }),
-            tap(res => { console.log(res); })
+            })
         );
     }
 
@@ -127,8 +117,7 @@ export class UserService {
             tap(res => {
                 const next = this.mergeUserDetails({ gender: res });
                 this.userDetailsSubject.next(next);
-            }),
-            tap(res => { console.log(res); })
+            })
         );
     }
 
@@ -138,8 +127,7 @@ export class UserService {
             tap(res => {
                 const next = this.mergeUserDetails({ height: res });
                 this.userDetailsSubject.next(next);
-            }),
-            tap(res => { console.log(res); })
+            })
         );
     }
 
@@ -149,9 +137,21 @@ export class UserService {
             tap(res => {
                 const next = this.mergeUserDetails({ targetWeight: res });
                 this.userDetailsSubject.next(next);
-            }),
-            tap(res => { console.log(res); })
+            })
         );
+    }
+
+    updateProfilePicture(imageFile: File) {
+        const formData = new FormData();
+        formData.append('imageFile', imageFile, imageFile.name);
+
+        return this.http.patch(`${this.api}/users/profile-picture`, formData, {responseType: 'text'})
+        .pipe(
+            tap(res => {
+                const next = this.mergeUserDetails({imagePath: res})
+                this.userDetailsSubject.next(next);
+            })
+        )
     }
 
 
