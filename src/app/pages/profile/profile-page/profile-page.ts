@@ -370,4 +370,18 @@ export class ProfilePage {
         this.selectedProfileImageFile.set(null);
         this.previewImage.set("");
     }
+
+    removeProfilePicture() {
+        this.userService.deleteProfilePicture()
+        .pipe(take(1))
+        .subscribe({
+            next: () => {
+                this.notificationService.showSuccess("Profile picture removed successfully");
+            },
+            error: (err) => {
+                console.error('Error uploading profile picture:', err);
+                this.notificationService.showError("Unexpected error happened while trying to delete a profile picture");
+            }
+        })
+    }
 }
