@@ -6,7 +6,7 @@
 
     <div class="flex gap-4 self-center hover:shadow-xl transition duration-200">
         <a routerLink="/profile" class="flex items-center rounded-xl py-2 px-4 gap-3 hover:bg-opacity-50 hover:bg-amber-400 transition-all duration-200 cursor-pointer offset-shadow">
-            <img src="{{getProfileImageSrc()}}" class="rounded-full w-11 h-11 opacity-90">
+            <img src="{{getProfileImageSrc()}}" class="rounded-full w-11 h-11 opacity-90 shadow-all">
 
             <p
             [class.text-blue-100]="userGender() === 1"

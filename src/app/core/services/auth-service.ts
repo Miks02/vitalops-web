@@ -9,6 +9,7 @@ import { UserDto } from '../models/UserDto';
 import { LoginRequest } from '../models/LoginRequest';
 import { Router } from '@angular/router';
 import { UserService } from './user-service';
+import { UpdatePasswordDto } from '../models/User/UpdatePasswordDto';
 
 @Injectable({
     providedIn: 'root',
@@ -26,7 +27,7 @@ export class AuthService {
     set accessToken(accessToken: string | null) {
         this.accessTokenSubject.next(accessToken)
 
-        if(accessToken === null) 
+        if(accessToken === null)
             localStorage.removeItem('token')
         else
             localStorage.setItem('token', accessToken as string)
@@ -58,6 +59,10 @@ export class AuthService {
             }),
             map(res => res.user),
         )
+    }
+
+    changePassword(model: UpdatePasswordDto): Observable<void> {
+        return this.http.post<void>(`${this.api}/auth/password`, model)
     }
 
     logout(): Observable<void> {

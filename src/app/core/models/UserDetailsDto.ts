@@ -5,7 +5,7 @@ export type UserDetailsDto = {
     fullName: string,
     userName: string,
     email: string,
-    imagePath: string,
+    imagePath: string | null,
 
     gender?: Gender,
     currentWeight?: number,

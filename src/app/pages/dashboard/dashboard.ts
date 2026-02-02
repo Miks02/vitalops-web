@@ -105,9 +105,8 @@ export class Dashboard {
     }
 
     getProfileImageSrc(): string {
-        if ((this.userSource as any).profileImage)
-            return (this.userSource as any).profileImage;
-        return this.userSource()?.gender === Gender.Male ? 'user_male.png' : (this.userSource()?.gender === Gender.Female ? 'user_female.png' : 'user_other.png');
+        if (this.userSource()?.imagePath && this.userSource()?.imagePath !== null) return this.userSource()!.imagePath as string;
+        return this.userSource()?.gender === 1 ? 'user_male.png' : (this.userSource()?.gender === 2 ? 'user_female.png' : 'user_other.png');
     }
 
 }

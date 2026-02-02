@@ -122,3 +122,11 @@ export function createTargetWeightForm(fb: FormBuilder): FormGroup {
         targetWeight: ['', [Validators.required, Validators.min(24), Validators.max(399), onlyNumbersCheck()]]
     })
 }
+
+export function createChangePasswordForm(fb: FormBuilder): FormGroup {
+    return fb.group({
+        currentPassword: ['', [Validators.required, Validators.minLength(6)]],
+        newPassword: ['', [Validators.required, Validators.minLength(6)]],
+        confirmPassword: ['', [Validators.required, Validators.minLength(6)]]
+    });
+}

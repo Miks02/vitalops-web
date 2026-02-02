@@ -1,4 +1,4 @@
-import { Component, computed, inject, Signal, signal, WritableSignal } from '@angular/core';
+import { Component, computed, inject, signal, WritableSignal } from '@angular/core';
 import { LayoutState } from '../../../layout/services/layout-state';
 import { FormBuilder, FormsModule, ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { NgIcon, provideIcons } from "@ng-icons/core";
@@ -7,75 +7,69 @@ import {
     faSolidUser,
     faSolidCalendarDay,
     faSolidVenusMars,
-    faSolidWeightScale,
-    faSolidRulerVertical,
     faSolidPencil,
     faSolidCheck,
     faSolidXmark,
     faSolidEnvelope,
-    faSolidDumbbell,
-    faSolidUtensils,
-    faSolidScaleUnbalanced,
-    faSolidShieldHalved,
-    faSolidAddressCard,
-    faSolidCalculator,
-    faSolidFireFlameCurved,
-    faSolidScaleBalanced,
-    faSolidTrophy
-} from "@ng-icons/font-awesome/solid";
-import {
+    faSolidCamera,
+    faSolidAt,
+    faSolidTriangleExclamation,
+    faSolidTrash,
+    faSolidWrench,
     faSolidLock,
+    faSolidShieldHalved,
     faSolidKey,
-    faSolidTrash
+    faSolidClock,
+    faSolidRulerVertical,
+    faSolidWeightScale
 } from "@ng-icons/font-awesome/solid";
-import { WorkoutsChart } from "../../misc/workouts-chart/workouts-chart";
-import { WeightChart } from "../../misc/weight-chart/weight-chart";
 import { ProfileService } from '../services/profile-service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { AccountStatus } from '../../../core/models/AccountStatus';
 import { take } from 'rxjs';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import {
     createFullNameForm,
     createDateOfBirthForm,
     createUsernameForm,
     createEmailForm,
     createGenderForm,
-    createWeightForm,
-    createHeightForm,
-    createProfilePictureForm
+    createHeightForm
 } from '../../../core/helpers/Factories';
 import { UserService } from '../../../core/services/user-service';
 import { NotificationService } from '../../../core/services/notification-service';
 import { handleValidationErrors } from '../../../core/helpers/FormHelpers';
+import { environment } from '../../../../environments/environment.development';
+import { AuthService } from '../../../core/services/auth-service';
+import { Modal } from '../../../layout/utilities/modal/modal';
+import { ModalData } from '../../../core/models/ModalData';
+import { ModalType } from '../../../core/models/ModalType';
+import { PasswordForm } from '../password-form/password-form';
 
 @Component({
     selector: 'app-profile-page',
-    imports: [NgIcon, FormsModule, ReactiveFormsModule, DatePipe, WorkoutsChart, WeightChart, RouterLink],
+    imports: [NgIcon, FormsModule, ReactiveFormsModule, DatePipe, RouterLink, Modal, PasswordForm],
     templateUrl: './profile-page.html',
     styleUrl: './profile-page.css',
     providers: [provideIcons({
         faSolidUser,
         faSolidCalendarDay,
         faSolidVenusMars,
-        faSolidWeightScale,
-        faSolidRulerVertical,
         faSolidPencil,
         faSolidCheck,
         faSolidXmark,
         faSolidEnvelope,
-        faSolidDumbbell,
-        faSolidLock,
+        faSolidCamera,
+        faSolidAt,
+        faSolidTriangleExclamation,
         faSolidTrash,
-        faSolidUtensils,
-        faSolidScaleUnbalanced,
-        faSolidCalculator,
+        faSolidWrench,
+        faSolidLock,
         faSolidShieldHalved,
         faSolidKey,
-        faSolidAddressCard,
-        faSolidFireFlameCurved,
-        faSolidScaleBalanced,
-        faSolidTrophy
+        faSolidClock,
+        faSolidRulerVertical,
+        faSolidWeightScale
     })]
 })
 export class ProfilePage {
@@ -83,13 +77,11 @@ export class ProfilePage {
     private fb = inject(FormBuilder);
     private profileService = inject(ProfileService);
     private userService = inject(UserService);
+    private authService = inject(AuthService)
     private notificationService = inject(NotificationService);
+    private router = inject(Router)
 
     userData = toSignal(this.userService.userDetails$, {initialValue: null});
-
-    recentWorkouts = computed(() => this.profileDetailsSource()?.recentWorkouts ?? []);
-    workoutStreak = computed(() => this.profileDetailsSource()?.workoutStreak);
-    dailyCalorieGoal = computed(() => this.profileDetailsSource()?.dailyCalorieGoal);
 
     profileDetailsSource = toSignal(this.profileService.profilePage$, {initialValue: null})
 
@@ -98,22 +90,20 @@ export class ProfilePage {
     usernameForm: FormGroup = createUsernameForm(this.fb);
     emailForm: FormGroup = createEmailForm(this.fb);
     genderForm: FormGroup = createGenderForm(this.fb);
-    weightForm: FormGroup = createWeightForm(this.fb);
     heightForm: FormGroup = createHeightForm(this.fb);
-    profilePictureForm: FormGroup = createProfilePictureForm(this.fb);
 
     editingField: string | null = null;
     selectedProfileImageFile: WritableSignal<File | null> = signal(null);
     previewImage: WritableSignal<string> = signal("");
+    isModalOpen = signal(false);
+    isPasswordFormOpen = signal(false);
 
     ngOnInit() {
         this.layoutState.setTitle("My Profile");
         this.profileService.getProfilePage().pipe(take(1)).subscribe((res) => {
             this.initForms();
-            console.log(this.profileDetailsSource()?.recentWorkouts)
         });
     }
-
 
     genderLabel = computed(() => {
         switch(this.userData()?.gender) {
@@ -173,7 +163,6 @@ export class ProfilePage {
         this.usernameForm.patchValue({ userName: user.userName || '' });
         this.emailForm.patchValue({ email: user.email || '' });
         this.genderForm.patchValue({ gender: user.gender ?? null });
-        this.weightForm.patchValue({ weight: user.currentWeight ?? null });
         this.heightForm.patchValue({ height: user.height ?? null });
     }
 
@@ -331,28 +320,6 @@ export class ProfilePage {
         }
     }
 
-    onSubmitWeight() {
-        const form = this.weightForm;
-        if (form.valid) {
-            const weight = form.get('weight')?.value;
-            if (this.cancelIfUnchangedValue(Number(weight), Number(this.userData()?.currentWeight ?? null)))
-                return;
-
-            this.userService.updateWeight({weight: weight})
-            .pipe(take(1))
-            .subscribe({
-                next: () => {
-                    this.editingField = null;
-                    this.notificationService.showSuccess("Profile updated successfully")
-                },
-                error: (err) => {
-                    handleValidationErrors(err, form);
-                }
-            });
-
-        }
-    }
-
     onSubmitHeight() {
         const form = this.heightForm;
         if (form.valid) {
@@ -373,7 +340,7 @@ export class ProfilePage {
 
     getProfileImageSrc(): string {
         if (this.previewImage() !== "") return this.previewImage();
-        if ((this.userData as any).profileImage) return (this.userData as any).profileImage;
+        if (this.userData()?.imagePath  && this.userData()?.imagePath !== null) return this.userData()!.imagePath as string;
         return this.userData()?.gender === 1 ? 'user_male.png' : (this.userData()?.gender === 2 ? 'user_female.png' : 'user_other.png');
     }
 
@@ -390,10 +357,20 @@ export class ProfilePage {
     }
 
     saveProfilePicture() {
-        if (this.previewImage()) {
-            const form = this.profilePictureForm;
-            form.get('profileImage')?.setValue(this.previewImage());
-            this.onSubmitProfilePicture();
+        if (this.selectedProfileImageFile()) {
+            this.userService.updateProfilePicture(this.selectedProfileImageFile()!)
+            .pipe(take(1))
+            .subscribe({
+                next: (imagePath) => {
+                    this.previewImage.set("");
+                    this.selectedProfileImageFile.set(null);
+                    this.notificationService.showSuccess("Profile picture updated successfully");
+                },
+                error: (err) => {
+                    console.error('Error uploading profile picture:', err);
+                    this.notificationService.showError("Failed to update profile picture");
+                }
+            });
         }
     }
 
@@ -402,12 +379,49 @@ export class ProfilePage {
         this.previewImage.set("");
     }
 
-    onSubmitProfilePicture() {
-        const form = this.profilePictureForm;
-        if (this.previewImage()) {
-            (this.userData as any).profileImage = this.previewImage();
-            this.selectedProfileImageFile.set(null);
-            this.previewImage.set("");
-        }
+    removeProfilePicture() {
+        this.userService.deleteProfilePicture()
+        .pipe(take(1))
+        .subscribe({
+            next: () => {
+                this.notificationService.showSuccess("Profile picture removed successfully");
+            },
+            error: (err) => {
+                console.error('Error uploading profile picture:', err);
+                this.notificationService.showError("Unexpected error happened while trying to delete a profile picture");
+            }
+        })
+    }
+
+    openDeleteAccountModal() {
+        this.isModalOpen.set(true);
+    }
+
+    closeModal() {
+        this.isModalOpen.set(false);
+    }
+
+    deleteProfile() {
+        this.userService.deleteAccount()
+        .pipe(take(1))
+        .subscribe({
+            next: () => {
+                this.notificationService.showSuccess("Your account has been deleted successfully")
+                this.authService.clearAuthData();
+                this.router.navigate(['/login']);
+            }
+        })
+    }
+
+    buildModal(): ModalData {
+        return {
+            title: 'Delete Account',
+            subtitle: 'You are about to permanently delete your account. This action cannot be undone and all your data will be lost.',
+            type: ModalType.Warning,
+            primaryActionLabel: 'Confirm',
+            secondaryActionLabel: 'Cancel',
+            primaryAction: () => this.deleteProfile(),
+            secondaryAction: () => this.isModalOpen.set(false)
+        };
     }
 }

@@ -33,7 +33,8 @@ export class Header {
     }
 
     getProfileImageSrc(): string {
-
+        console.log(this.userImage())
+        if(this.userImage() !== "") return this.userImage();
         return this.userGender() === Gender.Male ? 'user_male.png' : (this.userGender() === Gender.Female ? 'user_female.png' : 'user_other.png');
     }
 
