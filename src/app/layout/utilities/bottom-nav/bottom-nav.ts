@@ -6,6 +6,7 @@ import {
   faSolidChartLine,
   faSolidDumbbell,
   faSolidGear,
+  faSolidScaleUnbalanced,
   faSolidUser
 } from "@ng-icons/font-awesome/solid";
 import { RouterLink } from "@angular/router";
@@ -15,7 +16,7 @@ import { RouterLink } from "@angular/router";
     imports: [NgIcon, RouterLink],
     templateUrl: './bottom-nav.html',
     styleUrl: './bottom-nav.css',
-    providers: [provideIcons({faSolidUser, faSolidChartLine, faSolidBars, faSolidBowlRice, faSolidDumbbell, faSolidGear})]
+    providers: [provideIcons({faSolidUser, faSolidChartLine, faSolidBars, faSolidScaleUnbalanced, faSolidDumbbell, faSolidGear})]
 
 })
 export class BottomNav {
