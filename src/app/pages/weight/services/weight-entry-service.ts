@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { UserService } from '../../../core/services/user-service';
 import { WeightCreateRequestDto } from '../models/WeightCreateRequestDto';
-import { environment } from '../../../../environments/environment.development';
+import { environment } from '../../../../environments/environment';
 import { WeightEntryDetailsDto } from '../models/WeightEntryDetailsDto';
 import { BehaviorSubject, tap } from 'rxjs';
 import { WeightSummaryDto } from '../models/WeightSummaryDto';

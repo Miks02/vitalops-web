@@ -39,7 +39,6 @@ import {
 import { UserService } from '../../../core/services/user-service';
 import { NotificationService } from '../../../core/services/notification-service';
 import { handleValidationErrors } from '../../../core/helpers/FormHelpers';
-import { environment } from '../../../../environments/environment.development';
 import { AuthService } from '../../../core/services/auth-service';
 import { Modal } from '../../../layout/utilities/modal/modal';
 import { ModalData } from '../../../core/models/ModalData';

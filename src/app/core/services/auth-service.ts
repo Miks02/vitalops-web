@@ -10,12 +10,13 @@ import { LoginRequest } from '../models/LoginRequest';
 import { Router } from '@angular/router';
 import { UserService } from './user-service';
 import { UpdatePasswordDto } from '../models/User/UpdatePasswordDto';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
     providedIn: 'root',
 })
 export class AuthService {
-    private readonly api: string = "https://localhost:7263/api";
+    private readonly api: string = environment.apiUrl;
     private accessTokenSubject = new BehaviorSubject<string | null>(localStorage.getItem('token'));
     public accessToken$ = this.accessTokenSubject.asObservable();
 

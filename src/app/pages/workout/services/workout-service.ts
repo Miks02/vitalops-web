@@ -9,12 +9,13 @@ import { WorkoutPageDto } from '../models/WorkoutPageDto';
 import { WorkoutSummaryDto } from '../models/WorkoutSummaryDto';
 import { QueryParams } from '../../../core/models/QueryParams';
 import { WorkoutsPerMonthDto } from '../models/WorkoutsPerMonthDto';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
     providedIn: 'root',
 })
 export class WorkoutService {
-    private readonly api: string = "https://localhost:7263/api";
+    private readonly api: string = environment.apiUrl;
     private pagedWorkoutsSubject = new BehaviorSubject<PagedResult<WorkoutListItemDto>>(
         {items: [], totalCount: 0, page: 0, pageSize: 0, totalCountPaginated: 0}
     );
