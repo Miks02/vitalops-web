@@ -27,7 +27,7 @@ export class Header {
     ngOnInit() {
         this.layoutState.getTitle().subscribe(res => {
             this.title = res
-            this.browserTitle.setTitle("VitalOps | " + this.title);
+            this.browserTitle.setTitle("MixxFit" + ' | ' + this.title);
         })
 
     }
