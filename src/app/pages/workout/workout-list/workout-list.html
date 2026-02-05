@@ -20,21 +20,20 @@
                     </div>
 
                     <select
-                    (change)="loadWorkoutsByQuery(true)"
-                    [(ngModel)]="sort"
-                    class="rounded-lg px-3 py-1.5 bg-slate-300 text-sm font-semibold focus:outline-none"
+                        (change)="onSortChange()"
+                        [(ngModel)]="sort"
+                        class="rounded-lg px-3 py-1.5 bg-slate-300 text-sm font-semibold focus:outline-none"
                     >
-                    <option selected disabled hidden>{{workoutService.getQueryParams().sort}}</option>
-                    <option value="Newest">Newest</option>
-                    <option value="Oldest">Oldest</option>
-                </select>
+                        <option value="Newest">Newest</option>
+                        <option value="Oldest">Oldest</option>
+                    </select>
 
-                <input
-                [(ngModel)]="date"
-                (input)="loadWorkoutsByQuery(true)"
-                type="date"
-                class="before:content-['date'] before:text-slate-800 focus:before:content-none rounded-lg px-3 py-1.5 bg-slate-300 text-sm font-semibold focus:outline-none min-w-35"
-                />
+                    <input
+                        [(ngModel)]="date"
+                        (change)="onDateChange()"
+                        type="date"
+                        class="before:content-['date'] before:text-slate-800 focus:before:content-none rounded-lg px-3 py-1.5 bg-slate-300 text-sm font-semibold focus:outline-none min-w-35"
+                    />
             </div>
         </div>
         @if(workoutList() === undefined) {
@@ -69,10 +68,10 @@
                 (click)="getWorkoutDetails(workout.id)"
                 (click)="selectedWorkout = workout"
                 [class]="getWorkoutCardClass()"
-                class="flex items-center bg-slate-300 rounded-xl px-4 py-3 hover:bg-slate-400 hover:scale-[1.01] transition cursor-pointer group shadow-md">
+                class="flex items-center bg-slate-300 rounded-xl px-4 py-3 hover:bg-amber-400 transition cursor-pointer group shadow-md active:bg-amber-300">
 
                 <div class="flex flex-col flex-1">
-                    <p class="font-semibold text-slate-900 group-hover:underline">
+                    <p class="font-semibold text-slate-900">
                         {{ workout.name }}
                     </p>
                     <p class="text-sm text-slate-700">
@@ -195,7 +194,7 @@
                         Total workouts
                     </p>
                     <p class="text-2xl font-bold text-slate-900">
-                        {{workoutSummarySource()?.workoutCount ?? 0}}
+                        {{workoutSummary()?.workoutCount ?? 0}}
                     </p>
                 </div>
 
@@ -204,7 +203,7 @@
                         Total exercises
                     </p>
                     <p class="text-2xl font-bold text-slate-900">
-                        {{workoutSummarySource()?.exerciseCount ?? 0}}
+                        {{workoutSummary()?.exerciseCount ?? 0}}
                     </p>
                 </div>
 
@@ -213,7 +212,7 @@
                         Last workout
                     </p>
                     <p class="text-lg font-bold text-emerald-700">
-                        {{(workoutSummarySource()?.lastWorkoutDate | date) ?? 'N/A'}}
+                        {{(workoutSummary()?.lastWorkoutDate | date) ?? 'N/A'}}
                     </p>
                 </div>
 
@@ -222,7 +221,7 @@
                         Favorite exercise type
                     </p>
                     <p class="text-2xl font-bold text-slate-900">
-                        @switch(workoutSummarySource()?.favoriteExerciseType) {
+                        @switch(workoutSummary()?.favoriteExerciseType) {
                             @case(1) {
                                 Weights
                             }
