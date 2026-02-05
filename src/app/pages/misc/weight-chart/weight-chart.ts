@@ -37,7 +37,7 @@ export class WeightChart {
 
         const labels = sortedEntries.map(entry => {
             const date = new Date(entry.createdAt);
-            return date.toLocaleDateString('sr-RS', { day: '2-digit', month: 'short', year: '2-digit' });
+            return date.toLocaleDateString();
         });
 
         const weights = sortedEntries.map(entry => entry.weight);

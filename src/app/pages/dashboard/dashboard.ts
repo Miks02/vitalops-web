@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, effect } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { faSolidDumbbell, faSolidFireFlameCurved, faSolidGlassWater, faSolidMoon, faSolidScaleUnbalanced, faSolidUtensils, faSolidCalculator, faSolidGhost, faSolidMagnifyingGlassMinus, faSolidChartLine, faSolidUser } from '@ng-icons/font-awesome/solid';
 import {
@@ -41,12 +41,23 @@ export class Dashboard {
     workoutsPerMonth = toSignal(this.workoutService.workoutCounts$, {initialValue: null});
     weightChartSource = toSignal(this.weightService.weightChart$, {initialValue: null});
 
-    selectedYear: number = new Date().getFullYear();
 
     years = computed(() => this.workoutsPerMonth()?.years)
     weightChart = computed(() => this.weightChartSource() ?? undefined)
     recentWorkouts = computed(() => this.dashboardSource()?.recentWorkouts)
 
+    selectedYear: number = new Date().getFullYear();
+    private yearInitialized = false;
+
+    constructor() {
+        effect(() => {
+            const years = this.years();
+            if (years && years.length > 0 && !this.yearInitialized) {
+                this.selectedYear = years[0];
+                this.yearInitialized = true;
+            }
+        });
+    }
     ngOnInit() {
         this.layoutState.setTitle("Dashboard")
         this.loadDashboard();
