@@ -128,11 +128,11 @@ export class WorkoutForm {
     }
 
     onSubmit() {
-        const workout = createWorkoutObject(this.form);
         if(this.form.invalid) {
-            console.log("Invalid form");
             return;
         }
+        const workout = createWorkoutObject(this.form);
+        this.form.invalid;
         this.workoutService.addWorkout(workout).subscribe({
             next: () => {
                 this.notificationService.showSuccess("Workout logged successfully!")
@@ -145,6 +145,7 @@ export class WorkoutForm {
                 }
                 handleValidationErrors(err, this.form);
             }
+
         })
     }
 }

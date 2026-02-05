@@ -7,7 +7,7 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "vitalops-web": {
+    "mixxfit-web": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -63,10 +63,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "vitalops-web:build:production"
+              "buildTarget": "mixxfit-web:build:production"
             },
             "development": {
-              "buildTarget": "vitalops-web:build:development"
+              "buildTarget": "mixxfit-web:build:development"
             }
           },
           "defaultConfiguration": "development"
