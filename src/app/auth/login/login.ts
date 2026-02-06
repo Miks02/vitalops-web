@@ -1,11 +1,12 @@
-import { Component, signal, inject } from '@angular/core';
+import { Component, signal, inject, WritableSignal } from '@angular/core';
 import {NgIcon, provideIcons} from '@ng-icons/core';
 import {faSolidLock, faSolidCheck, faSolidEnvelope} from '@ng-icons/font-awesome/solid';
 import {Router, RouterLink} from '@angular/router';
 import {ReactiveFormsModule, FormBuilder, Validators, FormsModule} from '@angular/forms';
 import { AuthService } from '../../core/services/auth-service';
 import { LoginRequest } from '../../core/models/LoginRequest';
-import { Subject, takeUntil } from 'rxjs';
+import { finalize, Subject, takeUntil } from 'rxjs';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
     selector: 'app-login',
@@ -13,7 +14,8 @@ import { Subject, takeUntil } from 'rxjs';
         NgIcon,
         RouterLink,
         ReactiveFormsModule,
-        FormsModule
+        FormsModule,
+        MatProgressSpinnerModule
     ],
     templateUrl: './login.html',
     styleUrl: './login.css',
@@ -24,6 +26,8 @@ export class Login {
 
     private readonly fb = inject(FormBuilder);
     private readonly authService = inject(AuthService)
+
+    isLoading: WritableSignal<boolean> = signal(false);
 
     form = this.fb.group({
         email: ['', Validators.required],
@@ -40,9 +44,10 @@ export class Login {
             this.form.markAllAsTouched();
             return;
         }
+        this.isLoading.set(true);
 
         this.authService.login(this.form.value as LoginRequest)
-        .pipe(takeUntil(this.destroy$))
+        .pipe(takeUntil(this.destroy$), finalize(() => this.isLoading.set(false)))
         .subscribe()
     }
 

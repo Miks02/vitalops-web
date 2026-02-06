@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal, WritableSignal, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, ValidationErrors, Validators, ReactiveFormsModule, AbstractControl } from '@angular/forms';
 import {NgIcon, provideIcons} from '@ng-icons/core';
 import {faSolidEnvelope, faSolidLock, faSolidUser, faSolidUserTag} from '@ng-icons/font-awesome/solid';
@@ -6,6 +6,7 @@ import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth-service';
 import { RegisterRequest } from '../../core/models/RegisterRequest';
 import { HttpErrorResponse } from '@angular/common/http';
+import { finalize, Subject, takeUntil } from 'rxjs';
 
 @Component({
     selector: 'app-register',
@@ -18,6 +19,9 @@ export class Register {
 
     private fb = inject(FormBuilder)
     private authService = inject(AuthService)
+    private destroy$ = new Subject<void>();
+
+    isLoading: WritableSignal<boolean> = signal(false);
 
     form = this.fb.group({
         firstName: ['', [
@@ -75,8 +79,12 @@ export class Register {
             return;
         }
 
-        this.authService.register(this.form.value as RegisterRequest).subscribe({
-            next: res => {
+        this.isLoading.set(true);
+
+        this.authService.register(this.form.value as RegisterRequest)
+        .pipe(takeUntil(this.destroy$), finalize(() => this.isLoading.set(false)))
+        .subscribe({
+            next: () => {
                 console.log("Registration successful!")
             },
             error: (err: HttpErrorResponse) => {
@@ -92,6 +100,11 @@ export class Register {
             }
         })
 
+    }
+
+    ngOnDestroy() {
+        this.destroy$.next();
+        this.destroy$.complete();
     }
 
 }
